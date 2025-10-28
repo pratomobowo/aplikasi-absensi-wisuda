@@ -1,0 +1,22 @@
+{
+  "enabled": true,
+  "name": "MCP Context7 Documentation Helper",
+  "description": "Automatically triggers MCP context7 to fetch the latest documentation for technologies being used whenever code files are modified, ensuring up-to-date technical references during debugging and development",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "app/**/*.php",
+      "config/*.php",
+      "routes/*.php",
+      "database/migrations/*.php",
+      "resources/views/**/*.blade.php",
+      "resources/js/*.js",
+      "resources/css/*.css"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Files have been modified. Before proceeding with any debugging or implementation, use MCP context7 to fetch the latest documentation for the technologies and frameworks being used in these files (Laravel, Filament, Livewire, PHP, etc.). Ensure you have the most current technical references and best practices before making changes or troubleshooting issues."
+  }
+}
