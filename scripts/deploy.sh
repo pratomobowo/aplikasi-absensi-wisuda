@@ -23,6 +23,11 @@ echo ""
 
 # 3. Build assets
 echo "🎨 Building assets..."
+# Fix node_modules permissions if needed
+if [ ! -x "node_modules/.bin/vite" ]; then
+    echo "Fixing node_modules permissions..."
+    chmod -R 755 node_modules/.bin 2>/dev/null || true
+fi
 npm run build
 echo "✓ Assets built"
 echo ""

@@ -18,10 +18,10 @@ php artisan clear-compiled
 echo "✓ Caches cleared"
 echo ""
 
-# 1.5. Publish Livewire assets
-echo "Step 1.5: Publishing Livewire assets..."
-php artisan livewire:publish --force
-echo "✓ Livewire assets published"
+# 1.5. Optimize Composer autoload
+echo "Step 1.5: Optimizing autoload..."
+composer dump-autoload -o
+echo "✓ Autoload optimized"
 echo ""
 
 # 2. Ensure sessions table exists
