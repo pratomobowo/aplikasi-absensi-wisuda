@@ -1,17 +1,5 @@
 # Deployment Guide
 
-## Quick Fix for Login Issues
-
-Jika mengalami error "Method Not Allowed" pada login:
-
-```bash
-# Di server production, jalankan:
-bash scripts/fix-login-issue.sh
-
-# Kemudian restart PHP-FPM:
-sudo systemctl restart php8.4-fpm
-```
-
 ## Production Deployment Checklist
 
 ### 1. Verify Production Setup
@@ -82,75 +70,6 @@ chown -R www-data:www-data storage bootstrap/cache
 ```
 
 ## Troubleshooting
-
-### Issue: "Method Not Allowed" pada POST /admin/login
-
-**Gejala:**
-- Login berhasil di local
-- Login gagal di production dengan error "The POST method is not supported for route admin/login"
-- Request melewati Cloudflare
-
-**Penyebab:**
-Filament v3 menggunakan Livewire untuk login, yang seharusnya POST ke `/livewire/update`, bukan `/admin/login`. Masalah ini terjadi karena:
-1. Route cache yang outdated
-2. Livewire assets tidak ter-load dengan benar
-3. CSRF token mismatch
-4. Session tidak tersimpan dengan benar
-5. Proxy headers tidak dipercaya (Cloudflare)
-
-**Solusi:**
-
-1. **Pastikan .env production sudah benar:**
-   ```env
-   APP_ENV=production
-   APP_DEBUG=false
-   APP_URL=https://wisuda.usbypkp.ac.id
-   
-   SESSION_DRIVER=database
-   SESSION_ENCRYPT=false
-   SESSION_SECURE_COOKIE=true
-   SESSION_SAME_SITE=lax
-   SESSION_DOMAIN=null
-   ```
-
-2. **Clear semua cache:**
-   ```bash
-   php artisan route:clear
-   php artisan config:clear
-   php artisan cache:clear
-   php artisan view:clear
-   php artisan clear-compiled
-   
-   # Rebuild cache
-   php artisan config:cache
-   php artisan route:cache
-   php artisan view:cache
-   ```
-
-3. **Pastikan sessions table ada:**
-   ```bash
-   php artisan session:table
-   php artisan migrate
-   ```
-
-4. **Pastikan storage writable:**
-   ```bash
-   chmod -R 755 storage bootstrap/cache
-   chown -R www-data:www-data storage bootstrap/cache
-   ```
-
-5. **Restart PHP-FPM:**
-   ```bash
-   sudo systemctl restart php8.4-fpm
-   ```
-
-6. **Clear browser cache dan cookies** atau test dengan incognito mode
-
-7. **Verify Livewire routes terdaftar:**
-   ```bash
-   php artisan route:list --path=livewire
-   ```
-   Harus ada route: `POST /livewire/update`
 
 ### Issue: CSRF Token Mismatch
 

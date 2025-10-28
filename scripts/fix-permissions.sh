@@ -11,6 +11,26 @@ CURRENT_USER=$(whoami)
 echo "Current user: $CURRENT_USER"
 echo ""
 
+# Get web server user
+WEB_USER="www"
+if id "www-data" &>/dev/null; then
+    WEB_USER="www-data"
+elif id "nginx" &>/dev/null; then
+    WEB_USER="nginx"
+fi
+echo "Web server user: $WEB_USER"
+echo ""
+
+# Fix project ownership first (if needed)
+PROJECT_OWNER=$(stat -c '%U' . 2>/dev/null || stat -f '%Su' .)
+if [ "$PROJECT_OWNER" != "$CURRENT_USER" ]; then
+    echo "⚠️  Project owned by: $PROJECT_OWNER (not $CURRENT_USER)"
+    echo "Fixing project ownership (requires sudo)..."
+    sudo chown -R $CURRENT_USER:$CURRENT_USER .
+    echo "✓ Project ownership fixed"
+    echo ""
+fi
+
 # Fix node_modules ownership and permissions
 if [ -d "node_modules" ]; then
     echo "Step 1: Fixing node_modules..."
@@ -29,54 +49,37 @@ else
 fi
 echo ""
 
-# Fix storage permissions
+# Fix storage permissions (must be writable by web server)
 if [ -d "storage" ]; then
     echo "Step 2: Fixing storage..."
     
-    # Get web server user (www-data, www, nginx, etc.)
-    WEB_USER="www"
-    if id "www-data" &>/dev/null; then
-        WEB_USER="www-data"
-    elif id "nginx" &>/dev/null; then
-        WEB_USER="nginx"
-    fi
-    
-    echo "Web server user: $WEB_USER"
-    
     if [ "$CURRENT_USER" != "root" ]; then
         sudo chown -R $WEB_USER:$WEB_USER storage
-        sudo chmod -R 755 storage
+        sudo chmod -R 775 storage
     else
         chown -R $WEB_USER:$WEB_USER storage
-        chmod -R 755 storage
+        chmod -R 775 storage
     fi
     
-    echo "✓ storage fixed"
+    echo "✓ storage fixed (owner: $WEB_USER, mode: 775)"
 else
     echo "⚠️  storage not found"
 fi
 echo ""
 
-# Fix bootstrap/cache permissions
+# Fix bootstrap/cache permissions (must be writable by web server)
 if [ -d "bootstrap/cache" ]; then
     echo "Step 3: Fixing bootstrap/cache..."
     
-    WEB_USER="www"
-    if id "www-data" &>/dev/null; then
-        WEB_USER="www-data"
-    elif id "nginx" &>/dev/null; then
-        WEB_USER="nginx"
-    fi
-    
     if [ "$CURRENT_USER" != "root" ]; then
         sudo chown -R $WEB_USER:$WEB_USER bootstrap/cache
-        sudo chmod -R 755 bootstrap/cache
+        sudo chmod -R 775 bootstrap/cache
     else
         chown -R $WEB_USER:$WEB_USER bootstrap/cache
-        chmod -R 755 bootstrap/cache
+        chmod -R 775 bootstrap/cache
     fi
     
-    echo "✓ bootstrap/cache fixed"
+    echo "✓ bootstrap/cache fixed (owner: $WEB_USER, mode: 775)"
 else
     echo "⚠️  bootstrap/cache not found"
 fi

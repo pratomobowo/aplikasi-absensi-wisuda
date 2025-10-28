@@ -68,16 +68,21 @@
 
                     <!-- Task 6.4: Status card - Ready state -->
                     <div class="mt-6 bg-blue-50 border-l-4 border-blue-500 rounded-xl p-6 shadow-lg">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                </svg>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-lg font-semibold text-blue-900">Siap Memindai</p>
+                                    <p class="text-sm text-blue-700 mt-1">Arahkan kamera ke QR Code untuk memindai</p>
+                                </div>
                             </div>
-                            <div class="ml-4">
-                                <p class="text-lg font-semibold text-blue-900">Siap Memindai</p>
-                                <p class="text-sm text-blue-700 mt-1">Arahkan kamera ke QR Code untuk memindai</p>
-                            </div>
+                            <button @click="forceReset()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                Reset
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -303,6 +308,7 @@ function scannerComponent() {
     return {
         html5QrCode: null,
         isScanning: false,
+        scanTimeout: null,
         
         init() {
             this.initializeScanner();
@@ -337,11 +343,43 @@ function scannerComponent() {
             
             this.isScanning = true;
             
+            // Clear any existing timeout
+            if (this.scanTimeout) {
+                clearTimeout(this.scanTimeout);
+            }
+            
             // Stop scanner temporarily
-            this.html5QrCode.pause(true);
+            if (this.html5QrCode) {
+                this.html5QrCode.pause(true);
+            }
+            
+            // Set a safety timeout to reset scanner if something goes wrong
+            this.scanTimeout = setTimeout(() => {
+                console.warn('Scanner timeout - forcing reset');
+                this.forceReset();
+            }, 10000); // 10 seconds timeout
             
             // Send to Livewire
-            @this.call('scanQRCode', decodedText);
+            @this.call('scanQRCode', decodedText).catch(err => {
+                console.error('Livewire call failed:', err);
+                // Reset on error
+                this.forceReset();
+            });
+        },
+        
+        forceReset() {
+            if (this.scanTimeout) {
+                clearTimeout(this.scanTimeout);
+                this.scanTimeout = null;
+            }
+            this.isScanning = false;
+            if (this.html5QrCode) {
+                try {
+                    this.html5QrCode.resume();
+                } catch (err) {
+                    console.error('Failed to resume scanner:', err);
+                }
+            }
         },
         
         onScanFailure(error) {
@@ -355,17 +393,44 @@ function scannerComponent() {
         setupLivewireListeners() {
             // Listen for scanner reset
             Livewire.on('scanner-reset', () => {
+                if (this.scanTimeout) {
+                    clearTimeout(this.scanTimeout);
+                    this.scanTimeout = null;
+                }
                 this.isScanning = false;
                 if (this.html5QrCode) {
-                    this.html5QrCode.resume();
+                    try {
+                        this.html5QrCode.resume();
+                    } catch (err) {
+                        console.error('Failed to resume scanner:', err);
+                    }
                 }
             });
             
             // Listen for schedule reset
-            Livewire.on('schedule-reset', (event) => {
+            Livewire.on('schedule-reset', (data) => {
                 setTimeout(() => {
-                    @this.call('doReset');
-                }, event.delay);
+                    @this.call('doReset').catch(err => {
+                        console.error('Failed to reset:', err);
+                        this.forceReset();
+                    });
+                }, data.delay || 3000);
+            });
+            
+            // Listen for scan success - ensure scanner is paused
+            Livewire.on('scan-success', () => {
+                this.isScanning = true;
+                if (this.html5QrCode) {
+                    this.html5QrCode.pause(true);
+                }
+            });
+            
+            // Listen for scan error - ensure scanner is paused
+            Livewire.on('scan-error', () => {
+                this.isScanning = true;
+                if (this.html5QrCode) {
+                    this.html5QrCode.pause(true);
+                }
             });
         }
     }

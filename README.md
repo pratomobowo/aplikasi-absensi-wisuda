@@ -28,28 +28,23 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment guide.
 
 **Quick Commands:**
 ```bash
-# Complete fix (recommended for production issues)
-bash scripts/complete-fix.sh
-
 # Full deployment
 bash scripts/deploy.sh
-
-# Fix .env configuration
-bash scripts/fix-env-production.sh
 
 # Clear caches only
 bash scripts/clear-production-cache.sh
 
-# Debug Livewire issues
-bash scripts/debug-livewire.sh
+# Fix file permissions
+bash scripts/fix-permissions.sh
+
+# Verify production setup
+bash scripts/verify-production.sh
 ```
 
 **Documentation:** 
-- [COMMON_ISSUES.md](COMMON_ISSUES.md) - Quick reference for common production issues ⭐
-- [PRODUCTION_CHECKLIST.md](PRODUCTION_CHECKLIST.md) - Complete production deployment checklist
-- [QUICK_FIX.md](QUICK_FIX.md) - Quick fix for Livewire JavaScript 404 error
-- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Complete troubleshooting guide
 - [DEPLOYMENT.md](DEPLOYMENT.md) - Deployment guide
+- [docs/LIVEWIRE_SETUP.md](docs/LIVEWIRE_SETUP.md) - Livewire setup notes
+- [docs/FILE_PERMISSIONS.md](docs/FILE_PERMISSIONS.md) - File permissions and ownership guide
 - [docs/CLOUDFLARE_SETUP.md](docs/CLOUDFLARE_SETUP.md) - Cloudflare configuration guide
 
 ## Security Features

@@ -32,6 +32,14 @@ npm run build
 echo "✓ Assets built"
 echo ""
 
+# 3.5. Create Livewire symlink if needed
+if [ ! -L "public/livewire" ]; then
+    echo "📎 Creating Livewire symlink..."
+    ln -s ../vendor/livewire/livewire/dist ./public/livewire
+    echo "✓ Livewire symlink created"
+    echo ""
+fi
+
 # 4. Run migrations
 echo "🗄️  Running migrations..."
 php artisan migrate --force
