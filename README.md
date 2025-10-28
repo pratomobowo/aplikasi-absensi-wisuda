@@ -22,6 +22,27 @@ Aplikasi berbasis web untuk mengelola kehadiran mahasiswa pada acara wisuda meng
 - SimpleSoftwareIO/simple-qrcode
 - barryvdh/laravel-dompdf
 
+## Deployment
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment guide.
+
+**Quick Commands:**
+```bash
+# Full deployment
+bash scripts/deploy.sh
+
+# Fix login issues
+bash scripts/fix-login-issue.sh
+
+# Clear caches only
+bash scripts/clear-production-cache.sh
+
+# Verify production setup
+bash scripts/verify-production.sh
+```
+
+**Troubleshooting:** See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common issues and solutions.
+
 ## Security Features
 
 ✅ **Encryption**: AES-256-CBC encryption for QR codes and sessions  
