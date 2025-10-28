@@ -65,7 +65,7 @@ class DataWisudawan extends Component
 
         // Program Studi filter
         if ($this->programStudi) {
-            $query->where('prodi', $this->programStudi);
+            $query->where('program_studi', $this->programStudi);
         }
 
         $mahasiswa = $query->orderBy('nama', 'asc')->paginate(20);
@@ -74,7 +74,7 @@ class DataWisudawan extends Component
         $fakultasList = Mahasiswa::distinct()->pluck('fakultas')->filter()->sort()->values();
         $programStudiList = Mahasiswa::when($this->fakultas, function ($q) {
             $q->where('fakultas', $this->fakultas);
-        })->distinct()->pluck('prodi')->filter()->sort()->values();
+        })->distinct()->pluck('program_studi')->filter()->sort()->values();
 
         return view('livewire.data-wisudawan', [
             'mahasiswa' => $mahasiswa,

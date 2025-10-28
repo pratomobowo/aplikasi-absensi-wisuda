@@ -26,7 +26,7 @@ class UpdateMahasiswaRequest extends FormRequest
         return [
             'npm' => ['required', 'string', 'max:20', 'unique:mahasiswa,npm,' . $mahasiswaId, 'regex:/^[A-Z0-9]+$/'],
             'nama' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s.]+$/'],
-            'prodi' => ['required', 'string', 'max:255'],
+            'program_studi' => ['required', 'string', 'max:255'],
             'fakultas' => ['required', 'string', 'max:255'],
             'ipk' => ['required', 'numeric', 'between:0,4', 'regex:/^\d+(\.\d{1,2})?$/'],
             'yudisium' => ['nullable', 'string', 'in:Cum Laude,Sangat Memuaskan,Memuaskan'],
@@ -48,7 +48,7 @@ class UpdateMahasiswaRequest extends FormRequest
             'npm.regex' => 'NPM hanya boleh berisi huruf kapital dan angka',
             'nama.required' => 'Nama wajib diisi',
             'nama.regex' => 'Nama hanya boleh berisi huruf dan spasi',
-            'prodi.required' => 'Program studi wajib diisi',
+            'program_studi.required' => 'Program studi wajib diisi',
             'fakultas.required' => 'Fakultas wajib diisi',
             'ipk.required' => 'IPK wajib diisi',
             'ipk.numeric' => 'IPK harus berupa angka',

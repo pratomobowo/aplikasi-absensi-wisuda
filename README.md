@@ -5,6 +5,7 @@ Aplikasi berbasis web untuk mengelola kehadiran mahasiswa pada acara wisuda meng
 ## Fitur Utama
 
 - **Admin Dashboard**: Kelola data mahasiswa dan acara wisuda menggunakan Filament
+- **Excel Import**: Import data mahasiswa dari file Excel/CSV dengan validasi otomatis
 - **Magic Link**: Generate link unik untuk setiap mahasiswa
 - **QR Code**: 3 QR code per mahasiswa (mahasiswa, pendamping 1, pendamping 2)
 - **Scanner App**: Aplikasi scanner berbasis browser untuk panitia
@@ -135,6 +136,25 @@ Access the admin panel at `/admin`
 Default credentials (after seeding):
 - Email: admin@example.com
 - Password: password
+
+### Importing Student Data
+
+1. Navigate to the Mahasiswa (Students) page in the admin panel
+2. Click "Download Template" to get the CSV template
+3. Fill in the template with student data:
+   - **npm**: Student ID (required, max 20 characters)
+   - **nama**: Full name (required, max 255 characters)
+   - **prodi**: Study program (required, max 255 characters)
+   - **fakultas**: Faculty (required, max 255 characters)
+   - **ipk**: GPA (required, 0-4 scale)
+   - **yudisium**: Honors (optional: Cum Laude, Sangat Memuaskan, Memuaskan)
+   - **email**: Email address (optional)
+   - **phone**: Phone number (optional)
+4. Click "Import Excel" and upload your file
+5. The system will validate and import the data, showing a summary of:
+   - Successfully imported records
+   - Updated duplicate records (based on NPM)
+   - Failed records with error details
 
 ### Scanner Application
 

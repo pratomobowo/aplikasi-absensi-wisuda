@@ -207,7 +207,7 @@ class GraduationTicketResource extends Resource
                             ->label('Nama'),
                         Infolists\Components\TextEntry::make('mahasiswa.npm')
                             ->label('NPM'),
-                        Infolists\Components\TextEntry::make('mahasiswa.prodi')
+                        Infolists\Components\TextEntry::make('mahasiswa.program_studi')
                             ->label('Program Studi'),
                         Infolists\Components\TextEntry::make('mahasiswa.fakultas')
                             ->label('Fakultas'),

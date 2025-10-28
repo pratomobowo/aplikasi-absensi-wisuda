@@ -26,15 +26,15 @@
                 sortBy: 'name',
                 searchQuery: '',
                 graduates: [
-                    { name: 'Ahmad Fauzi', nim: '2019010001', faculty: 'teknik', program: 'Teknik Informatika', gpa: 3.85, predicate: 'Cum Laude', color: 'blue' },
-                    { name: 'Siti Nurhaliza', nim: '2019020045', faculty: 'ekonomi', program: 'Manajemen', gpa: 3.92, predicate: 'Cum Laude', color: 'green' },
-                    { name: 'Budi Santoso', nim: '2019030078', faculty: 'hukum', program: 'Hukum', gpa: 3.67, predicate: 'Sangat Memuaskan', color: 'purple' },
-                    { name: 'Dewi Lestari', nim: '2019040112', faculty: 'pertanian', program: 'Agroteknologi', gpa: 3.78, predicate: 'Cum Laude', color: 'amber' },
-                    { name: 'Rizki Pratama', nim: '2019050089', faculty: 'ilkom', program: 'Sistem Informasi', gpa: 3.55, predicate: 'Sangat Memuaskan', color: 'red' },
-                    { name: 'Maya Anggraini', nim: '2019060134', faculty: 'ekonomi', program: 'Akuntansi', gpa: 3.88, predicate: 'Cum Laude', color: 'indigo' },
-                    { name: 'Andi Wijaya', nim: '2019010025', faculty: 'teknik', program: 'Teknik Sipil', gpa: 3.72, predicate: 'Cum Laude', color: 'blue' },
-                    { name: 'Rina Kusuma', nim: '2019020067', faculty: 'ekonomi', program: 'Ekonomi Pembangunan', gpa: 3.45, predicate: 'Sangat Memuaskan', color: 'green' },
-                    { name: 'Hendra Gunawan', nim: '2019030091', faculty: 'hukum', program: 'Hukum Pidana', gpa: 3.81, predicate: 'Cum Laude', color: 'purple' },
+                    { name: 'Ahmad Fauzi', npm: '2019010001', faculty: 'teknik', program: 'Teknik Informatika', gpa: 3.85, predicate: 'Cum Laude', color: 'blue' },
+                    { name: 'Siti Nurhaliza', npm: '2019020045', faculty: 'ekonomi', program: 'Manajemen', gpa: 3.92, predicate: 'Cum Laude', color: 'green' },
+                    { name: 'Budi Santoso', npm: '2019030078', faculty: 'hukum', program: 'Hukum', gpa: 3.67, predicate: 'Sangat Memuaskan', color: 'purple' },
+                    { name: 'Dewi Lestari', npm: '2019040112', faculty: 'pertanian', program: 'Agroteknologi', gpa: 3.78, predicate: 'Cum Laude', color: 'amber' },
+                    { name: 'Rizki Pratama', npm: '2019050089', faculty: 'ilkom', program: 'Sistem Informasi', gpa: 3.55, predicate: 'Sangat Memuaskan', color: 'red' },
+                    { name: 'Maya Anggraini', npm: '2019060134', faculty: 'ekonomi', program: 'Akuntansi', gpa: 3.88, predicate: 'Cum Laude', color: 'indigo' },
+                    { name: 'Andi Wijaya', npm: '2019010025', faculty: 'teknik', program: 'Teknik Sipil', gpa: 3.72, predicate: 'Cum Laude', color: 'blue' },
+                    { name: 'Rina Kusuma', npm: '2019020067', faculty: 'ekonomi', program: 'Ekonomi Pembangunan', gpa: 3.45, predicate: 'Sangat Memuaskan', color: 'green' },
+                    { name: 'Hendra Gunawan', npm: '2019030091', faculty: 'hukum', program: 'Hukum Pidana', gpa: 3.81, predicate: 'Cum Laude', color: 'purple' },
                 ],
                 get filteredGraduates() {
                     let filtered = this.graduates;
@@ -49,7 +49,7 @@
                         const query = this.searchQuery.toLowerCase();
                         filtered = filtered.filter(g => 
                             g.name.toLowerCase().includes(query) || 
-                            g.nim.includes(query) ||
+                            g.npm.includes(query) ||
                             g.program.toLowerCase().includes(query)
                         );
                     }
@@ -59,8 +59,8 @@
                         switch(this.sortBy) {
                             case 'name':
                                 return a.name.localeCompare(b.name);
-                            case 'nim':
-                                return a.nim.localeCompare(b.nim);
+                            case 'npm':
+                                return a.npm.localeCompare(b.npm);
                             case 'faculty':
                                 return a.faculty.localeCompare(b.faculty);
                             case 'gpa':
@@ -263,7 +263,7 @@
                             <input 
                                 type="text" 
                                 x-model="searchQuery"
-                                placeholder="Cari berdasarkan nama, NIM, atau program studi..."
+                                placeholder="Cari berdasarkan nama, NPM, atau program studi..."
                                 class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                             >
                         </div>
@@ -288,7 +288,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Urutkan</label>
                             <select x-model="sortBy" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                                 <option value="name">Nama (A-Z)</option>
-                                <option value="nim">NIM</option>
+                                <option value="npm">NPM</option>
                                 <option value="faculty">Fakultas</option>
                                 <option value="gpa">IPK (Tertinggi)</option>
                             </select>
@@ -370,7 +370,7 @@
                 
                 <!-- Graduates Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <template x-for="graduate in filteredGraduates" :key="graduate.nim">
+                    <template x-for="graduate in filteredGraduates" :key="graduate.npm">
                         <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
                             <div class="h-32 bg-gradient-to-br" :class="{
                                 'from-blue-500 to-blue-700': graduate.color === 'blue',
@@ -388,7 +388,7 @@
                                 </div>
                                 <div class="text-center">
                                     <h3 class="text-lg font-semibold text-gray-900 mb-1" x-text="graduate.name"></h3>
-                                    <p class="text-sm text-gray-600 mb-2">NIM: <span x-text="graduate.nim"></span></p>
+                                    <p class="text-sm text-gray-600 mb-2">NPM: <span x-text="graduate.npm"></span></p>
                                     <span class="inline-flex items-center font-medium px-2 py-0.5 text-xs rounded" :class="{
                                         'bg-blue-100 text-blue-800': graduate.color === 'blue',
                                         'bg-green-100 text-green-800': graduate.color === 'green',

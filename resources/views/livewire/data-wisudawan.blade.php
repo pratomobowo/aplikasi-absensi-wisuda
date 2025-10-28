@@ -163,7 +163,7 @@
                                             {{ $mhs->fakultas }}
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-500">
-                                            {{ $mhs->prodi }}
+                                            {{ $mhs->program_studi }}
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-500">
                                             {{ $mhs->email ?? '-' }}

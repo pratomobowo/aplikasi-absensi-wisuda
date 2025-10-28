@@ -1,0 +1,15 @@
+[
+    {
+        "id": 1,
+        "npm": "6311055",
+        "nama": "Pratomo Bowo Leksono",
+        "program_studi": "S1 Informatika",
+        "fakultas": "Teknik",
+        "ipk": "0.00",
+        "yudisium": null,
+        "email": null,
+        "phone": null,
+        "created_at": "2025-10-27T18:43:58.000000Z",
+        "updated_at": "2025-10-27T18:43:58.000000Z"
+    }
+]
