@@ -4,22 +4,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | QR Code Encryption Settings
-    |--------------------------------------------------------------------------
-    |
-    | These settings control the encryption of QR code data. The encryption
-    | key should be a base64-encoded 32-byte random string. You can generate
-    | one using: openssl rand -base64 32
-    |
-    */
-
-    'qr_encryption' => [
-        'key' => env('QR_ENCRYPTION_KEY'),
-        'cipher' => env('QR_ENCRYPTION_CIPHER', 'AES-256-CBC'),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Security Headers
     |--------------------------------------------------------------------------
     |

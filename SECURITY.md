@@ -13,12 +13,6 @@ This document outlines the security measures implemented in the Sistem Absensi W
 - Used for encrypting cookies, sessions, and other sensitive data
 - Generated using: `php artisan key:generate`
 
-#### QR Code Encryption
-- **QR_ENCRYPTION_KEY**: Dedicated encryption key for QR code data
-- Algorithm: AES-256-CBC
-- Generated using: `openssl rand -base64 32`
-- All QR codes contain encrypted data with HMAC signature validation
-
 #### Session Encryption
 - **SESSION_ENCRYPT**: Enabled (true)
 - All session data is encrypted before storage
@@ -131,9 +125,8 @@ The `SecurityHeaders` middleware adds the following headers to all responses:
 - Expire after 30 days
 
 #### QR Code Tokens
-- Encrypted with dedicated key
-- Include HMAC signature
-- Timestamp prevents replay attacks
+- Plain JSON format for easy scanning
+- Include timestamp for reference
 - Role-based validation
 - Expire after graduation event
 
@@ -198,10 +191,6 @@ All security-relevant events are logged:
 APP_KEY=base64:...                    # Generate with: php artisan key:generate
 APP_ENV=production
 APP_DEBUG=false
-
-# QR Code Encryption
-QR_ENCRYPTION_KEY=base64:...          # Generate with: openssl rand -base64 32
-QR_ENCRYPTION_CIPHER=AES-256-CBC
 
 # Session Security
 SESSION_ENCRYPT=true

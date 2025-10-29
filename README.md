@@ -49,7 +49,7 @@ bash scripts/verify-production.sh
 
 ## Security Features
 
-✅ **Encryption**: AES-256-CBC encryption for QR codes and sessions  
+✅ **Encryption**: AES-256-CBC encryption for sessions  
 ✅ **CSRF Protection**: Automatic CSRF protection on all forms  
 ✅ **Input Validation**: Comprehensive validation using Form Requests  
 ✅ **SQL Injection Prevention**: Eloquent ORM with parameter binding  
@@ -89,13 +89,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-4. Generate QR encryption key
-```bash
-openssl rand -base64 32
-```
-Add the output to `.env` as `QR_ENCRYPTION_KEY=base64:YOUR_KEY_HERE`
-
-5. Configure database in `.env`
+4. Configure database in `.env`
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -134,10 +128,6 @@ php artisan serve
 APP_KEY=base64:...                    # Generate with: php artisan key:generate
 APP_ENV=production
 APP_DEBUG=false
-
-# QR Code Encryption
-QR_ENCRYPTION_KEY=base64:...          # Generate with: openssl rand -base64 32
-QR_ENCRYPTION_CIPHER=AES-256-CBC
 
 # Session Security
 SESSION_ENCRYPT=true

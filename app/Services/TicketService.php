@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\GraduationEvent;
 use App\Models\GraduationTicket;
 use App\Models\Mahasiswa;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 
 class TicketService
@@ -31,9 +30,15 @@ class TicketService
         $ticket->graduation_event_id = $event->id;
         $ticket->magic_link_token = $this->generateUniqueToken();
         $ticket->expires_at = $event->date->addDays(1); // Expire 1 day after event
+        
+        // Set placeholder QR tokens (will be updated after save)
+        $ticket->qr_token_mahasiswa = '{}';
+        $ticket->qr_token_pendamping1 = '{}';
+        $ticket->qr_token_pendamping2 = '{}';
+        
         $ticket->save();
 
-        // Generate QR tokens
+        // Now generate real QR tokens with the actual ticket ID
         $qrTokens = $this->generateQRTokens($ticket);
         $ticket->qr_token_mahasiswa = $qrTokens['mahasiswa'];
         $ticket->qr_token_pendamping1 = $qrTokens['pendamping1'];
