@@ -6,6 +6,7 @@ use App\Models\Mahasiswa;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Validators\Failure;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 
@@ -17,6 +18,28 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
     private array $errors = [];
 
     /**
+     * Prepare data for validation - convert numeric NPM to string
+     * 
+     * @param array $row
+     * @param int $index
+     * @return array
+     */
+    public function prepareForValidation($row, $index)
+    {
+        // Convert NPM to string if it's numeric (Excel auto-converts numbers)
+        if (isset($row['npm']) && is_numeric($row['npm'])) {
+            $row['npm'] = (string) $row['npm'];
+        }
+        
+        // Convert phone to string if it's numeric
+        if (isset($row['phone']) && is_numeric($row['phone'])) {
+            $row['phone'] = (string) $row['phone'];
+        }
+        
+        return $row;
+    }
+
+    /**
      * Map each row to a Mahasiswa model
      * 
      * @param array $row
@@ -24,8 +47,11 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
      */
     public function model(array $row)
     {
+        // NPM should already be converted to string by prepareForValidation
+        $npm = $row['npm'];
+        
         // Check for duplicate NPM
-        $existing = Mahasiswa::where('npm', $row['npm'])->first();
+        $existing = Mahasiswa::where('npm', $npm)->first();
         
         if ($existing) {
             $this->duplicateCount++;
@@ -44,7 +70,7 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
 
         $this->successCount++;
         return new Mahasiswa([
-            'npm' => $row['npm'],
+            'npm' => $npm,
             'nama' => $row['nama'],
             'program_studi' => $row['program_studi'],
             'fakultas' => $row['fakultas'],

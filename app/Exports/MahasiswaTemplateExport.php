@@ -5,9 +5,11 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class MahasiswaTemplateExport implements FromArray, WithHeadings, WithStyles
+class MahasiswaTemplateExport implements FromArray, WithHeadings, WithStyles, WithColumnFormatting
 {
     /**
      * Return array of example data for the template
@@ -72,6 +74,17 @@ class MahasiswaTemplateExport implements FromArray, WithHeadings, WithStyles
     {
         return [
             1 => ['font' => ['bold' => true]],
+        ];
+    }
+
+    /**
+     * Format NPM column as text to prevent Excel from converting to number
+     */
+    public function columnFormats(): array
+    {
+        return [
+            'A' => NumberFormat::FORMAT_TEXT, // NPM column
+            'H' => NumberFormat::FORMAT_TEXT, // Phone column
         ];
     }
 }
