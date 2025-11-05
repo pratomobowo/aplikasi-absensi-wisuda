@@ -313,8 +313,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="text-white text-lg font-semibold mb-4">Universitas Sanggabuana</h3>
-                    <p class="text-sm leading-relaxed">Portal wisuda Universitas Sanggabuana dengan sistem terintegrasi.</p>
+                    <h3 class="text-white text-lg font-semibold mb-4">Universitas Sangga Buana</h3>
+                    <p class="text-sm leading-relaxed">Portal wisuda Universitas Sangga Buana dengan sistem terintegrasi.</p>
                 </div>
                 <div>
                     <h3 class="text-white text-lg font-semibold mb-4">Menu Cepat</h3>
@@ -334,13 +334,14 @@
                 <div>
                     <h3 class="text-white text-lg font-semibold mb-4">Kontak</h3>
                     <ul class="space-y-2 text-sm">
-                        <li>info@wisuda.ac.id</li>
-                        <li>(021) 1234-5678</li>
+                        <li>wisuda@usbypkp.ac.id</li>
+                        <li>+62 22 7275489</li>
+                        <li>Jl. PH.H. Mustofa No.68, Cikutra, Kec. Cibeunying Kidul, Kota Bandung, Jawa Barat 40124</li>
                     </ul>
                 </div>
             </div>
             <div class="border-t border-gray-800 mt-8 pt-8 text-center">
-                <p class="text-sm text-gray-400">&copy; {{ date('Y') }} Universitas Sanggabuana. All rights reserved.</p>
+                <p class="text-sm text-gray-400">&copy; {{ date('Y') }} Universitas Sangga Buana. All rights reserved.</p>
             </div>
         </div>
     </footer>

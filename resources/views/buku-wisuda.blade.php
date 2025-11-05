@@ -242,7 +242,7 @@
                     Buku Wisuda
                 </h1>
                 <p class="text-lg sm:text-xl text-blue-50 max-w-3xl mx-auto leading-relaxed">
-                    Katalog digital profil wisudawan Universitas Sanggabuana
+                    Katalog digital profil wisudawan Universitas Sangga Buana
                 </p>
             </div>
         </section>
@@ -458,15 +458,15 @@
                 <div>
                     <h3 class="text-white font-semibold text-lg mb-4">Kontak</h3>
                     <ul class="space-y-2 text-sm text-gray-400">
-                        <li>Email: info@unsan.ac.id</li>
-                        <li>Telp: (022) 1234-5678</li>
-                        <li>Alamat: Bandung, Jawa Barat</li>
+                        <li>Email: wisuda@usbypkp.ac.id</li>
+                        <li>Telp: +62 22 7275489</li>
+                        <li>Alamat: Jl. PH.H. Mustofa No.68, Cikutra, Kec. Cibeunying Kidul, Kota Bandung, Jawa Barat 40124</li>
                     </ul>
                 </div>
             </div>
             <div class="text-center pt-8 border-t border-gray-800">
                 <p class="text-sm text-gray-400">
-                    &copy; {{ date('Y') }} Universitas Sanggabuana. All rights reserved.
+                    &copy; {{ date('Y') }} Universitas Sangga Buana. All rights reserved.
                 </p>
             </div>
         </div>

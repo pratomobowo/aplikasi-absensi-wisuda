@@ -335,8 +335,9 @@
                 <div>
                     <h3 class="text-white text-lg font-semibold mb-4">Kontak</h3>
                     <ul class="space-y-2 text-sm">
-                        <li>info@wisuda.ac.id</li>
-                        <li>(021) 1234-5678</li>
+                        <li>wisuda@usbypkp.ac.id</li>
+                        <li>+62 22 7275489</li>
+                        <li>Jl. PH.H. Mustofa No.68, Cikutra, Kec. Cibeunying Kidul, Kota Bandung, Jawa Barat 40124</li>
                     </ul>
                 </div>
             </div>
