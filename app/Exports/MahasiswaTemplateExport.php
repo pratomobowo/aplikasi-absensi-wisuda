@@ -21,7 +21,6 @@ class MahasiswaTemplateExport implements FromArray, WithHeadings, WithStyles, Wi
                 '2024010001',
                 'John Doe',
                 'Teknik Informatika',
-                'Fakultas Teknik',
                 '3.75',
                 'Dengan Pujian',
                 'john.doe@example.com',
@@ -33,7 +32,6 @@ class MahasiswaTemplateExport implements FromArray, WithHeadings, WithStyles, Wi
                 '2024010002',
                 'Jane Smith',
                 'Sistem Informasi',
-                'Fakultas Teknik',
                 '3.50',
                 'Sangat Memuaskan',
                 'jane.smith@example.com',
@@ -45,7 +43,6 @@ class MahasiswaTemplateExport implements FromArray, WithHeadings, WithStyles, Wi
                 '2024010003',
                 'Bob Johnson',
                 'Manajemen',
-                'Fakultas Ekonomi',
                 '3.25',
                 'Memuaskan',
                 '',
@@ -65,7 +62,6 @@ class MahasiswaTemplateExport implements FromArray, WithHeadings, WithStyles, Wi
             'npm',
             'nama',
             'program_studi',
-            'fakultas',
             'ipk',
             'yudisium',
             'email',
@@ -92,8 +88,8 @@ class MahasiswaTemplateExport implements FromArray, WithHeadings, WithStyles, Wi
     {
         return [
             'A' => NumberFormat::FORMAT_TEXT, // NPM column
-            'H' => NumberFormat::FORMAT_TEXT, // Phone column
-            'I' => NumberFormat::FORMAT_TEXT, // Nomor Kursi column
+            'G' => NumberFormat::FORMAT_TEXT, // Phone column
+            'H' => NumberFormat::FORMAT_TEXT, // Nomor Kursi column
         ];
     }
 }

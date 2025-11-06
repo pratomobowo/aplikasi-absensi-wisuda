@@ -152,10 +152,6 @@
                 <div class="info-value">{{ $mahasiswa->program_studi }}</div>
             </div>
             <div class="info-row">
-                <div class="info-label">Fakultas</div>
-                <div class="info-value">{{ $mahasiswa->fakultas }}</div>
-            </div>
-            <div class="info-row">
                 <div class="info-label">Nomor Kursi</div>
                 <div class="info-value">{{ $mahasiswa->nomor_kursi ?? '-' }}</div>
             </div>

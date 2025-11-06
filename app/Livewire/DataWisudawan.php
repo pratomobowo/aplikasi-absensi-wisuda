@@ -13,24 +13,25 @@ class DataWisudawan extends Component
     protected $layout = null;
 
     public $search = '';
-    public $fakultas = '';
     public $programStudi = '';
+    public $yudisium = '';
+    public $sortIpk = '';
 
     protected $queryString = [
         'search' => ['except' => ''],
-        'fakultas' => ['except' => ''],
         'programStudi' => ['except' => ''],
+        'yudisium' => ['except' => ''],
+        'sortIpk' => ['except' => ''],
     ];
+
+    public function paginationView()
+    {
+        return 'vendor.pagination.tailwind';
+    }
 
     public function updatingSearch()
     {
         $this->resetPage();
-    }
-
-    public function updatingFakultas()
-    {
-        $this->resetPage();
-        $this->programStudi = '';
     }
 
     public function updatingProgramStudi()
@@ -38,11 +39,22 @@ class DataWisudawan extends Component
         $this->resetPage();
     }
 
+    public function updatingYudisium()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingSortIpk()
+    {
+        $this->resetPage();
+    }
+
     public function resetFilters()
     {
         $this->search = '';
-        $this->fakultas = '';
         $this->programStudi = '';
+        $this->yudisium = '';
+        $this->sortIpk = '';
         $this->resetPage();
     }
 
@@ -58,28 +70,37 @@ class DataWisudawan extends Component
             });
         }
 
-        // Fakultas filter
-        if ($this->fakultas) {
-            $query->where('fakultas', $this->fakultas);
-        }
-
         // Program Studi filter
         if ($this->programStudi) {
             $query->where('program_studi', $this->programStudi);
         }
 
-        $mahasiswa = $query->orderBy('nama', 'asc')->paginate(20);
+        // Yudisium filter
+        if ($this->yudisium) {
+            $query->where('yudisium', $this->yudisium);
+        }
 
-        // Get unique fakultas and program studi for filters
-        $fakultasList = Mahasiswa::distinct()->pluck('fakultas')->filter()->sort()->values();
-        $programStudiList = Mahasiswa::when($this->fakultas, function ($q) {
-            $q->where('fakultas', $this->fakultas);
-        })->distinct()->pluck('program_studi')->filter()->sort()->values();
+        // Sort by IPK
+        if ($this->sortIpk === 'tertinggi') {
+            $query->orderBy('ipk', 'desc')->orderBy('nama', 'asc');
+        } elseif ($this->sortIpk === 'terendah') {
+            $query->orderBy('ipk', 'asc')->orderBy('nama', 'asc');
+        } else {
+            $query->orderBy('nama', 'asc');
+        }
+
+        $mahasiswa = $query->paginate(20);
+
+        // Get unique program studi for filters
+        $programStudiList = Mahasiswa::distinct()->pluck('program_studi')->filter()->sort()->values();
+
+        // Get unique yudisium for filters
+        $yudisiumList = Mahasiswa::distinct()->pluck('yudisium')->filter()->sort()->values();
 
         return view('livewire.data-wisudawan', [
             'mahasiswa' => $mahasiswa,
-            'fakultasList' => $fakultasList,
             'programStudiList' => $programStudiList,
+            'yudisiumList' => $yudisiumList,
         ])->layout('layouts.public')->title('Data Wisudawan');
     }
 }

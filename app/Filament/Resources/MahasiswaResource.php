@@ -40,10 +40,6 @@ class MahasiswaResource extends Resource
                     ->label('Program Studi')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('fakultas')
-                    ->label('Fakultas')
-                    ->required()
-                    ->maxLength(255),
                 Forms\Components\TextInput::make('ipk')
                     ->label('IPK')
                     ->required()
@@ -100,10 +96,6 @@ class MahasiswaResource extends Resource
                     ->label('Program Studi')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('fakultas')
-                    ->label('Fakultas')
-                    ->searchable()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('ipk')
                     ->label('IPK')
                     ->sortable()
@@ -131,9 +123,6 @@ class MahasiswaResource extends Resource
                 Tables\Filters\SelectFilter::make('program_studi')
                     ->label('Program Studi')
                     ->options(fn () => \App\Models\Mahasiswa::distinct()->pluck('program_studi', 'program_studi')->toArray()),
-                Tables\Filters\SelectFilter::make('fakultas')
-                    ->label('Fakultas')
-                    ->options(fn () => \App\Models\Mahasiswa::distinct()->pluck('fakultas', 'fakultas')->toArray()),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

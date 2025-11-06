@@ -36,6 +36,19 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
             $row['phone'] = (string) $row['phone'];
         }
         
+        // Clean up empty strings to null for optional fields
+        $optionalFields = ['yudisium', 'email', 'phone', 'nomor_kursi', 'judul_skripsi'];
+        foreach ($optionalFields as $field) {
+            if (isset($row[$field]) && trim($row[$field]) === '') {
+                $row[$field] = null;
+            }
+        }
+        
+        // Trim yudisium to handle extra spaces
+        if (isset($row['yudisium']) && $row['yudisium'] !== null) {
+            $row['yudisium'] = trim($row['yudisium']);
+        }
+        
         return $row;
     }
 
@@ -59,7 +72,6 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
             $existing->update([
                 'nama' => $row['nama'],
                 'program_studi' => $row['program_studi'],
-                'fakultas' => $row['fakultas'],
                 'ipk' => $row['ipk'],
                 'yudisium' => $row['yudisium'] ?? null,
                 'email' => $row['email'] ?? null,
@@ -75,7 +87,6 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
             'npm' => $npm,
             'nama' => $row['nama'],
             'program_studi' => $row['program_studi'],
-            'fakultas' => $row['fakultas'],
             'ipk' => $row['ipk'],
             'yudisium' => $row['yudisium'] ?? null,
             'email' => $row['email'] ?? null,
@@ -96,10 +107,33 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
             'npm' => 'required|string|max:20',
             'nama' => 'required|string|max:255',
             'program_studi' => 'required|string|max:255',
-            'fakultas' => 'required|string|max:255',
             'ipk' => 'required|numeric|between:0,4',
-            'yudisium' => 'nullable|string|in:Dengan Pujian,Sangat Memuaskan,Memuaskan',
-            'email' => 'nullable|email|max:255',
+            'yudisium' => [
+                'nullable',
+                'string',
+                function ($attribute, $value, $fail) {
+                    if ($value === null || trim($value) === '') {
+                        return;
+                    }
+                    $allowed = ['Dengan Pujian', 'Sangat Memuaskan', 'Memuaskan'];
+                    $normalized = trim($value);
+                    if (!in_array($normalized, $allowed)) {
+                        $fail('Yudisium harus salah satu dari: Dengan Pujian, Sangat Memuaskan, Memuaskan (atau kosongkan jika tidak ada)');
+                    }
+                },
+            ],
+            'email' => [
+                'nullable',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    if ($value === null || trim($value) === '') {
+                        return;
+                    }
+                    if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                        $fail('Format email tidak valid');
+                    }
+                },
+            ],
             'phone' => 'nullable|string|max:20',
             'nomor_kursi' => 'nullable|string|max:20',
             'judul_skripsi' => 'nullable|string|max:500',
@@ -120,8 +154,6 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
             'nama.max' => 'Nama maksimal 255 karakter',
             'program_studi.required' => 'Program Studi wajib diisi',
             'program_studi.max' => 'Program Studi maksimal 255 karakter',
-            'fakultas.required' => 'Fakultas wajib diisi',
-            'fakultas.max' => 'Fakultas maksimal 255 karakter',
             'ipk.required' => 'IPK wajib diisi',
             'ipk.numeric' => 'IPK harus berupa angka',
             'ipk.between' => 'IPK harus antara 0 dan 4',

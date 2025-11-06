@@ -29,6 +29,7 @@
     
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
     
     <style>
         .nav-scrolled {
@@ -235,6 +236,7 @@
         });
     </script>
     
+    @livewireScripts
     @stack('scripts')
 </body>
 </html>

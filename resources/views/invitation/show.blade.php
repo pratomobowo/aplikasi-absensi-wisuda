@@ -39,10 +39,6 @@
                         <p class="text-base sm:text-lg font-medium text-gray-900">{{ $mahasiswa->program_studi }}</p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-600">Fakultas</p>
-                        <p class="text-base sm:text-lg font-medium text-gray-900">{{ $mahasiswa->fakultas }}</p>
-                    </div>
-                    <div>
                         <p class="text-sm text-gray-600">Nomor Kursi</p>
                         <p class="text-base sm:text-lg font-medium text-gray-900">{{ $mahasiswa->nomor_kursi ?? '-' }}</p>
                     </div>

@@ -38,7 +38,7 @@ class ListMahasiswas extends ListRecords
                             'text/csv',
                         ])
                         ->required()
-                        ->helperText('Format: NPM, Nama, Program Studi, Fakultas, IPK, Yudisium (opsional), Email (opsional), Phone (opsional)')
+                        ->helperText('Format: NPM, Nama, Program Studi, IPK, Yudisium (opsional), Email (opsional), Phone (opsional)')
                         ->disk('local')
                         ->directory('temp-imports')
                         ->visibility('private'),
@@ -47,19 +47,14 @@ class ListMahasiswas extends ListRecords
                     try {
                         $import = new MahasiswaImport();
                         
-                        // Get the file path
-                        $filePath = storage_path('app/' . $data['file']);
-                        
-                        // Import the file
-                        Excel::import($import, $filePath);
+                        // Import the file directly using the disk path
+                        Excel::import($import, $data['file'], 'local');
                         
                         // Get import summary
                         $summary = $import->getImportSummary();
                         
-                        // Delete temporary file
-                        if (file_exists($filePath)) {
-                            unlink($filePath);
-                        }
+                        // Delete temporary file using Storage facade
+                        \Storage::disk('local')->delete($data['file']);
                         
                         // Show notification based on results
                         if ($summary['failed'] > 0) {

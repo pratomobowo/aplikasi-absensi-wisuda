@@ -30,15 +30,15 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <!-- Search and Filter Section -->
             <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                     <!-- Search Input -->
-                    <div class="md:col-span-2">
+                    <div class="md:col-span-2 lg:col-span-2">
                         <label for="search" class="block text-sm font-medium text-gray-700 mb-2">
                             Cari Wisudawan
                         </label>
                         <div class="relative">
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 id="search"
                                 wire:model.live.debounce.300ms="search"
                                 placeholder="Cari berdasarkan nama atau NPM..."
@@ -49,34 +49,16 @@
                             </svg>
                         </div>
                     </div>
-                    
-                    <!-- Fakultas Filter -->
-                    <div>
-                        <label for="fakultas" class="block text-sm font-medium text-gray-700 mb-2">
-                            Fakultas
-                        </label>
-                        <select 
-                            id="fakultas"
-                            wire:model.live="fakultas"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                            <option value="">Semua Fakultas</option>
-                            @foreach($fakultasList as $fak)
-                                <option value="{{ $fak }}">{{ $fak }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    
+
                     <!-- Program Studi Filter -->
                     <div>
                         <label for="prodi" class="block text-sm font-medium text-gray-700 mb-2">
                             Program Studi
                         </label>
-                        <select 
+                        <select
                             id="prodi"
                             wire:model.live="programStudi"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            @if(!$fakultas) disabled @endif
                         >
                             <option value="">Semua Prodi</option>
                             @foreach($programStudiList as $prodi)
@@ -84,12 +66,45 @@
                             @endforeach
                         </select>
                     </div>
+
+                    <!-- Yudisium Filter -->
+                    <div>
+                        <label for="yudisium" class="block text-sm font-medium text-gray-700 mb-2">
+                            Yudisium
+                        </label>
+                        <select
+                            id="yudisium"
+                            wire:model.live="yudisium"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                            <option value="">Semua Yudisium</option>
+                            @foreach($yudisiumList as $yud)
+                                <option value="{{ $yud }}">{{ $yud }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Sort IPK Filter -->
+                    <div>
+                        <label for="sortIpk" class="block text-sm font-medium text-gray-700 mb-2">
+                            Urutkan IPK
+                        </label>
+                        <select
+                            id="sortIpk"
+                            wire:model.live="sortIpk"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                            <option value="">Default (A-Z)</option>
+                            <option value="tertinggi">IPK Tertinggi</option>
+                            <option value="terendah">IPK Terendah</option>
+                        </select>
+                    </div>
                 </div>
-                
+
                 <!-- Reset Button -->
-                @if($search || $fakultas || $programStudi)
+                @if($search || $programStudi || $yudisium || $sortIpk)
                     <div class="mt-4">
-                        <button 
+                        <button
                             wire:click="resetFilters"
                             class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
                         >
@@ -111,7 +126,18 @@
             
             <!-- Mahasiswa Table -->
             @if($mahasiswa->count() > 0)
-                <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8 relative" wire:key="mahasiswa-table">
+                    <!-- Inline Loading Overlay -->
+                    <div wire:loading class="absolute inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-10 transition-opacity duration-200">
+                        <div class="flex items-center space-x-3 bg-white rounded-lg shadow-lg px-6 py-4">
+                            <svg class="animate-spin h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span class="text-gray-700 font-medium">Memuat data...</span>
+                        </div>
+                    </div>
+
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -141,26 +167,15 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach($mahasiswa as $index => $mhs)
-                                    <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                    <tr wire:key="mahasiswa-{{ $mhs->id }}" class="hover:bg-gray-50 transition-colors duration-150">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $mahasiswa->firstItem() + $index }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                             {{ $mhs->npm }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="flex items-center">
-                                                <div class="flex-shrink-0 h-10 w-10">
-                                                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
-                                                        {{ strtoupper(substr($mhs->nama, 0, 2)) }}
-                                                    </div>
-                                                </div>
-                                                <div class="ml-4">
-                                                    <div class="text-sm font-medium text-gray-900">
-                                                        {{ $mhs->nama }}
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {{ $mhs->nama }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $mhs->program_studi }}
@@ -192,7 +207,16 @@
                 </div>
                 
                 <!-- Pagination -->
-                <div class="mt-8">
+                <div class="mt-8 relative" wire:key="pagination">
+                    <div wire:loading class="absolute -top-8 left-1/2 transform -translate-x-1/2">
+                        <div class="flex items-center space-x-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full shadow-sm text-sm">
+                            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span class="font-medium">Memuat...</span>
+                        </div>
+                    </div>
                     {{ $mahasiswa->links() }}
                 </div>
             @else
@@ -203,7 +227,7 @@
                     </svg>
                     <h3 class="text-xl font-semibold text-gray-900 mb-2">Tidak ada data ditemukan</h3>
                     <p class="text-gray-600 mb-6">Coba ubah filter pencarian Anda</p>
-                    @if($search || $fakultas || $programStudi)
+                    @if($search || $programStudi)
                         <button 
                             wire:click="resetFilters"
                             class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200"

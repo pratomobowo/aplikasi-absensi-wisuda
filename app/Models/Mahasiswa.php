@@ -19,7 +19,6 @@ class Mahasiswa extends Model
         'npm',
         'nama',
         'program_studi',
-        'fakultas',
         'ipk',
         'yudisium',
         'email',
