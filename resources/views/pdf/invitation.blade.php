@@ -155,6 +155,16 @@
                 <div class="info-label">Fakultas</div>
                 <div class="info-value">{{ $mahasiswa->fakultas }}</div>
             </div>
+            <div class="info-row">
+                <div class="info-label">Nomor Kursi</div>
+                <div class="info-value">{{ $mahasiswa->nomor_kursi ?? '-' }}</div>
+            </div>
+            @if($mahasiswa->judul_skripsi)
+            <div class="info-row">
+                <div class="info-label">Judul Skripsi</div>
+                <div class="info-value">{{ $mahasiswa->judul_skripsi }}</div>
+            </div>
+            @endif
         </div>
 
         <!-- Event Information -->

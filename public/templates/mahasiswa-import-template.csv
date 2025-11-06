@@ -1,4 +1,4 @@
-npm,nama,program_studi,fakultas,ipk,yudisium,email,phone
-2024010001,John Doe,Teknik Informatika,Fakultas Teknik,3.75,Cum Laude,john@example.com,081234567890
-2024010002,Jane Smith,Sistem Informasi,Fakultas Teknik,3.50,Sangat Memuaskan,jane@example.com,081234567891
-2024010003,Bob Johnson,Manajemen,Fakultas Ekonomi,3.25,Memuaskan,bob@example.com,081234567892
+npm,nama,program_studi,fakultas,ipk,yudisium,email,phone,nomor_kursi,judul_skripsi
+2024010001,John Doe,Teknik Informatika,Fakultas Teknik,3.75,Dengan Pujian,john@example.com,081234567890,A-001,Sistem Informasi Manajemen Berbasis Web
+2024010002,Jane Smith,Sistem Informasi,Fakultas Teknik,3.50,Sangat Memuaskan,jane@example.com,081234567891,A-002,Analisis dan Perancangan Sistem Informasi Akademik
+2024010003,Bob Johnson,Manajemen,Fakultas Ekonomi,3.25,Memuaskan,bob@example.com,081234567892,,

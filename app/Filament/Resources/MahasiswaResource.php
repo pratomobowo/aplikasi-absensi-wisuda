@@ -5,17 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\MahasiswaResource\Pages;
 use App\Filament\Resources\MahasiswaResource\RelationManagers;
 use App\Models\Mahasiswa;
-use App\Imports\MahasiswaImport;
-use App\Exports\MahasiswaTemplateExport;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Maatwebsite\Excel\Facades\Excel;
 
 class MahasiswaResource extends Resource
 {
@@ -58,7 +54,7 @@ class MahasiswaResource extends Resource
                 Forms\Components\Select::make('yudisium')
                     ->label('Yudisium')
                     ->options([
-                        'Cum Laude' => 'Cum Laude',
+                        'Dengan Pujian' => 'Dengan Pujian',
                         'Sangat Memuaskan' => 'Sangat Memuaskan',
                         'Memuaskan' => 'Memuaskan',
                     ])
@@ -73,6 +69,17 @@ class MahasiswaResource extends Resource
                     ->tel()
                     ->maxLength(20)
                     ->nullable(),
+                Forms\Components\TextInput::make('nomor_kursi')
+                    ->label('Nomor Kursi')
+                    ->maxLength(20)
+                    ->nullable()
+                    ->helperText('Nomor kursi saat wisuda (opsional)'),
+                Forms\Components\Textarea::make('judul_skripsi')
+                    ->label('Judul Skripsi')
+                    ->rows(3)
+                    ->maxLength(500)
+                    ->nullable()
+                    ->helperText('Judul skripsi/tugas akhir (opsional)'),
             ]);
     }
 
@@ -110,6 +117,15 @@ class MahasiswaResource extends Resource
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Telepon')
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('nomor_kursi')
+                    ->label('Nomor Kursi')
+                    ->default('-')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('judul_skripsi')
+                    ->label('Judul Skripsi')
+                    ->limit(50)
+                    ->default('-')
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('program_studi')
@@ -127,89 +143,6 @@ class MahasiswaResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])
-            ->headerActions([
-                Tables\Actions\Action::make('import')
-                    ->label('Import Excel')
-                    ->icon('heroicon-o-arrow-up-tray')
-                    ->color('success')
-                    ->form([
-                        Forms\Components\FileUpload::make('file')
-                            ->label('File Excel')
-                            ->acceptedFileTypes([
-                                'application/vnd.ms-excel',
-                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                            ])
-                            ->required()
-                            ->helperText('Upload file Excel (.xls atau .xlsx) dengan format sesuai template'),
-                    ])
-                    ->action(function (array $data) {
-                        try {
-                            // Get the uploaded file path
-                            $filePath = storage_path('app/public/' . $data['file']);
-                            
-                            // Create import instance
-                            $import = new MahasiswaImport();
-                            
-                            // Process the import
-                            Excel::import($import, $filePath);
-                            
-                            // Get import summary
-                            $summary = $import->getImportSummary();
-                            
-                            // Build notification message
-                            $message = "Import selesai! ";
-                            $message .= "Berhasil: {$summary['success']}, ";
-                            $message .= "Duplikat (diupdate): {$summary['duplicate']}, ";
-                            $message .= "Gagal: {$summary['failed']}";
-                            
-                            // Show notification based on results
-                            if ($summary['failed'] > 0) {
-                                // Build error details
-                                $errorDetails = '';
-                                foreach ($summary['errors'] as $error) {
-                                    $errorDetails .= "Baris {$error['row']}: " . implode(', ', $error['errors']) . "\n";
-                                }
-                                
-                                Notification::make()
-                                    ->warning()
-                                    ->title('Import selesai dengan error')
-                                    ->body($message . "\n\nDetail error:\n" . $errorDetails)
-                                    ->persistent()
-                                    ->send();
-                            } else {
-                                Notification::make()
-                                    ->success()
-                                    ->title('Import berhasil!')
-                                    ->body($message)
-                                    ->send();
-                            }
-                            
-                            // Clean up uploaded file
-                            if (file_exists($filePath)) {
-                                unlink($filePath);
-                            }
-                            
-                        } catch (\Exception $e) {
-                            Notification::make()
-                                ->danger()
-                                ->title('Import gagal')
-                                ->body('Terjadi kesalahan: ' . $e->getMessage())
-                                ->persistent()
-                                ->send();
-                        }
-                    })
-                    ->modalWidth('md')
-                    ->modalSubmitActionLabel('Import')
-                    ->modalCancelActionLabel('Batal'),
-                    
-                Tables\Actions\Action::make('downloadTemplate')
-                    ->label('Download Template')
-                    ->icon('heroicon-o-arrow-down-tray')
-                    ->color('info')
-                    ->action(function () {
-                        return Excel::download(new MahasiswaTemplateExport(), 'template-mahasiswa.xlsx');
-                    }),
             ]);
     }
 

@@ -64,6 +64,8 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
                 'yudisium' => $row['yudisium'] ?? null,
                 'email' => $row['email'] ?? null,
                 'phone' => $row['phone'] ?? null,
+                'nomor_kursi' => $row['nomor_kursi'] ?? null,
+                'judul_skripsi' => $row['judul_skripsi'] ?? null,
             ]);
             return null;
         }
@@ -78,6 +80,8 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
             'yudisium' => $row['yudisium'] ?? null,
             'email' => $row['email'] ?? null,
             'phone' => $row['phone'] ?? null,
+            'nomor_kursi' => $row['nomor_kursi'] ?? null,
+            'judul_skripsi' => $row['judul_skripsi'] ?? null,
         ]);
     }
 
@@ -94,9 +98,11 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
             'program_studi' => 'required|string|max:255',
             'fakultas' => 'required|string|max:255',
             'ipk' => 'required|numeric|between:0,4',
-            'yudisium' => 'nullable|string|in:Cum Laude,Sangat Memuaskan,Memuaskan',
+            'yudisium' => 'nullable|string|in:Dengan Pujian,Sangat Memuaskan,Memuaskan',
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',
+            'nomor_kursi' => 'nullable|string|max:20',
+            'judul_skripsi' => 'nullable|string|max:500',
         ];
     }
 
@@ -119,10 +125,12 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
             'ipk.required' => 'IPK wajib diisi',
             'ipk.numeric' => 'IPK harus berupa angka',
             'ipk.between' => 'IPK harus antara 0 dan 4',
-            'yudisium.in' => 'Yudisium harus salah satu dari: Cum Laude, Sangat Memuaskan, Memuaskan',
+            'yudisium.in' => 'Yudisium harus salah satu dari: Dengan Pujian, Sangat Memuaskan, Memuaskan',
             'email.email' => 'Format email tidak valid',
             'email.max' => 'Email maksimal 255 karakter',
             'phone.max' => 'Telepon maksimal 20 karakter',
+            'nomor_kursi.max' => 'Nomor kursi maksimal 20 karakter',
+            'judul_skripsi.max' => 'Judul skripsi maksimal 500 karakter',
         ];
     }
 

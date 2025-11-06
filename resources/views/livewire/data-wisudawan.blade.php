@@ -126,13 +126,16 @@
                                         Nama
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Fakultas
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Program Studi
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Email
+                                        IPK
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Yudisium
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Judul Skripsi/Thesis
                                     </th>
                                 </tr>
                             </thead>
@@ -159,14 +162,27 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">
-                                            {{ $mhs->fakultas }}
-                                        </td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $mhs->program_studi }}
                                         </td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">
-                                            {{ $mhs->email ?? '-' }}
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
+                                            {{ number_format($mhs->ipk, 2) }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            @if($mhs->yudisium)
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                                    {{ $mhs->yudisium === 'Dengan Pujian' ? 'bg-yellow-100 text-yellow-800' : 
+                                                       ($mhs->yudisium === 'Sangat Memuaskan' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800') }}">
+                                                    {{ $mhs->yudisium }}
+                                                </span>
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500 max-w-md">
+                                            <div class="line-clamp-2" title="{{ $mhs->judul_skripsi }}">
+                                                {{ $mhs->judul_skripsi ?? '-' }}
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

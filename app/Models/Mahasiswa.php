@@ -24,6 +24,8 @@ class Mahasiswa extends Model
         'yudisium',
         'email',
         'phone',
+        'nomor_kursi',
+        'judul_skripsi',
     ];
 
     /**
