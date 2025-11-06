@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'E-Wisuda Universitas Sangga Buana' }}</title>
+    <title>@yield('title', 'E-Wisuda Universitas Sangga Buana')</title>
     <meta name="description" content="Portal E-Wisuda Universitas Sangga Buana - Sistem informasi wisuda terintegrasi untuk mahasiswa dan keluarga">
     <meta name="keywords" content="E-Wisuda, Universitas Sangga Buana, Wisuda, Graduation, USBP">
     <meta name="author" content="Universitas Sangga Buana">
@@ -30,14 +30,14 @@
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
-    
+
     <style>
         .nav-scrolled {
             background: rgba(255, 255, 255, 0.95);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
     </style>
-    
+
     @stack('styles')
 </head>
 <body class="bg-gray-50 font-sans antialiased" x-data="{ mobileMenuOpen: false }" @keydown.escape.window="mobileMenuOpen = false">
@@ -81,17 +81,17 @@
                             Dashboard
                         </a>
                     @else
-                        <a href="{{ url('/admin/login') }}" class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-base rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transform hover:-translate-y-0.5">
+                        <a href="{{ url('/student/login') }}" class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-base rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transform hover:-translate-y-0.5">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
                             </svg>
-                            Login
+                            Login Mahasiswa
                         </a>
                     @endauth
                 </div>
                 
                 <div class="lg:hidden">
-                    <button @click="mobileMenuOpen = true" type="button" class="inline-flex items-center justify-center p-2.5 rounded-xl text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
+                    <button @click="mobileMenuOpen = true" type="button" class="inline-flex items-center justify-center p-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-md">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
@@ -104,7 +104,7 @@
     <!-- Mobile Menu -->
     <div x-show="mobileMenuOpen" x-transition:enter="transition-opacity ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" @click="mobileMenuOpen = false" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-40" style="display: none;"></div>
 
-    <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full" class="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-white shadow-2xl z-50 overflow-y-auto" style="display: none;">
+    <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full" class="fixed top-0 right-0 bottom-0 w-3/5 bg-white shadow-2xl z-50 overflow-y-auto" style="display: none;">
         <div class="flex items-center justify-between p-4 border-b border-gray-200">
             <h2 class="text-lg font-semibold text-gray-900">Menu</h2>
             <button @click="mobileMenuOpen = false" type="button" class="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors duration-150">
@@ -124,14 +124,18 @@
                 @auth
                     <a href="{{ url('/admin') }}" class="block w-full px-4 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 text-center">Dashboard</a>
                 @else
-                    <a href="{{ url('/admin/login') }}" class="block w-full px-4 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 text-center">Login</a>
+                    <a href="{{ url('/student/login') }}" class="block w-full px-4 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 text-center">Login Mahasiswa</a>
                 @endauth
             </div>
         </nav>
     </div>
-    
+
     <!-- Main Content -->
-    {{ $slot }}
+    @hasSection('content')
+        @yield('content')
+    @else
+        {{ $slot ?? '' }}
+    @endif
     
     <!-- Footer -->
     <footer class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white mt-16 overflow-hidden">
@@ -235,8 +239,20 @@
             }
         });
     </script>
-    
+
     @livewireScripts
+
+    <!-- Alpine.js - Only load if not already loaded by Livewire -->
+    <script>
+        if (typeof window.Alpine === 'undefined') {
+            // Alpine.js not loaded, load it from CDN
+            const script = document.createElement('script');
+            script.defer = true;
+            script.src = 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js';
+            document.head.appendChild(script);
+        }
+    </script>
+
     @stack('scripts')
 </body>
 </html>

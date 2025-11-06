@@ -47,6 +47,15 @@ return [
             'report' => false,
         ],
 
+        'graduation_photos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/graduation-photos'),
+            'url' => env('APP_URL').'/storage/graduation-photos',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

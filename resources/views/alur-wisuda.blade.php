@@ -1,7 +1,8 @@
-<x-layouts.public>
-    <x-slot name="title">Alur Wisuda - {{ config('app.name', 'Sistem Absensi Wisuda') }}</x-slot>
-    
-    @push('styles')
+@extends('layouts.public')
+
+@section('title', 'Alur Wisuda - ' . config('app.name', 'Sistem Absensi Wisuda'))
+
+@push('styles')
     <style>
         .timeline-line {
             position: absolute;
@@ -18,30 +19,31 @@
             }
         }
     </style>
-    @endpush
-    
+@endpush
+
+@section('content')
     <!-- Main Content -->
-    <main class="pt-20">
+    <main>
         <!-- Page Header -->
-        <section class="relative bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 pt-32 pb-20 overflow-hidden">
+        <section class="relative bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
             <!-- Decorative elements -->
             <div class="absolute inset-0 overflow-hidden">
                 <div class="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-30"></div>
                 <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-30"></div>
                 <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
             </div>
-            
+
             <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <div class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium mb-6 border border-white/20">
+                <div class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium mb-6 md:mb-8 border border-white/20">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
                     </svg>
                     Panduan Wisuda
                 </div>
-                <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 md:mb-6 leading-tight">
                     Alur Wisuda
                 </h1>
-                <p class="text-lg sm:text-xl text-blue-50 max-w-3xl mx-auto leading-relaxed">
+                <p class="text-lg sm:text-xl md:text-2xl text-blue-50 max-w-3xl mx-auto leading-relaxed">
                     Panduan lengkap prosedur pelaksanaan wisuda
                 </p>
             </div>
@@ -198,4 +200,4 @@
             </div>
         </div>
     </main>
-</x-layouts.public>
+@endsection

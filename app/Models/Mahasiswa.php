@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Mahasiswa extends Model
+class Mahasiswa extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -17,6 +18,7 @@ class Mahasiswa extends Model
      */
     protected $fillable = [
         'npm',
+        'password',
         'nama',
         'program_studi',
         'ipk',
@@ -25,6 +27,17 @@ class Mahasiswa extends Model
         'phone',
         'nomor_kursi',
         'judul_skripsi',
+        'foto_wisuda',
+    ];
+
+    /**
+     * The attributes that should be hidden.
+     *
+     * @var array<string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -34,6 +47,7 @@ class Mahasiswa extends Model
      */
     protected $casts = [
         'ipk' => 'decimal:2',
+        'password' => 'hashed',
     ];
 
     /**
@@ -69,5 +83,40 @@ class Mahasiswa extends Model
                 $query->where('is_active', true);
             })
             ->first();
+    }
+
+    /**
+     * Get the name of the unique identifier for the user.
+     */
+    public function getAuthIdentifierName(): string
+    {
+        return 'npm';
+    }
+
+    /**
+     * Get the password for the user.
+     */
+    public function getAuthPassword(): string
+    {
+        return $this->password;
+    }
+
+    /**
+     * Get the foto wisuda URL.
+     */
+    public function getFotoWisudaUrlAttribute(): ?string
+    {
+        if ($this->foto_wisuda) {
+            return asset('storage/graduation-photos/' . $this->foto_wisuda);
+        }
+        return null;
+    }
+
+    /**
+     * Check if mahasiswa has uploaded foto wisuda.
+     */
+    public function hasFotoWisuda(): bool
+    {
+        return !empty($this->foto_wisuda);
     }
 }

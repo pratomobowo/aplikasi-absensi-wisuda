@@ -1,9 +1,8 @@
-@php
-    $title = 'Beranda - E-Wisuda Universitas Sangga Buana';
-@endphp
+@extends('layouts.public')
 
-<x-layouts.public :title="$title">
-    @push('styles')
+@section('title', 'Beranda - E-Wisuda Universitas Sangga Buana')
+
+@push('styles')
     <style>
         @keyframes blob {
             0%, 100% {
@@ -29,8 +28,9 @@
             animation-delay: 4s;
         }
     </style>
-    @endpush
-    
+@endpush
+
+@section('content')
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
         <!-- Decorative elements -->
@@ -195,4 +195,4 @@
             </div>
         </div>
     </section>
-</x-layouts.public>
+@endsection

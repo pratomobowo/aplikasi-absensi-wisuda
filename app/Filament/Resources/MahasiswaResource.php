@@ -76,6 +76,25 @@ class MahasiswaResource extends Resource
                     ->maxLength(500)
                     ->nullable()
                     ->helperText('Judul skripsi/tugas akhir (opsional)'),
+                Forms\Components\TextInput::make('password')
+                    ->label('Password')
+                    ->password()
+                    ->dehydrateStateUsing(fn ($state) => filled($state) ? bcrypt($state) : null)
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->required(fn (string $context): bool => $context === 'create')
+                    ->maxLength(255)
+                    ->helperText('Kosongkan jika tidak ingin mengubah password'),
+                Forms\Components\FileUpload::make('foto_wisuda')
+                    ->label('Foto Wisuda')
+                    ->image()
+                    ->disk('graduation_photos')
+                    ->directory('')
+                    ->visibility('public')
+                    ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png'])
+                    ->maxSize(2048)
+                    ->imagePreviewHeight('250')
+                    ->nullable()
+                    ->helperText('Format: JPG, PNG. Max: 2MB'),
             ]);
     }
 
@@ -118,6 +137,13 @@ class MahasiswaResource extends Resource
                     ->limit(50)
                     ->default('-')
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ImageColumn::make('foto_wisuda')
+                    ->label('Foto Wisuda')
+                    ->disk('graduation_photos')
+                    ->defaultImageUrl(url('/images/no-photo.png'))
+                    ->circular()
+                    ->size(40)
+                    ->toggleable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('program_studi')
