@@ -46,7 +46,7 @@
             <div class="flex-1 p-4 md:p-6">
                 <div class="w-full max-w-2xl mx-auto">
                     <!-- Camera container -->
-                    <div class="relative aspect-video bg-black rounded-2xl border-4 border-blue-600 shadow-2xl overflow-hidden">
+                    <div class="relative aspect-square bg-black rounded-2xl border-4 border-blue-600 shadow-2xl overflow-hidden">
                         <div id="qr-reader" class="w-full h-full"></div>
                         
                         <!-- Scanning overlay -->
@@ -448,9 +448,13 @@ document.addEventListener('livewire:initialized', () => {
             return;
         }
         
+        // Responsive QR box size based on screen width
+        const screenWidth = window.innerWidth;
+        const qrboxSize = screenWidth < 768 ? 300 : (screenWidth < 1024 ? 400 : 450);
+
         const config = {
-            fps: 10,
-            qrbox: { width: 250, height: 250 },
+            fps: 15,
+            qrbox: { width: qrboxSize, height: qrboxSize },
             aspectRatio: 1.0
         };
         
