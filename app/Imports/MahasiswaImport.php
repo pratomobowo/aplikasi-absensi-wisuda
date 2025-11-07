@@ -83,7 +83,7 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
         }
 
         $this->successCount++;
-        // Auto-generate password from NPM for new records
+        // Create new record without password - will be generated via command
         return new Mahasiswa([
             'npm' => $npm,
             'nama' => $row['nama'],
@@ -94,7 +94,7 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
             'phone' => $row['phone'] ?? null,
             'nomor_kursi' => $row['nomor_kursi'] ?? null,
             'judul_skripsi' => $row['judul_skripsi'] ?? null,
-            'password' => bcrypt($npm), // Use NPM as password, hashed with bcrypt
+            'password' => null, // Password will be generated via GenerateMahasiswaPassword command
         ]);
     }
 

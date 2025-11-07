@@ -71,9 +71,13 @@ class ListMahasiswas extends ListRecords
                                 ->persistent()
                                 ->send();
                         } else {
+                            $message = "Data berhasil diimport: {$summary['success']} baru, {$summary['duplicate']} diperbarui";
+                            if ($summary['success'] > 0) {
+                                $message .= "\n\nPassword akan di-generate dari NPM. Jalankan command:\nphp artisan app:generate-mahasiswa-password --all";
+                            }
                             Notification::make()
                                 ->title('Import Berhasil!')
-                                ->body("Data berhasil diimport: {$summary['success']} baru, {$summary['duplicate']} diperbarui")
+                                ->body($message)
                                 ->success()
                                 ->send();
                         }
