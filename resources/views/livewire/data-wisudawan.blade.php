@@ -181,7 +181,7 @@
                                             {{ $mhs->program_studi }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
-                                            {{ number_format($mhs->ipk, 2) }}
+                                            {{ sprintf('%.2f', $mhs->ipk) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             @if($mhs->yudisium)

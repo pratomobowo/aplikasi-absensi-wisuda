@@ -150,7 +150,7 @@
                                 <div class="space-y-4">
                                     <div>
                                         <p class="text-sm text-gray-600 mb-1">IPK</p>
-                                        <p class="text-lg font-semibold text-gray-900">{{ number_format($mahasiswa->ipk, 2) }}</p>
+                                        <p class="text-lg font-semibold text-gray-900">{{ number_format($mahasiswa->ipk, 2, '.', '') }}</p>
                                     </div>
                                     @if($mahasiswa->yudisium)
                                         <div>

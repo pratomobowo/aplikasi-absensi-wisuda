@@ -46,7 +46,7 @@ class Mahasiswa extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'ipk' => 'decimal:2',
+        'ipk' => 'float',
         'password' => 'hashed',
     ];
 
