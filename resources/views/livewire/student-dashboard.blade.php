@@ -239,14 +239,6 @@
                                         </svg>
                                         Memuat file...
                                     </div>
-
-                                    <!-- Preview -->
-                                    @if ($foto)
-                                        <div class="mt-4">
-                                            <p class="text-sm text-gray-600 mb-2">Preview:</p>
-                                            <img src="{{ $foto->temporaryUrl() }}" class="max-w-xs w-full h-auto rounded-lg shadow-md border-2 border-blue-300">
-                                        </div>
-                                    @endif
                                 </div>
 
                                 <!-- Upload Button -->
