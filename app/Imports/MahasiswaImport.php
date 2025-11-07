@@ -62,13 +62,13 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
     {
         // NPM should already be converted to string by prepareForValidation
         $npm = $row['npm'];
-        
+
         // Check for duplicate NPM
         $existing = Mahasiswa::where('npm', $npm)->first();
-        
+
         if ($existing) {
             $this->duplicateCount++;
-            // Update existing record
+            // Update existing record (excluding password)
             $existing->update([
                 'nama' => $row['nama'],
                 'program_studi' => $row['program_studi'],
@@ -83,6 +83,7 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
         }
 
         $this->successCount++;
+        // Auto-generate password from NPM for new records
         return new Mahasiswa([
             'npm' => $npm,
             'nama' => $row['nama'],
@@ -93,6 +94,7 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
             'phone' => $row['phone'] ?? null,
             'nomor_kursi' => $row['nomor_kursi'] ?? null,
             'judul_skripsi' => $row['judul_skripsi'] ?? null,
+            'password' => bcrypt($npm), // Use NPM as password, hashed with bcrypt
         ]);
     }
 
