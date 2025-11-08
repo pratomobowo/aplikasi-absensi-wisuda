@@ -59,7 +59,16 @@
                 Sistem manajemen wisuda digital untuk pengelolaan absensi, undangan, dan informasi wisudawan secara terintegrasi
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                @auth
+                @auth('mahasiswa')
+                    <!-- Student authenticated - show Dashboard button -->
+                    <a href="{{ route('student.dashboard') }}" class="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
+                        <span>Dashboard</span>
+                        <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </a>
+                @elseauth
+                    <!-- Admin authenticated - show admin dashboard -->
                     <a href="{{ url('/admin') }}" class="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
                         <span>Buka Dashboard</span>
                         <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,6 +76,7 @@
                         </svg>
                     </a>
                 @else
+                    <!-- Not authenticated - show login option -->
                     <a href="{{ url('/data-wisudawan') }}" class="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
                         <span>Lihat Data Wisudawan</span>
                         <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

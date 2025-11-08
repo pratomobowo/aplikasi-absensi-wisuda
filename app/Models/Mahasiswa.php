@@ -19,6 +19,7 @@ class Mahasiswa extends Authenticatable
     protected $fillable = [
         'npm',
         'password',
+        'password_changed_at',
         'nama',
         'program_studi',
         'ipk',
@@ -48,6 +49,7 @@ class Mahasiswa extends Authenticatable
     protected $casts = [
         'ipk' => 'float',
         'password' => 'hashed',
+        'password_changed_at' => 'datetime',
     ];
 
     /**
@@ -118,5 +120,24 @@ class Mahasiswa extends Authenticatable
     public function hasFotoWisuda(): bool
     {
         return !empty($this->foto_wisuda);
+    }
+
+    /**
+     * Check if mahasiswa has changed their password from the default.
+     * Returns true if password_changed_at is set, false if NULL (never changed).
+     */
+    public function hasChangedPassword(): bool
+    {
+        return !is_null($this->password_changed_at);
+    }
+
+    /**
+     * Mark password as changed by setting password_changed_at to current timestamp.
+     */
+    public function markPasswordAsChanged(): void
+    {
+        $this->update([
+            'password_changed_at' => now(),
+        ]);
     }
 }

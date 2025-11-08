@@ -151,6 +151,25 @@ class MahasiswaResource extends Resource
                     ->options(fn () => \App\Models\Mahasiswa::distinct()->pluck('program_studi', 'program_studi')->toArray()),
             ])
             ->actions([
+                Tables\Actions\Action::make('resetPassword')
+                    ->label('Reset Password')
+                    ->icon('heroicon-m-key')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->modalHeading('Reset Password ke Default')
+                    ->modalDescription('Password akan direset ke NPM mahasiswa. Mahasiswa perlu login ulang dengan password baru.')
+                    ->modalSubmitActionLabel('Reset Password')
+                    ->action(function (Mahasiswa $record) {
+                        $record->update([
+                            'password' => $record->npm,
+                            'password_changed_at' => null,
+                        ]);
+                        \Filament\Notifications\Notification::make()
+                            ->title('Password berhasil direset')
+                            ->body('Password ' . $record->nama . ' sudah direset ke NPM-nya (' . $record->npm . ')')
+                            ->success()
+                            ->send();
+                    }),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

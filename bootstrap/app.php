@@ -13,11 +13,17 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Trust Cloudflare proxies
         $middleware->trustProxies(at: '*');
-        
+
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
-        
+
         // Redirect unauthenticated users to Filament admin login
         $middleware->redirectGuestsTo('/admin/login');
+
+        // Register aliases for custom middleware
+        $middleware->alias([
+            'check.mahasiswa.password.change' => \App\Http\Middleware\CheckMahasiswaPasswordChange::class,
+            'no.cache' => \App\Http\Middleware\NoCache::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

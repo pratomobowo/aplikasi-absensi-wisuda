@@ -36,7 +36,14 @@ Route::prefix('student')->name('student.')->group(function () {
 
     // Protected routes (authenticated students only)
     Route::middleware('auth:mahasiswa')->group(function () {
-        Route::get('/dashboard', App\Livewire\StudentDashboard::class)->name('dashboard');
+        // Apply password change check to all authenticated routes except logout
+        Route::middleware('check.mahasiswa.password.change')->group(function () {
+            Route::get('/dashboard', App\Livewire\StudentDashboard::class)->name('dashboard');
+            Route::middleware('no.cache')->group(function () {
+                Route::get('/change-password', App\Livewire\StudentChangePassword::class)->name('change-password');
+            });
+        });
+
         Route::post('/logout', [StudentAuthController::class, 'logout'])->name('logout');
     });
 });
