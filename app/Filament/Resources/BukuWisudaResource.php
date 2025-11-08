@@ -45,11 +45,11 @@ class BukuWisudaResource extends Resource
                             ->directory('uploads')
                             ->visibility('private')
                             ->acceptedFileTypes(['application/pdf'])
-                            ->maxSize(51200) // 50MB
+                            ->maxSize(512000) // 500MB
                             ->required()
                             ->columnSpanFull()
                             ->storeFileNamesIn('filename')
-                            ->helperText('Format: PDF. Max: 50MB'),
+                            ->helperText('Format: PDF. Max: 500MB'),
 
                         Forms\Components\Hidden::make('uploaded_at')
                             ->default(now()),
