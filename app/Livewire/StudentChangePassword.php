@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Services\ActivityLogService;
 use Livewire\Component;
 use Illuminate\Support\Facades\Hash;
 
@@ -53,6 +54,11 @@ class StudentChangePassword extends Component
             'password' => $this->new_password,
             'password_changed_at' => now(),
         ]);
+
+        // Log password change activity
+        ActivityLogService::logPasswordChange(
+            "Changed password for mahasiswa: {$mahasiswa->nama} (NPM: {$mahasiswa->npm})"
+        );
 
         $this->message = 'Password berhasil diubah! Anda akan diarahkan ke dashboard...';
         $this->message_type = 'success';

@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Services\ActivityLogService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
@@ -26,6 +27,11 @@ class StudentLogin extends Component
             'password' => $this->password
         ], $this->remember)) {
             session()->regenerate();
+
+            // Log login activity
+            $mahasiswa = Auth::guard('mahasiswa')->user();
+            ActivityLogService::logLogin($mahasiswa?->nama ?? $mahasiswa?->npm ?? 'Unknown');
+
             return $this->redirect('/student/dashboard', navigate: true);
         }
 

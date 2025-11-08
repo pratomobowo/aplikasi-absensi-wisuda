@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Mahasiswa;
+use App\Models\User;
+use App\Observers\MahasiswaObserver;
+use App\Observers\UserObserver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -25,7 +29,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useTailwind();
-        
+
+        // Register model observers
+        Mahasiswa::observe(MahasiswaObserver::class);
+        User::observe(UserObserver::class);
+
         $this->configureRateLimiting();
         $this->configureQRCode();
     }
