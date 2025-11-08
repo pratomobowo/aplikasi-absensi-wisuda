@@ -1,7 +1,7 @@
 <!-- Scanner Component - Simplified Version -->
 <div class="min-h-screen bg-gray-50">
     <!-- Reset Feedback Toast -->
-    <div id="reset-toast" class="hidden fixed top-4 right-4 z-50 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 rounded-lg shadow-2xl animate-slide-in-right border-2 border-blue-400">
+    <div id="reset-toast" wire:ignore class="hidden fixed top-4 right-4 z-50 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 rounded-lg shadow-2xl animate-slide-in-right border-2 border-blue-400">
         <div class="flex items-center space-x-3">
             <div class="flex-shrink-0">
                 <svg class="w-7 h-7 animate-spin-once" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -13,6 +13,46 @@
                 <p class="text-sm text-blue-100 mt-1">Semua state dibersihkan, siap memindai kembali</p>
             </div>
             <button onclick="document.getElementById('reset-toast').classList.add('hidden')" class="ml-4 text-blue-200 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Success Notification Toast (Bottom) -->
+    <div id="success-toast" wire:ignore class="hidden fixed bottom-4 left-4 right-4 md:left-4 md:right-auto md:w-96 z-50 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-lg shadow-2xl animate-slide-in-up border-l-4 border-green-400">
+        <div class="flex items-start space-x-3">
+            <div class="flex-shrink-0 mt-0.5">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <p class="font-bold">Berhasil!</p>
+                <p id="success-message" class="text-sm text-green-100 mt-1"></p>
+            </div>
+            <button onclick="document.getElementById('success-toast').classList.add('hidden')" class="text-green-200 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Error Notification Toast (Bottom) -->
+    <div id="error-toast" wire:ignore class="hidden fixed bottom-4 left-4 right-4 md:left-4 md:right-auto md:w-96 z-50 bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-4 rounded-lg shadow-2xl animate-slide-in-up border-l-4 border-red-400">
+        <div class="flex items-start space-x-3">
+            <div class="flex-shrink-0 mt-0.5">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <p class="font-bold">Gagal!</p>
+                <p id="error-message" class="text-sm text-red-100 mt-1"></p>
+            </div>
+            <button onclick="document.getElementById('error-toast').classList.add('hidden')" class="text-red-200 hover:text-white transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -62,16 +102,6 @@
                                     </div>
                                 </div>
                                 <p class="text-white font-semibold mt-4 text-lg">Memproses...</p>
-                            </div>
-                            
-                            <!-- Emergency reset button during processing -->
-                            <div class="mt-8">
-                                <button wire:click="forceReset" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                    <span>Batalkan & Reset</span>
-                                </button>
                             </div>
                         </div>
                         @endif
@@ -218,7 +248,7 @@
                     <!-- Status card -->
                     <div class="mt-6 bg-blue-50 border-l-4 border-blue-500 rounded-xl p-6 shadow-lg">
                         <div class="flex items-center justify-between">
-                            <div class="flex items-center">
+                            <div class="flex items-center flex-1">
                                 <div class="flex-shrink-0">
                                     <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
@@ -229,14 +259,17 @@
                                     <p class="text-sm text-blue-700 mt-1">Arahkan kamera ke QR Code untuk memindai</p>
                                 </div>
                             </div>
-                            <button wire:click="forceReset" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md flex items-center space-x-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                                </svg>
-                                <span>Reset</span>
-                            </button>
+                            <div class="flex items-center space-x-2">
+                                <button wire:click="forceReset" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md flex items-center space-x-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                    </svg>
+                                    <span>Reset</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -267,62 +300,21 @@
                 <div class="w-full max-w-2xl">
                     <div class="bg-green-50 border-l-4 border-green-500 rounded-xl p-6 md:p-8 shadow-2xl animate-scale-in">
                         <!-- Success Icon -->
-                        <div class="flex justify-center mb-6">
+                        <div class="flex justify-center mb-4">
                             <div class="animate-bounce-once">
-                                <svg class="w-20 h-20 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
                             </div>
                         </div>
 
-                        <h2 class="text-3xl font-bold text-green-900 text-center mb-6">Absensi Berhasil!</h2>
-                        
+                        <h2 class="text-2xl font-bold text-green-900 text-center">Absensi Berhasil!</h2>
+
                         @if($scanResult)
-                        <div class="bg-white rounded-lg p-6 mb-6 shadow-md">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-600">Nama</p>
-                                    <p class="text-base font-semibold text-gray-900 mt-1">{{ $scanResult['mahasiswa_name'] }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium text-gray-600">NPM</p>
-                                    <p class="text-base font-semibold text-gray-900 mt-1">{{ $scanResult['npm'] }}</p>
-                                </div>
-                            </div>
-                            
-                            <div class="border-t border-gray-200 pt-4 mt-4">
-                                <p class="text-sm font-medium text-gray-600">Status</p>
-                                <p class="text-lg font-semibold text-gray-900 mt-1 uppercase">
-                                    @if($scanResult['role'] === 'mahasiswa')
-                                        ✓ Mahasiswa
-                                    @elseif($scanResult['role'] === 'pendamping1')
-                                        ✓ Pendamping 1
-                                    @elseif($scanResult['role'] === 'pendamping2')
-                                        ✓ Pendamping 2
-                                    @endif
-                                </p>
-                            </div>
-                            
-                            <div class="border-t border-gray-200 pt-4 mt-4">
-                                <p class="text-sm font-medium text-gray-600">Waktu</p>
-                                <p class="text-base font-semibold text-gray-900 mt-1">{{ now()->format('H:i:s') }}</p>
-                            </div>
-                        </div>
+                        <p class="text-center text-gray-700 mt-2 font-semibold">{{ $scanResult['mahasiswa_name'] }}</p>
                         @endif
 
-                        <div class="flex flex-col md:flex-row gap-3">
-                            <button wire:click="doReset" class="w-full md:flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg">
-                                Scan Lagi
-                            </button>
-                            <button wire:click="forceReset" class="w-full md:w-auto bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center space-x-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                                </svg>
-                                <span>Reset Manual</span>
-                            </button>
-                        </div>
-
-                        <p class="text-sm text-green-700 text-center mt-4">Kembali ke scanner dalam 3 detik...</p>
+                        <p class="text-sm text-green-700 text-center mt-3">Kembali ke scanner dalam 3 detik...</p>
                     </div>
                 </div>
             </div>
@@ -354,31 +346,17 @@
                 <div class="w-full max-w-2xl">
                     <div class="bg-red-50 border-l-4 border-red-500 rounded-xl p-6 md:p-8 shadow-2xl animate-shake">
                         <!-- Error Icon -->
-                        <div class="flex justify-center mb-6">
-                            <svg class="w-20 h-20 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="flex justify-center mb-4">
+                            <svg class="w-16 h-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
 
-                        <h2 class="text-3xl font-bold text-red-900 text-center mb-6">Gagal!</h2>
-                        
-                        <div class="bg-white rounded-lg p-6 mb-6 shadow-md">
-                            <p class="text-lg font-semibold text-gray-900 text-center leading-relaxed">{{ $errorMessage }}</p>
-                        </div>
+                        <h2 class="text-2xl font-bold text-red-900 text-center mb-2">Gagal!</h2>
 
-                        <div class="flex flex-col md:flex-row gap-3">
-                            <button wire:click="doReset" class="w-full md:flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg">
-                                Scan Lagi
-                            </button>
-                            <button wire:click="forceReset" class="w-full md:w-auto bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center space-x-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                                </svg>
-                                <span>Reset Manual</span>
-                            </button>
-                        </div>
-                        
-                        <p class="text-sm text-red-700 text-center mt-4">Kembali ke scanner dalam 3 detik...</p>
+                        <p class="text-center text-gray-700 text-sm leading-relaxed">{{ $errorMessage }}</p>
+
+                        <p class="text-sm text-red-700 text-center mt-3">Kembali ke scanner dalam 3 detik...</p>
                     </div>
                 </div>
             </div>
@@ -418,13 +396,25 @@
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
     }
-    
+
+    @keyframes slide-in-up {
+        from { opacity: 0; transform: translateY(100%); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slide-out-up {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(100%); }
+    }
+
     .animate-scale-in { animation: scale-in 0.3s ease-out; }
     .animate-bounce-once { animation: bounce-once 0.6s ease-out; }
     .animate-shake { animation: shake 0.5s ease-out; }
     .animate-slide-in-right { animation: slide-in-right 0.3s ease-out; }
     .animate-slide-out-right { animation: slide-out-right 0.3s ease-out; }
     .animate-spin-once { animation: spin-once 0.5s ease-out; }
+    .animate-slide-in-up { animation: slide-in-up 0.3s ease-out; }
+    .animate-slide-out-up { animation: slide-out-up 0.3s ease-out; }
 </style>
 @endpush
 
@@ -436,7 +426,143 @@ document.addEventListener('livewire:initialized', () => {
     let html5QrCode = null;
     let isProcessing = false;
     let resetTimeout = null;
-    
+
+    // Frontend duplicate prevention cache (5 second TTL)
+    // Prevents same QR code from being scanned twice within 5 seconds
+    const recentScans = new Map(); // Format: { qrData: timestamp }
+    const DUPLICATE_PREVENTION_TTL_MS = 5000; // 5 seconds
+
+
+    /**
+     * Check if QR code was recently scanned (within 5 seconds)
+     * @param {string} qrData
+     * @returns {boolean}
+     */
+    function isDuplicateScan(qrData) {
+        if (recentScans.has(qrData)) {
+            const lastScanTime = recentScans.get(qrData);
+            const timeSinceScan = Date.now() - lastScanTime;
+
+            if (timeSinceScan < DUPLICATE_PREVENTION_TTL_MS) {
+                console.log('Scanner: Frontend duplicate prevention - QR code scanned too recently', {
+                    qr_data_preview: qrData.substring(0, 30) + '...',
+                    time_since_scan_ms: timeSinceScan,
+                    ttl_ms: DUPLICATE_PREVENTION_TTL_MS,
+                });
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Record QR code scan in cache
+     * @param {string} qrData
+     */
+    function recordScan(qrData) {
+        recentScans.set(qrData, Date.now());
+        console.log('Scanner: QR code recorded in frontend cache', {
+            qr_data_preview: qrData.substring(0, 30) + '...',
+            cache_size: recentScans.size,
+        });
+    }
+
+    /**
+     * Clean up expired entries from cache
+     */
+    function cleanupExpiredScans() {
+        const now = Date.now();
+        let cleaned = 0;
+
+        for (const [qrData, timestamp] of recentScans.entries()) {
+            if (now - timestamp > DUPLICATE_PREVENTION_TTL_MS) {
+                recentScans.delete(qrData);
+                cleaned++;
+            }
+        }
+
+        if (cleaned > 0) {
+            console.log('Scanner: Cleaned up expired scans from cache', {
+                cleaned_count: cleaned,
+                cache_size: recentScans.size,
+            });
+        }
+    }
+
+    // Clean up cache every 5 seconds
+    setInterval(cleanupExpiredScans, DUPLICATE_PREVENTION_TTL_MS);
+
+    /**
+     * Show success notification toast
+     * @param {string} message - Message to display
+     */
+    function showSuccessToast(message) {
+        const toast = document.getElementById('success-toast');
+        const messageEl = document.getElementById('success-message');
+
+        if (toast && messageEl) {
+            messageEl.textContent = message;
+            toast.classList.remove('hidden');
+            toast.classList.remove('animate-slide-out-up');
+            toast.classList.add('animate-slide-in-up');
+
+            // Ensure toast stays on top by forcing z-index
+            toast.style.zIndex = '9999';
+
+            console.log('[Toast] Success toast displayed with message:', message);
+
+            // Auto-hide after 4 seconds
+            const hideTimer = setTimeout(() => {
+                toast.classList.remove('animate-slide-in-up');
+                toast.classList.add('animate-slide-out-up');
+
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                    toast.style.zIndex = '50';
+                }, 300);
+            }, 4000);
+
+            // Store timer ID in case we need to cancel it
+            toast.dataset.timeoutId = hideTimer;
+        }
+    }
+
+    /**
+     * Show error notification toast
+     * @param {string} message - Message to display
+     */
+    function showErrorToast(message) {
+        const toast = document.getElementById('error-toast');
+        const messageEl = document.getElementById('error-message');
+
+        if (toast && messageEl) {
+            messageEl.textContent = message;
+            toast.classList.remove('hidden');
+            toast.classList.remove('animate-slide-out-up');
+            toast.classList.add('animate-slide-in-up');
+
+            // Ensure toast stays on top by forcing z-index
+            toast.style.zIndex = '9999';
+
+            console.log('[Toast] Error toast displayed with message:', message);
+
+            // Auto-hide after 4 seconds
+            const hideTimer = setTimeout(() => {
+                toast.classList.remove('animate-slide-in-up');
+                toast.classList.add('animate-slide-out-up');
+
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                    toast.style.zIndex = '50';
+                }, 300);
+            }, 4000);
+
+            // Store timer ID in case we need to cancel it
+            toast.dataset.timeoutId = hideTimer;
+        }
+    }
+
     // Initialize scanner with comprehensive error handling
     function initScanner() {
         console.log('Scanner: Initializing camera scanner...');
@@ -548,19 +674,30 @@ document.addEventListener('livewire:initialized', () => {
     }
     
     function onScanSuccess(decodedText) {
+        // Check for frontend duplicate scan (QR code scanned within last 5 seconds)
+        if (isDuplicateScan(decodedText)) {
+            console.log('Scanner: Ignoring duplicate scan detected by frontend cache', {
+                qr_length: decodedText.length,
+            });
+            return;
+        }
+
         // Only check if already processing to prevent duplicate scans during processing
         if (isProcessing) {
             console.log('Scanner: Already processing, ignoring scan');
             return;
         }
-        
+
         // Check if status is ready before processing
         if (@this.status !== 'ready') {
             console.log('Scanner: Status not ready (' + @this.status + '), ignoring scan');
             return;
         }
-        
+
         console.log('Scanner: QR detected, length=' + decodedText.length);
+
+        // Record this scan in the frontend cache
+        recordScan(decodedText);
         
         // Immediately pause scanner to prevent duplicate scans
         if (html5QrCode) {
@@ -583,54 +720,72 @@ document.addEventListener('livewire:initialized', () => {
         // Silent - called frequently during scanning
     }
     
+    /**
+     * Resume scanner after pausing for a scan
+     * Performs full stop and restart for clean state
+     */
     function resumeScanner() {
+        const resetStartTime = performance.now();
+
         console.log('Scanner: Resuming scanner...', {
             isProcessing: isProcessing,
             timestamp: new Date().toISOString()
         });
-        
-        // Clear processing flag to return to fresh initial state (like page load)
+
+        // Clear processing flag
         isProcessing = false;
-        
-        console.log('Scanner: State cleared to initial fresh state');
-        
-        // STOP scanner completely and restart for true fresh state
-        // This prevents immediate re-detection of the same QR code
-        if (html5QrCode) {
-            try {
-                const state = html5QrCode.getState();
-                console.log('Scanner: Current state before restart:', state);
-                
-                // Stop the scanner completely
-                html5QrCode.stop().then(() => {
-                    console.log('Scanner: Stopped successfully');
-                    
-                    // Wait a moment before restarting to ensure clean state
-                    setTimeout(() => {
-                        console.log('Scanner: Restarting scanner for fresh state...');
-                        initScanner();
-                    }, 500); // 500ms delay before restart
-                    
-                }).catch(err => {
-                    console.error('Scanner: Failed to stop:', err);
-                    // If stop fails, try to reinitialize anyway
-                    console.log('Scanner: Attempting to reinitialize despite stop error...');
-                    setTimeout(() => {
-                        initScanner();
-                    }, 500);
-                });
-                
-            } catch (err) {
-                console.error('Scanner: Error during restart:', err);
-                // If error, try to reinitialize
-                console.log('Scanner: Attempting to reinitialize...');
+
+        // Full restart for clean state
+        resumeScannerStandardMode(resetStartTime);
+    }
+
+    /**
+     * Full restart - complete stop and reinitialize
+     * Ensures clean state for reliable scanning
+     */
+    function resumeScannerStandardMode(startTime) {
+        if (!html5QrCode) {
+            console.error('Scanner: html5QrCode not initialized for standard resume');
+            initScanner();
+            return;
+        }
+
+        try {
+            const state = html5QrCode.getState();
+            console.log('Scanner: Standard mode - current state:', state);
+
+            // Stop the scanner completely
+            html5QrCode.stop().then(() => {
+                console.log('Scanner: Stopped successfully for standard mode restart');
+
+                // Wait before restarting to ensure clean state
+                setTimeout(() => {
+                    console.log('Scanner: Restarting scanner for standard mode fresh state...');
+                    initScanner();
+
+                    const duration = (performance.now() - startTime).toFixed(2);
+                    console.log('Scanner: Standard mode restart completed', {
+                        duration_ms: duration,
+                        timestamp: new Date().toISOString()
+                    });
+                }, 100); // Optimized: 100ms delay before restart (faster than before)
+
+            }).catch(err => {
+                console.error('Scanner: Failed to stop in standard mode:', err);
+                // If stop fails, try to reinitialize anyway
+                console.log('Scanner: Attempting to reinitialize despite stop error...');
                 setTimeout(() => {
                     initScanner();
-                }, 500);
-            }
-        } else {
-            console.error('Scanner: html5QrCode instance not found, reinitializing...');
-            initScanner();
+                }, 100);
+            });
+
+        } catch (err) {
+            console.error('Scanner: Error during standard mode restart:', err);
+            // If error, try to reinitialize
+            console.log('Scanner: Attempting to reinitialize...');
+            setTimeout(() => {
+                initScanner();
+            }, 100);
         }
     }
     
@@ -644,11 +799,11 @@ document.addEventListener('livewire:initialized', () => {
             timestamp: new Date().toISOString()
         });
         
-        // Add 1 second delay to ensure UI has fully updated and state is stable
+        // Add minimal delay to ensure UI has fully updated and state is stable
         setTimeout(() => {
             // Double-check status before resuming
             const verifiedStatus = @this.status;
-            
+
             if (verifiedStatus === 'ready') {
                 console.log('Scanner: Status verified as ready, resuming...', {
                     verified_status: verifiedStatus,
@@ -662,9 +817,55 @@ document.addEventListener('livewire:initialized', () => {
                     reason: 'status_mismatch'
                 });
             }
-        }, 1000); // 1 second delay as per requirements
+        }, 200); // Optimized: 200ms delay for faster scanning
     });
-    
+
+    // Protect toast elements from Livewire re-rendering
+    // Add wire:ignore to toast elements in template to prevent Livewire from touching them
+    // This ensures toast stays visible even during state updates
+
+    // Listen for scan notification to show toast
+    Livewire.on('show-scan-notification', (data) => {
+        console.log('[Notification] Raw event data:', data);
+        console.log('[Notification] Data type:', typeof data);
+        console.log('[Notification] Data keys:', Object.keys(data));
+
+        let notificationType = 'success';
+        let notificationMessage = '';
+
+        // Handle data - could be array with object inside or direct object
+        if (typeof data === 'object' && data !== null) {
+            // Check if it's an array with object inside: [{type: '...', message: '...'}]
+            if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'object') {
+                notificationType = data[0].type || 'success';
+                notificationMessage = data[0].message || '';
+                console.log('[Notification] Got data from array with object inside');
+            }
+            // Try to get from object properties directly
+            else if (data.type !== undefined && data.message !== undefined) {
+                notificationType = data.type;
+                notificationMessage = data.message;
+                console.log('[Notification] Got data from object properties');
+            }
+        }
+
+        console.log('[Notification] Processed - Type:', notificationType, 'Message:', notificationMessage);
+
+        if (notificationMessage && notificationMessage.trim()) {
+            console.log('[Notification] ✓ Showing', notificationType, 'toast with message:', notificationMessage);
+
+            if (notificationType === 'success') {
+                console.log('[Notification] Calling showSuccessToast()');
+                showSuccessToast(notificationMessage);
+            } else if (notificationType === 'error') {
+                console.log('[Notification] Calling showErrorToast()');
+                showErrorToast(notificationMessage);
+            }
+        } else {
+            console.warn('[Notification] ✗ Message is empty, skipping toast');
+        }
+    });
+
     // Auto-reset after success/error
     Livewire.on('scanner-auto-reset', (event) => {
         const delay = event.delay || 3000;
@@ -787,7 +988,8 @@ document.addEventListener('livewire:initialized', () => {
             console.error('Scanner: Reset toast element not found in DOM');
         }
     });
-    
+
+
     // Initialize on load
     initScanner();
 });

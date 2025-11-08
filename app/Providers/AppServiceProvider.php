@@ -4,8 +4,12 @@ namespace App\Providers;
 
 use App\Models\Mahasiswa;
 use App\Models\User;
+use App\Models\GraduationEvent;
+use App\Models\GraduationTicket;
 use App\Observers\MahasiswaObserver;
 use App\Observers\UserObserver;
+use App\Observers\GraduationEventObserver;
+use App\Observers\GraduationTicketObserver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -33,6 +37,8 @@ class AppServiceProvider extends ServiceProvider
         // Register model observers
         Mahasiswa::observe(MahasiswaObserver::class);
         User::observe(UserObserver::class);
+        GraduationEvent::observe(GraduationEventObserver::class);
+        GraduationTicket::observe(GraduationTicketObserver::class);
 
         $this->configureRateLimiting();
         $this->configureQRCode();

@@ -8,6 +8,8 @@ use App\Models\GraduationTicket;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Services\ScannerCacheService;
+use App\Services\ParallelValidationService;
 
 class AttendanceService
 {
@@ -108,9 +110,9 @@ class AttendanceService
             $ticketId = $data['ticket_id'];
             $role = $data['role'];
 
-            // Get ticket with mahasiswa and event
+            // Get ticket with mahasiswa and event (using cache for performance)
             try {
-                $ticket = GraduationTicket::with(['mahasiswa', 'graduationEvent'])->find($ticketId);
+                $ticket = ScannerCacheService::getTicket($ticketId);
             } catch (\Exception $e) {
                 $duration = round((microtime(true) - $startTime) * 1000, 2);
                 Log::error('AttendanceService: Database error while fetching ticket', [
@@ -478,7 +480,7 @@ class AttendanceService
     }
 
     /**
-     * Check if attendance already recorded for this ticket and role
+     * Check for duplicate attendance using optimized parallel validation
      *
      * @param int $ticketId
      * @param string $role
@@ -486,9 +488,22 @@ class AttendanceService
      */
     public function checkDuplicate(int $ticketId, string $role): bool
     {
-        return Attendance::where('graduation_ticket_id', $ticketId)
-            ->where('role', $role)
-            ->exists();
+        // Use optimized parallel validation for faster duplicate detection
+        $result = ParallelValidationService::optimizedValidation($ticketId, $role);
+
+        if (isset($result['error'])) {
+            // Fallback to simple query if optimization fails
+            Log::warning('AttendanceService: Parallel validation failed, falling back to simple query', [
+                'error' => $result['error'],
+                'ticket_id' => $ticketId,
+            ]);
+
+            return Attendance::where('graduation_ticket_id', $ticketId)
+                ->where('role', $role)
+                ->exists();
+        }
+
+        return $result['isDuplicate'] ?? false;
     }
 
     /**
@@ -619,12 +634,32 @@ class AttendanceService
                 ];
             }
 
-            // Step 3: Find or determine event
+            // Step 3: Find or determine event (using cache for performance)
             $event = null;
             if ($eventId) {
-                $event = GraduationEvent::find($eventId);
+                // For specific event ID, use direct cache lookup
+                try {
+                    $event = ScannerCacheService::getActiveEvent();
+                    // Verify it matches requested ID if different from active
+                    if ($event && $event->id !== $eventId) {
+                        $event = GraduationEvent::find($eventId);
+                    }
+                } catch (\Exception $e) {
+                    Log::warning('AttendanceService: Cache lookup failed, falling back to database', [
+                        'error' => $e->getMessage(),
+                    ]);
+                    $event = GraduationEvent::find($eventId);
+                }
             } else {
-                $event = GraduationEvent::where('is_active', true)->first();
+                // For active event, use cache
+                try {
+                    $event = ScannerCacheService::getActiveEvent();
+                } catch (\Exception $e) {
+                    Log::warning('AttendanceService: Cache lookup failed, falling back to database', [
+                        'error' => $e->getMessage(),
+                    ]);
+                    $event = GraduationEvent::where('is_active', true)->first();
+                }
             }
 
             if (!$event) {

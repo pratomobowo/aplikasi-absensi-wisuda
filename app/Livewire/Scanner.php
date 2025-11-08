@@ -12,7 +12,7 @@ class Scanner extends Component
     public string $status = 'ready'; // ready, scanning, success, error
     public ?array $scanResult = null;
     public string $errorMessage = '';
-    
+
     // Scan history for debugging (stores last 10 scans)
     private array $scanHistory = [];
     private const MAX_HISTORY_SIZE = 10;
@@ -57,7 +57,7 @@ class Scanner extends Component
             $this->recordScanHistory('validation_failed', 'empty_data', null, $duration);
             $this->status = 'error';
             $this->errorMessage = 'Data QR code tidak valid';
-            $this->dispatch('scanner-auto-reset', delay: 3000);
+            $this->dispatch('scanner-auto-reset', delay: 1000);
             return;
         }
         
@@ -73,7 +73,7 @@ class Scanner extends Component
             $this->recordScanHistory('validation_failed', 'data_too_long', null, $duration);
             $this->status = 'error';
             $this->errorMessage = 'Data QR code tidak valid';
-            $this->dispatch('scanner-auto-reset', delay: 3000);
+            $this->dispatch('scanner-auto-reset', delay: 1000);
             return;
         }
 
@@ -117,11 +117,11 @@ class Scanner extends Component
         
         if ($result['success']) {
             $totalDuration = round((microtime(true) - $scanStartTime) * 1000, 2);
-            
+
             $this->status = 'success';
             $this->scanResult = $result['data'];
             $this->errorMessage = '';
-            
+
             // Log success with details
             Log::info('Scanner: Scan successful', [
                 'scanner_id' => $scannerId,
@@ -131,23 +131,33 @@ class Scanner extends Component
                 'total_duration_ms' => $totalDuration,
                 'service_duration_ms' => $serviceDuration,
             ]);
-            
+
             $this->recordScanHistory('success', null, $result['data'], $totalDuration);
-            
-            // Auto-reset after 3 seconds
-            $this->dispatch('scanner-auto-reset', delay: 3000);
-            
+
+            // Dispatch success notification to frontend
+            $mahasiswaName = $result['data']['mahasiswa']['nama'] ?? 'Unknown';
+            $successMessage = "{$mahasiswaName} - Absensi tercatat";
+
+            Log::info('Scanner: Dispatching success notification', [
+                'message' => $successMessage,
+            ]);
+
+            $this->dispatch('show-scan-notification', ['type' => 'success', 'message' => $successMessage]);
+
+            // Optimized: 300ms reset for faster scanning
+            $this->dispatch('scanner-auto-reset', delay: 300);
+
             Log::debug('Scanner: Auto-reset scheduled', [
                 'scanner_id' => $scannerId,
-                'delay_ms' => 3000,
+                'delay_ms' => 300,
             ]);
         } else {
             $totalDuration = round((microtime(true) - $scanStartTime) * 1000, 2);
-            
+
             $this->status = 'error';
             $this->errorMessage = $result['message'];
             $this->scanResult = null;
-            
+
             // Log error with details
             Log::warning('Scanner: Scan failed', [
                 'scanner_id' => $scannerId,
@@ -156,15 +166,26 @@ class Scanner extends Component
                 'total_duration_ms' => $totalDuration,
                 'service_duration_ms' => $serviceDuration,
             ]);
-            
+
             $this->recordScanHistory('failed', $result['reason'] ?? 'unknown', null, $totalDuration);
-            
-            // Auto-reset after 3 seconds
-            $this->dispatch('scanner-auto-reset', delay: 3000);
-            
+
+            // Dispatch error notification to frontend
+            $errorMessage = $result['message'];
+            $errorReason = $result['reason'] ?? 'Alasan tidak diketahui';
+            $detailMessage = "{$errorMessage} - {$errorReason}";
+
+            Log::info('Scanner: Dispatching error notification', [
+                'message' => $detailMessage,
+            ]);
+
+            $this->dispatch('show-scan-notification', ['type' => 'error', 'message' => $detailMessage]);
+
+            // Optimized: 300ms reset for faster scanning
+            $this->dispatch('scanner-auto-reset', delay: 300);
+
             Log::debug('Scanner: Auto-reset scheduled after error', [
                 'scanner_id' => $scannerId,
-                'delay_ms' => 3000,
+                'delay_ms' => 300,
             ]);
         }
         
