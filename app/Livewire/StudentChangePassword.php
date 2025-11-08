@@ -63,8 +63,8 @@ class StudentChangePassword extends Component
         $this->message = 'Password berhasil diubah! Anda akan diarahkan ke dashboard...';
         $this->message_type = 'success';
 
-        // Redirect to dashboard after 2 seconds
-        $this->dispatch('passwordChanged');
+        // Redirect to dashboard using Livewire redirect
+        return $this->redirect(route('student.dashboard'), navigate: true);
     }
 
     public function render()

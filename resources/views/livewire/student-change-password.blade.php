@@ -114,17 +114,4 @@
             </div>
         </div>
     </div>
-
-    <!-- JavaScript for redirect after password change -->
-    <script>
-        document.addEventListener('livewire:initialized', () => {
-            Livewire.on('passwordChanged', () => {
-                console.log('[PasswordChange] Event received, redirecting to dashboard in 2 seconds...');
-                setTimeout(() => {
-                    console.log('[PasswordChange] Redirecting to:', '{{ route("student.dashboard") }}');
-                    window.location.href = '{{ route("student.dashboard") }}';
-                }, 2000);
-            });
-        });
-    </script>
 </div>
