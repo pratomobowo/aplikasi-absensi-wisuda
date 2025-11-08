@@ -37,6 +37,15 @@ Route::middleware('auth:mahasiswa')->group(function () {
         ->name('buku-wisuda.download');
 });
 
+// Buku Wisuda admin routes - protected with admin authentication (auto-registered by Filament)
+Route::middleware('auth')->group(function () {
+    Route::get('/admin/buku-wisuda/viewer/{id}', App\Livewire\BukuWisudaAdminViewer::class)->name('buku-wisuda.admin-viewer');
+    Route::get('/admin/buku-wisuda/pdf/{id}', [BukuWisudaController::class, 'getAdminPdf'])
+        ->name('buku-wisuda.admin-pdf');
+    Route::get('/admin/buku-wisuda/download/{id}', [BukuWisudaController::class, 'downloadAdmin'])
+        ->name('buku-wisuda.admin-download');
+});
+
 // Student authentication routes
 Route::prefix('student')->name('student.')->group(function () {
     // Guest routes (not authenticated)

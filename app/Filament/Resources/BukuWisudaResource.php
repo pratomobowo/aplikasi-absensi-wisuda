@@ -108,7 +108,7 @@ class BukuWisudaResource extends Resource
                 Tables\Actions\Action::make('view')
                     ->label('Lihat Buku')
                     ->icon('heroicon-o-eye')
-                    ->url(fn (BukuWisuda $record): string => route('buku-wisuda.viewer', $record->id))
+                    ->url(fn (BukuWisuda $record): string => route('buku-wisuda.admin-viewer', $record->id))
                     ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
