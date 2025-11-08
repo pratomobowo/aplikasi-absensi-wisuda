@@ -522,15 +522,6 @@ document.addEventListener('livewire:initialized', () => {
             toast.classList.remove('animate-slide-out-up');
             toast.classList.add('animate-slide-in-up');
 
-            // Force absolute positioning with inline styles for production compatibility
-            toast.style.position = 'fixed';
-            toast.style.bottom = '1rem';
-            toast.style.left = '1rem';
-            toast.style.right = 'auto';
-            toast.style.width = 'auto';
-            toast.style.maxWidth = '400px';
-            toast.style.zIndex = '9999';
-
             console.log('[Toast] Success toast displayed with message:', message);
 
             // Auto-hide after 4 seconds
@@ -561,15 +552,6 @@ document.addEventListener('livewire:initialized', () => {
             toast.classList.remove('hidden');
             toast.classList.remove('animate-slide-out-up');
             toast.classList.add('animate-slide-in-up');
-
-            // Force absolute positioning with inline styles for production compatibility
-            toast.style.position = 'fixed';
-            toast.style.bottom = '1rem';
-            toast.style.left = '1rem';
-            toast.style.right = 'auto';
-            toast.style.width = 'auto';
-            toast.style.maxWidth = '400px';
-            toast.style.zIndex = '9999';
 
             console.log('[Toast] Error toast displayed with message:', message);
 
