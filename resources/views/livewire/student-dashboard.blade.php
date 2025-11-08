@@ -75,16 +75,22 @@
                             <!-- Menu Item: Foto Wisuda -->
                             <button
                                 wire:click="setActiveMenu('foto-wisuda')"
-                                class="flex items-center px-4 py-4 text-left transition-colors duration-200 border-b lg:border-b border-gray-100 whitespace-nowrap relative
+                                class="flex flex-col items-start px-4 py-4 text-left transition-colors duration-200 border-b lg:border-b border-gray-100 relative
                                     {{ $activeMenu === 'foto-wisuda' ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-600' : 'text-gray-700 hover:bg-gray-50' }}"
                             >
-                                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                <span class="font-medium">Foto</span>
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="font-medium">Foto</span>
+                                </div>
                                 @if(!$mahasiswa->hasFotoWisuda())
-                                    <span class="ml-auto lg:ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    <span class="mt-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                         Belum Upload
+                                    </span>
+                                @else
+                                    <span class="mt-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Tersedia
                                     </span>
                                 @endif
                             </button>
@@ -92,16 +98,22 @@
                             <!-- Menu Item: Undangan Wisuda -->
                             <button
                                 wire:click="setActiveMenu('undangan')"
-                                class="flex items-center px-4 py-4 text-left transition-colors duration-200 border-b lg:border-b border-gray-100 whitespace-nowrap relative
+                                class="flex flex-col items-start px-4 py-4 text-left transition-colors duration-200 border-b lg:border-b border-gray-100 relative
                                     {{ $activeMenu === 'undangan' ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-600' : 'text-gray-700 hover:bg-gray-50' }}"
                             >
-                                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>
-                                </svg>
-                                <span class="font-medium">Undangan Wisuda</span>
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>
+                                    </svg>
+                                    <span class="font-medium">Undangan Wisuda</span>
+                                </div>
                                 @if($undanganWisuda)
-                                    <span class="ml-auto lg:ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <span class="mt-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                         Tersedia
+                                    </span>
+                                @else
+                                    <span class="mt-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        Belum Tersedia
                                     </span>
                                 @endif
                             </button>
@@ -109,13 +121,18 @@
                             <!-- Menu Item: Buku Wisuda -->
                             <button
                                 wire:click="setActiveMenu('buku-wisuda')"
-                                class="flex items-center px-4 py-4 text-left transition-colors duration-200 border-b lg:border-b border-gray-100 whitespace-nowrap
+                                class="flex flex-col items-start px-4 py-4 text-left transition-colors duration-200 border-b lg:border-b border-gray-100 relative
                                     {{ $activeMenu === 'buku-wisuda' ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-600' : 'text-gray-700 hover:bg-gray-50' }}"
                             >
-                                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                </svg>
-                                <span class="font-medium">Buku Wisuda</span>
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                    </svg>
+                                    <span class="font-medium">Buku Wisuda</span>
+                                </div>
+                                <span class="mt-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    Siap Diunduh
+                                </span>
                             </button>
 
                             <!-- Menu Item: Keamanan -->
@@ -396,33 +413,79 @@
                                 Buku Wisuda
                             </h2>
 
-                            <div class="prose max-w-none">
-                                <p class="text-gray-600 mb-6">
-                                    Halaman ini akan menampilkan buku wisuda digital yang berisi profil dan informasi lengkap para wisudawan.
-                                </p>
+                            @php
+                                $event = \App\Models\GraduationEvent::active()->first();
+                                $bukuWisuda = $event ? $event->bukuWisuda()->first() : null;
+                            @endphp
 
-                                <div class="p-6 bg-blue-50 rounded-lg border border-blue-200">
-                                    <div class="flex items-start">
-                                        <svg class="w-6 h-6 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                                        </svg>
+                            @if($bukuWisuda)
+                                <!-- Book Info Card -->
+                                <div class="mb-6 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200">
+                                    <div class="mb-4">
+                                        <p class="text-sm text-gray-600 mb-1">Nama File</p>
+                                        <p class="text-lg font-semibold text-gray-900">{{ $bukuWisuda->filename }}</p>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4 mb-4">
                                         <div>
-                                            <p class="text-sm font-semibold text-blue-900 mb-1">Akses Buku Wisuda Publik</p>
-                                            <p class="text-sm text-blue-800 mb-3">Anda dapat mengakses buku wisuda lengkap melalui halaman publik.</p>
-                                            <a
-                                                href="{{ route('buku-wisuda') }}"
-                                                target="_blank"
-                                                class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                                            >
-                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                                                </svg>
-                                                Buka Buku Wisuda
-                                            </a>
+                                            <p class="text-sm text-gray-600 mb-1">Ukuran File</p>
+                                            <p class="text-sm font-semibold text-gray-900">{{ $bukuWisuda->getHumanFileSize() }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600 mb-1">Total Downloads</p>
+                                            <p class="text-sm font-semibold text-gray-900">{{ $bukuWisuda->download_count }} kali</p>
                                         </div>
                                     </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600 mb-1">Acara Wisuda</p>
+                                        <p class="text-sm font-semibold text-gray-900">{{ $bukuWisuda->graduationEvent->name }}</p>
+                                    </div>
                                 </div>
-                            </div>
+
+                                <!-- Action Buttons -->
+                                <div class="flex flex-col sm:flex-row gap-3">
+                                    <a href="{{ route('buku-wisuda.viewer', ['id' => $bukuWisuda->id]) }}"
+                                       target="_blank"
+                                       class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                        Lihat Flipbook
+                                    </a>
+
+                                    <a href="{{ route('buku-wisuda.download', ['id' => $bukuWisuda->id]) }}"
+                                       class="inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors duration-200">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                        </svg>
+                                        Download PDF
+                                    </a>
+                                </div>
+
+                                <!-- Info -->
+                                <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                    <p class="text-sm text-blue-800 font-semibold mb-2">Informasi:</p>
+                                    <ul class="text-sm text-blue-800 space-y-1 list-disc list-inside">
+                                        <li>Klik "Lihat Flipbook" untuk membuka viewer dengan mode flipbook di tab baru</li>
+                                        <li>Gunakan tombol navigasi untuk berpindah halaman</li>
+                                        <li>Fitur zoom tersedia untuk memperbesar/memperkecil tampilan</li>
+                                        <li>Klik "Download PDF" untuk mengunduh file ke perangkat Anda</li>
+                                    </ul>
+                                </div>
+                            @else
+                                <!-- Empty State -->
+                                <div class="text-center py-12">
+                                    <div class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
+                                        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Buku Wisuda Belum Tersedia</h3>
+                                    <p class="text-gray-600 max-w-md mx-auto">
+                                        Buku wisuda untuk acara yang aktif belum di-upload oleh admin. Silakan hubungi admin atau tunggu hingga buku wisuda tersedia.
+                                    </p>
+                                </div>
+                            @endif
                         </div>
                     @endif
 

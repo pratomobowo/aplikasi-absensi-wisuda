@@ -27,6 +27,8 @@ class GraduationTicketResource extends Resource
 
     protected static ?string $navigationLabel = 'Tiket Wisuda';
 
+    protected static ?int $navigationSort = 4;
+
     protected static ?string $pluralLabel = 'Tiket Wisuda';
 
     public static function form(Form $form): Form

@@ -20,6 +20,8 @@ class AttendanceResource extends Resource
 
     protected static ?string $navigationLabel = 'Kehadiran';
 
+    protected static ?int $navigationSort = 5;
+
     protected static ?string $pluralLabel = 'Kehadiran';
 
     public static function canCreate(): bool

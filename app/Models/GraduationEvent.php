@@ -51,6 +51,14 @@ class GraduationEvent extends Model
     }
 
     /**
+     * Get the buku wisuda for the event.
+     */
+    public function bukuWisuda(): HasMany
+    {
+        return $this->hasMany(BukuWisuda::class);
+    }
+
+    /**
      * Scope a query to only include active events.
      */
     public function scopeActive($query)

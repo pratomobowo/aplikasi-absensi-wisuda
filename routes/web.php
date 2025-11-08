@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BukuWisudaController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\StudentAuthController;
@@ -26,6 +27,15 @@ Route::middleware(['throttle:invitation'])->group(function () {
 Route::get('/scanner', Scanner::class)
     ->middleware(['auth', 'throttle:scanner'])
     ->name('scanner');
+
+// Buku Wisuda PDF serving routes - protected with student authentication
+Route::middleware('auth:mahasiswa')->group(function () {
+    Route::get('/buku-wisuda/viewer/{id}', App\Livewire\BukuWisudaViewer::class)->name('buku-wisuda.viewer');
+    Route::get('/buku-wisuda/pdf/{id}', [BukuWisudaController::class, 'getPdf'])
+        ->name('buku-wisuda.get-pdf');
+    Route::get('/buku-wisuda/download/{id}', [BukuWisudaController::class, 'download'])
+        ->name('buku-wisuda.download');
+});
 
 // Student authentication routes
 Route::prefix('student')->name('student.')->group(function () {

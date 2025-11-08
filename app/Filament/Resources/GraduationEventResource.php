@@ -21,6 +21,8 @@ class GraduationEventResource extends Resource
 
     protected static ?string $navigationLabel = 'Acara Wisuda';
 
+    protected static ?int $navigationSort = 2;
+
     protected static ?string $pluralLabel = 'Acara Wisuda';
 
     public static function form(Form $form): Form
