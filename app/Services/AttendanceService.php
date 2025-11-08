@@ -574,6 +574,217 @@ class AttendanceService
     }
 
     /**
+     * Record attendance manually by NIM (for admin fallback when QR fails)
+     *
+     * @param string $nim Student NIM/NPM
+     * @param ?int $eventId Graduation event ID (if null, uses active event)
+     * @param User|null $scanner Admin user doing the manual check-in
+     * @return array ['success' => bool, 'message' => string, 'data' => array|null]
+     */
+    public function recordManualAttendance(string $nim, ?int $eventId = null, ?User $scanner = null): array
+    {
+        $startTime = microtime(true);
+
+        try {
+            Log::info('AttendanceService: Starting manual attendance recording', [
+                'nim' => $nim,
+                'event_id' => $eventId,
+                'admin_id' => $scanner?->id,
+            ]);
+
+            // Step 1: Validate NIM
+            if (empty(trim($nim))) {
+                $duration = round((microtime(true) - $startTime) * 1000, 2);
+                Log::warning('AttendanceService: Manual attendance failed - Empty NIM', ['duration_ms' => $duration]);
+                return [
+                    'success' => false,
+                    'message' => 'NIM/NPM tidak boleh kosong',
+                    'data' => null,
+                ];
+            }
+
+            // Step 2: Find mahasiswa by NIM
+            $mahasiswa = \App\Models\Mahasiswa::where('npm', $nim)->first();
+
+            if (!$mahasiswa) {
+                $duration = round((microtime(true) - $startTime) * 1000, 2);
+                Log::warning('AttendanceService: Manual attendance failed - Mahasiswa not found', [
+                    'nim' => $nim,
+                    'duration_ms' => $duration,
+                ]);
+                return [
+                    'success' => false,
+                    'message' => 'Mahasiswa dengan NIM ' . $nim . ' tidak ditemukan',
+                    'data' => null,
+                ];
+            }
+
+            // Step 3: Find or determine event
+            $event = null;
+            if ($eventId) {
+                $event = GraduationEvent::find($eventId);
+            } else {
+                $event = GraduationEvent::where('is_active', true)->first();
+            }
+
+            if (!$event) {
+                $duration = round((microtime(true) - $startTime) * 1000, 2);
+                Log::warning('AttendanceService: Manual attendance failed - No active event', [
+                    'event_id' => $eventId,
+                    'duration_ms' => $duration,
+                ]);
+                return [
+                    'success' => false,
+                    'message' => 'Tidak ada acara wisuda aktif',
+                    'data' => null,
+                ];
+            }
+
+            // Step 4: Find graduation ticket
+            $ticket = GraduationTicket::where('mahasiswa_id', $mahasiswa->id)
+                ->where('graduation_event_id', $event->id)
+                ->first();
+
+            if (!$ticket) {
+                $duration = round((microtime(true) - $startTime) * 1000, 2);
+                Log::warning('AttendanceService: Manual attendance failed - No ticket found', [
+                    'mahasiswa_id' => $mahasiswa->id,
+                    'event_id' => $event->id,
+                    'duration_ms' => $duration,
+                ]);
+                return [
+                    'success' => false,
+                    'message' => 'Mahasiswa tidak terdaftar untuk acara ini',
+                    'data' => null,
+                ];
+            }
+
+            // Step 5: Check if ticket is expired
+            if ($ticket->expires_at && $ticket->expires_at->isPast()) {
+                $duration = round((microtime(true) - $startTime) * 1000, 2);
+                Log::warning('AttendanceService: Manual attendance failed - Ticket expired', [
+                    'ticket_id' => $ticket->id,
+                    'expires_at' => $ticket->expires_at->toIso8601String(),
+                    'duration_ms' => $duration,
+                ]);
+                return [
+                    'success' => false,
+                    'message' => 'Tiket sudah kadaluarsa',
+                    'data' => null,
+                ];
+            }
+
+            // Step 6: Record attendance for all three roles in transaction
+            DB::beginTransaction();
+
+            try {
+                $recordedRoles = [];
+                $roles = ['mahasiswa', 'pendamping1', 'pendamping2'];
+
+                foreach ($roles as $role) {
+                    // Check if already recorded
+                    $exists = Attendance::where('graduation_ticket_id', $ticket->id)
+                        ->where('role', $role)
+                        ->exists();
+
+                    if (!$exists) {
+                        $attendance = new Attendance();
+                        $attendance->graduation_ticket_id = $ticket->id;
+                        $attendance->role = $role;
+                        $attendance->scanned_by = $scanner?->id;
+                        $attendance->scanned_at = now();
+                        $attendance->save();
+
+                        $recordedRoles[] = $role;
+
+                        Log::info('AttendanceService: Manual attendance recorded for role', [
+                            'ticket_id' => $ticket->id,
+                            'role' => $role,
+                            'admin_id' => $scanner?->id,
+                        ]);
+                    }
+                }
+
+                DB::commit();
+
+                $duration = round((microtime(true) - $startTime) * 1000, 2);
+
+                Log::info('AttendanceService: Manual attendance completed successfully', [
+                    'mahasiswa_id' => $mahasiswa->id,
+                    'ticket_id' => $ticket->id,
+                    'recorded_roles' => $recordedRoles,
+                    'admin_id' => $scanner?->id,
+                    'duration_ms' => $duration,
+                ]);
+
+                return [
+                    'success' => true,
+                    'message' => 'Absensi manual berhasil dicatat untuk ' . $mahasiswa->nama . ' (semua peran)',
+                    'data' => [
+                        'mahasiswa_id' => $mahasiswa->id,
+                        'mahasiswa_name' => $mahasiswa->nama,
+                        'npm' => $mahasiswa->npm,
+                        'program_studi' => $mahasiswa->program_studi,
+                        'event_name' => $event->name,
+                        'recorded_roles' => $recordedRoles,
+                        'recorded_at' => now()->format('Y-m-d H:i:s'),
+                    ],
+                ];
+            } catch (\Illuminate\Database\QueryException $e) {
+                DB::rollBack();
+                $duration = round((microtime(true) - $startTime) * 1000, 2);
+
+                Log::error('AttendanceService: Manual attendance - Database transaction failed', [
+                    'error' => $e->getMessage(),
+                    'error_code' => $e->getCode(),
+                    'mahasiswa_id' => $mahasiswa->id,
+                    'ticket_id' => $ticket->id,
+                    'duration_ms' => $duration,
+                ]);
+
+                return [
+                    'success' => false,
+                    'message' => 'Gagal menyimpan data. Silakan coba lagi',
+                    'data' => null,
+                ];
+            } catch (\Exception $e) {
+                DB::rollBack();
+                $duration = round((microtime(true) - $startTime) * 1000, 2);
+
+                Log::error('AttendanceService: Manual attendance - Transaction failed', [
+                    'error' => $e->getMessage(),
+                    'error_type' => get_class($e),
+                    'mahasiswa_id' => $mahasiswa->id,
+                    'ticket_id' => $ticket->id,
+                    'duration_ms' => $duration,
+                ]);
+
+                return [
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan sistem. Silakan coba lagi',
+                    'data' => null,
+                ];
+            }
+        } catch (\Throwable $e) {
+            $duration = round((microtime(true) - $startTime) * 1000, 2);
+
+            Log::error('AttendanceService: Manual attendance - Unexpected exception', [
+                'error' => $e->getMessage(),
+                'error_type' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'duration_ms' => $duration,
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Terjadi kesalahan sistem. Silakan coba lagi',
+                'data' => null,
+            ];
+        }
+    }
+
+    /**
      * Log scan attempt for audit trail
      *
      * @param string $qrData
@@ -594,11 +805,11 @@ class AttendanceService
             'ip' => request()->ip(),
             'user_agent' => request()->userAgent(),
         ];
-        
+
         if ($durationMs !== null) {
             $logData['duration_ms'] = $durationMs;
         }
-        
+
         if ($success) {
             Log::info('QR Scan Attempt', $logData);
         } else {

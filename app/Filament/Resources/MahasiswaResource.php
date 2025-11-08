@@ -140,7 +140,7 @@ class MahasiswaResource extends Resource
                 Tables\Columns\ImageColumn::make('foto_wisuda')
                     ->label('Foto Wisuda')
                     ->disk('graduation_photos')
-                    ->defaultImageUrl(url('/gallery/no-photo.jpg'))
+                    ->defaultImageUrl(url('/storage/graduation-photos/no-photo.jpg'))
                     ->circular()
                     ->size(40)
                     ->toggleable(),

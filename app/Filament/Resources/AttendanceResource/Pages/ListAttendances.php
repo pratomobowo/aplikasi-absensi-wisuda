@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\AttendanceResource\Pages;
 
 use App\Filament\Resources\AttendanceResource;
+use App\Filament\Resources\AttendanceResource\Actions\ManualCheckInAction;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -13,6 +14,7 @@ class ListAttendances extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            ManualCheckInAction::make(),
             Actions\CreateAction::make(),
         ];
     }

@@ -21,7 +21,7 @@
                     Data Wisudawan
                 </h1>
                 <p class="text-lg sm:text-xl md:text-2xl text-blue-50 max-w-3xl mx-auto leading-relaxed">
-                    Daftar calon wisudawan Universitas Sanggabuana
+                    Daftar calon wisudawan Universitas Sangga Buana
                 </p>
             </div>
         </section>
