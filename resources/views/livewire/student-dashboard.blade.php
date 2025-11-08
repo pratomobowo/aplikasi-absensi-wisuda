@@ -315,17 +315,22 @@
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                                             <div>
                                                 <p class="text-sm text-gray-600 mb-1">Token Undangan</p>
-                                                <p class="text-lg font-mono font-bold text-gray-900 bg-white px-3 py-2 rounded border border-gray-200">{{ $undanganWisuda->token }}</p>
+                                                <p class="text-lg font-mono font-bold text-gray-900 bg-white px-3 py-2 rounded border border-gray-200 truncate">{{ $undanganWisuda->magic_link_token }}</p>
                                             </div>
                                             <div>
-                                                <p class="text-sm text-gray-600 mb-1">Jumlah Tamu</p>
-                                                <p class="text-lg font-semibold text-gray-900">{{ $undanganWisuda->jumlah_tamu }} orang</p>
+                                                <p class="text-sm text-gray-600 mb-1">Status Undangan</p>
+                                                <p class="text-lg font-semibold text-green-600 flex items-center">
+                                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    Aktif
+                                                </p>
                                             </div>
                                         </div>
 
                                         <div class="flex flex-col sm:flex-row gap-3">
                                             <a
-                                                href="{{ route('invitation.show', $undanganWisuda->token) }}"
+                                                href="{{ route('invitation.show', $undanganWisuda->magic_link_token) }}"
                                                 target="_blank"
                                                 class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200"
                                             >
@@ -336,7 +341,7 @@
                                                 Lihat Undangan
                                             </a>
                                             <a
-                                                href="{{ route('invitation.download', $undanganWisuda->token) }}"
+                                                href="{{ route('invitation.download', $undanganWisuda->magic_link_token) }}"
                                                 class="inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors duration-200"
                                             >
                                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

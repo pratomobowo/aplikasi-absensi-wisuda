@@ -51,7 +51,7 @@ class StudentChangePassword extends Component
 
         // Update password and mark as changed
         $mahasiswa->update([
-            'password' => $this->new_password,
+            'password' => Hash::make($this->new_password),
             'password_changed_at' => now(),
         ]);
 
