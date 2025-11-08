@@ -3,7 +3,6 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Mahasiswa;
-use App\Models\GraduationEvent;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -13,28 +12,20 @@ class MissingPhotosStatsWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        $activeEvent = GraduationEvent::where('is_active', true)->first();
+        // Get total mahasiswa (regardless of event registration)
+        $totalStudents = Mahasiswa::count();
 
-        if (!$activeEvent) {
+        if ($totalStudents === 0) {
             return [
                 Stat::make('Total Mahasiswa', 0)
-                    ->description('Tidak ada acara aktif')
+                    ->description('Tidak ada data mahasiswa')
                     ->descriptionIcon('heroicon-o-information-circle')
                     ->color('gray'),
             ];
         }
 
-        // Get total registered students for active event
-        $totalStudents = $activeEvent->graduationTickets()
-            ->whereHas('mahasiswa')
-            ->count();
-
         // Get students with photos
-        $studentsWithPhotos = $activeEvent->graduationTickets()
-            ->whereHas('mahasiswa', function ($query) {
-                $query->whereNotNull('foto_wisuda');
-            })
-            ->count();
+        $studentsWithPhotos = Mahasiswa::whereNotNull('foto_wisuda')->count();
 
         // Get students without photos
         $studentsWithoutPhotos = $totalStudents - $studentsWithPhotos;
@@ -45,12 +36,12 @@ class MissingPhotosStatsWidget extends BaseWidget
 
         return [
             Stat::make('Foto Wisuda Lengkap', $studentsWithPhotos)
-                ->description(sprintf('%.1f%% sudah upload', $withPhotosPercentage))
+                ->description(sprintf('%.1f%% dari %d mahasiswa', $withPhotosPercentage, $totalStudents))
                 ->descriptionIcon('heroicon-o-check-circle')
                 ->color('success'),
 
             Stat::make('Foto Wisuda Belum Upload', $studentsWithoutPhotos)
-                ->description(sprintf('%.1f%% belum upload', $withoutPhotosPercentage))
+                ->description(sprintf('%.1f%% dari %d mahasiswa', $withoutPhotosPercentage, $totalStudents))
                 ->descriptionIcon('heroicon-o-exclamation-circle')
                 ->color('danger'),
         ];
