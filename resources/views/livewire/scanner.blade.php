@@ -312,6 +312,21 @@
 
                         @if($scanResult)
                         <p class="text-center text-gray-700 mt-2 font-semibold">{{ $scanResult['mahasiswa_name'] }}</p>
+                        <p class="text-center text-sm text-gray-600 mt-1">
+                            @switch($scanResult['role'] ?? 'mahasiswa')
+                                @case('mahasiswa')
+                                    Mahasiswa
+                                    @break
+                                @case('pendamping1')
+                                    Pendamping 1
+                                    @break
+                                @case('pendamping2')
+                                    Pendamping 2
+                                    @break
+                                @default
+                                    Peserta
+                            @endswitch
+                        </p>
                         @endif
 
                         <p class="text-sm text-green-700 text-center mt-3">Kembali ke scanner dalam 3 detik...</p>

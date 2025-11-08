@@ -127,16 +127,26 @@ class Scanner extends Component
                 'scanner_id' => $scannerId,
                 'ticket_id' => $result['data']['ticket_id'] ?? null,
                 'role' => $result['data']['role'] ?? null,
-                'mahasiswa_name' => $result['data']['mahasiswa']['nama'] ?? null,
+                'mahasiswa_name' => $result['data']['mahasiswa_name'] ?? null,
                 'total_duration_ms' => $totalDuration,
                 'service_duration_ms' => $serviceDuration,
+                'npm' => $result['data']['npm'] ?? null,
             ]);
 
             $this->recordScanHistory('success', null, $result['data'], $totalDuration);
 
             // Dispatch success notification to frontend
-            $mahasiswaName = $result['data']['mahasiswa']['nama'] ?? 'Unknown';
-            $successMessage = "{$mahasiswaName} - Absensi tercatat";
+            $mahasiswaName = $result['data']['mahasiswa_name'] ?? 'Unknown';
+            $role = $result['data']['role'] ?? 'mahasiswa';
+
+            // Format message with role information
+            $roleLabel = match($role) {
+                'mahasiswa' => 'Mahasiswa',
+                'pendamping1' => 'Pendamping 1',
+                'pendamping2' => 'Pendamping 2',
+                default => 'Peserta'
+            };
+            $successMessage = "{$mahasiswaName} ({$roleLabel}) - Absensi tercatat";
 
             Log::info('Scanner: Dispatching success notification', [
                 'message' => $successMessage,
