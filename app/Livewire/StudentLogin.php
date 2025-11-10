@@ -22,6 +22,13 @@ class StudentLogin extends Component
     {
         $this->validate();
 
+        // Check if user exists and has a password set
+        $mahasiswa = \App\Models\Mahasiswa::where('npm', $this->npm)->first();
+        if (!$mahasiswa || !$mahasiswa->password) {
+            $this->addError('npm', 'NPM atau password salah.');
+            return;
+        }
+
         if (Auth::guard('mahasiswa')->attempt([
             'npm' => $this->npm,
             'password' => $this->password
@@ -29,8 +36,8 @@ class StudentLogin extends Component
             session()->regenerate();
 
             // Log login activity
-            $mahasiswa = Auth::guard('mahasiswa')->user();
-            ActivityLogService::logLogin($mahasiswa?->nama ?? $mahasiswa?->npm ?? 'Unknown');
+            $user = Auth::guard('mahasiswa')->user();
+            ActivityLogService::logLogin($user?->nama ?? $user?->npm ?? 'Unknown');
 
             return $this->redirect('/student/dashboard', navigate: true);
         }

@@ -98,7 +98,7 @@ class Mahasiswa extends Authenticatable
     /**
      * Get the password for the user.
      */
-    public function getAuthPassword(): string
+    public function getAuthPassword(): ?string
     {
         return $this->password;
     }
