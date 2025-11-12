@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\GraduationEventResource\Pages;
 use App\Filament\Resources\GraduationEventResource\RelationManagers;
 use App\Models\GraduationEvent;
+use App\Services\TicketService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,6 +13,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\Action;
 
 class GraduationEventResource extends Resource
 {
@@ -116,6 +119,23 @@ class GraduationEventResource extends Resource
                     }),
             ])
             ->actions([
+                Action::make('generate_tickets')
+                    ->label('Generate Tiket')
+                    ->icon('heroicon-o-ticket')
+                    ->color('info')
+                    ->action(function (GraduationEvent $record) {
+                        $ticketService = app(TicketService::class);
+                        $result = $ticketService->generateTicketsForEvent($record, null, true);
+
+                        $title = $result['failed'] === 0 ? 'Tiket Berhasil Dibuat' : 'Tiket Dibuat (Ada Kesalahan)';
+                        $color = $result['failed'] === 0 ? 'success' : 'warning';
+
+                        Notification::make()
+                            ->title($title)
+                            ->body("✓ Dibuat: {$result['created']} | ⊘ Lewat: {$result['skipped']} | ✗ Gagal: {$result['failed']}")
+                            ->color($color)
+                            ->send();
+                    }),
                 Tables\Actions\Action::make('set_active')
                     ->label('Set Aktif')
                     ->icon('heroicon-o-check-circle')

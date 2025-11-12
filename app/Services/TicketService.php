@@ -6,6 +6,9 @@ use App\Models\GraduationEvent;
 use App\Models\GraduationTicket;
 use App\Models\Mahasiswa;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TicketService
 {
@@ -130,5 +133,140 @@ class TicketService
         } while (GraduationTicket::where('magic_link_token', $token)->exists());
 
         return $token;
+    }
+
+    /**
+     * Generate tickets for multiple mahasiswa in an event
+     *
+     * @param GraduationEvent $event
+     * @param Collection|array|null $mahasiswaIds Specific mahasiswa IDs, or null for all without tickets
+     * @param bool $skipExisting Skip if ticket already exists
+     * @return array Result array with created, skipped, failed counts
+     */
+    public function generateTicketsForEvent(
+        GraduationEvent $event,
+        $mahasiswaIds = null,
+        bool $skipExisting = true
+    ): array
+    {
+        $result = [
+            'created' => 0,
+            'skipped' => 0,
+            'failed' => 0,
+            'errors' => [],
+        ];
+
+        try {
+            // Get mahasiswa to process
+            $query = Mahasiswa::query();
+
+            if ($mahasiswaIds) {
+                // If specific IDs provided
+                $ids = is_array($mahasiswaIds) ? $mahasiswaIds : $mahasiswaIds->pluck('id')->toArray();
+                $query->whereIn('id', $ids);
+            } else {
+                // Get all mahasiswa without tickets for this event
+                $query->whereDoesntHave('graduationTickets', function ($q) use ($event) {
+                    $q->where('graduation_event_id', $event->id);
+                });
+            }
+
+            $mahasiswas = $query->get();
+
+            Log::info('TicketService: Starting bulk ticket generation', [
+                'event_id' => $event->id,
+                'event_name' => $event->name,
+                'total_mahasiswa' => $mahasiswas->count(),
+            ]);
+
+            foreach ($mahasiswas as $mahasiswa) {
+                try {
+                    // Check if ticket already exists
+                    $existingTicket = GraduationTicket::where('mahasiswa_id', $mahasiswa->id)
+                        ->where('graduation_event_id', $event->id)
+                        ->first();
+
+                    if ($existingTicket) {
+                        if ($skipExisting) {
+                            $result['skipped']++;
+                            continue;
+                        } else {
+                            // Delete existing and recreate
+                            $existingTicket->delete();
+                        }
+                    }
+
+                    // Create new ticket
+                    $this->createTicket($mahasiswa, $event);
+                    $result['created']++;
+
+                } catch (\Exception $e) {
+                    $result['failed']++;
+                    $errorMsg = "Mahasiswa ID {$mahasiswa->id} ({$mahasiswa->nama}): {$e->getMessage()}";
+                    $result['errors'][] = $errorMsg;
+
+                    Log::error('TicketService: Ticket creation failed', [
+                        'mahasiswa_id' => $mahasiswa->id,
+                        'mahasiswa_name' => $mahasiswa->nama,
+                        'event_id' => $event->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+
+            // Clear cache
+            $this->clearTicketCache($event->id);
+
+            Log::info('TicketService: Bulk ticket generation completed', $result);
+
+        } catch (\Exception $e) {
+            Log::error('TicketService: Bulk ticket generation failed', [
+                'event_id' => $event->id,
+                'error' => $e->getMessage(),
+            ]);
+            $result['failed'] = -1; // Indicates fatal error
+            $result['errors'][] = "Fatal error: {$e->getMessage()}";
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get mahasiswa that are missing tickets for an event
+     *
+     * @param GraduationEvent $event
+     * @return Collection
+     */
+    public function getMissingTickets(GraduationEvent $event): Collection
+    {
+        return Mahasiswa::whereDoesntHave('graduationTickets', function ($q) use ($event) {
+            $q->where('graduation_event_id', $event->id);
+        })->get();
+    }
+
+    /**
+     * Get count of missing tickets for an event
+     *
+     * @param GraduationEvent $event
+     * @return int
+     */
+    public function getMissingTicketCount(GraduationEvent $event): int
+    {
+        return Mahasiswa::whereDoesntHave('graduationTickets', function ($q) use ($event) {
+            $q->where('graduation_event_id', $event->id);
+        })->count();
+    }
+
+    /**
+     * Clear ticket-related cache for an event
+     *
+     * @param int $eventId
+     * @return void
+     */
+    protected function clearTicketCache(int $eventId): void
+    {
+        // Add cache invalidation here if caching is implemented
+        // For now, just log
+        Log::debug('TicketService: Cache cleared for event', ['event_id' => $eventId]);
     }
 }

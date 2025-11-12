@@ -182,16 +182,45 @@ class GraduationTicketResource extends Resource
                         ->action(function (Collection $records, array $data) {
                             $ticketService = app(TicketService::class);
                             $event = GraduationEvent::find($data['graduation_event_id']);
-                            
+
                             foreach ($records as $record) {
                                 if ($record instanceof Mahasiswa) {
                                     $ticketService->createTicket($record, $event);
                                 }
                             }
-                            
+
                             Notification::make()
                                 ->title('Tiket berhasil dibuat!')
                                 ->success()
+                                ->send();
+                        }),
+                    Tables\Actions\BulkAction::make('generate_missing_tickets')
+                        ->label('Generate Missing Tickets')
+                        ->icon('heroicon-o-arrow-path')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->modalHeading('Generate Missing Tickets')
+                        ->modalDescription('Buat tiket untuk mahasiswa yang belum memiliki tiket untuk event yang dipilih')
+                        ->form([
+                            Forms\Components\Select::make('graduation_event_id')
+                                ->label('Acara Wisuda')
+                                ->options(GraduationEvent::pluck('name', 'id'))
+                                ->required(),
+                        ])
+                        ->action(function (Collection $records, array $data) {
+                            $ticketService = app(TicketService::class);
+                            $event = GraduationEvent::find($data['graduation_event_id']);
+
+                            $mahasiswaIds = $records->pluck('id')->toArray();
+                            $result = $ticketService->generateTicketsForEvent($event, $mahasiswaIds, true);
+
+                            $title = $result['failed'] === 0 ? 'Tiket Berhasil Dibuat' : 'Tiket Dibuat (Ada Kesalahan)';
+                            $color = $result['failed'] === 0 ? 'success' : 'warning';
+
+                            Notification::make()
+                                ->title($title)
+                                ->body("✓ Dibuat: {$result['created']} | ⊘ Lewat: {$result['skipped']} | ✗ Gagal: {$result['failed']}")
+                                ->color($color)
                                 ->send();
                         }),
                     Tables\Actions\DeleteBulkAction::make(),
