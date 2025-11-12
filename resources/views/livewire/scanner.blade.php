@@ -1,18 +1,18 @@
 <!-- Scanner Component - Simplified Version -->
 <div class="min-h-screen bg-gray-50">
-    <!-- Reset Feedback Toast -->
-    <div id="reset-toast" wire:ignore class="hidden fixed top-4 right-4 z-50 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 rounded-lg shadow-2xl animate-slide-in-right border-2 border-blue-400">
-        <div class="flex items-center space-x-3">
-            <div class="flex-shrink-0">
-                <svg class="w-7 h-7 animate-spin-once" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+    <!-- Reset Feedback Toast (Bottom) -->
+    <div id="reset-toast" wire:ignore class="hidden fixed bottom-4 left-4 right-4 md:left-4 md:right-auto md:w-96 z-50 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 rounded-lg shadow-2xl animate-slide-in-up border-l-4 border-blue-400">
+        <div class="flex items-start space-x-3">
+            <div class="flex-shrink-0 mt-0.5">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6-4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                 </svg>
             </div>
-            <div>
-                <p class="font-bold text-lg">Scanner Direset Manual</p>
+            <div class="flex-1">
+                <p class="font-bold">Scanner Direset Manual</p>
                 <p class="text-sm text-blue-100 mt-1">Semua state dibersihkan, siap memindai kembali</p>
             </div>
-            <button onclick="document.getElementById('reset-toast').classList.add('hidden')" class="ml-4 text-blue-200 hover:text-white transition-colors">
+            <button onclick="document.getElementById('reset-toast').classList.add('hidden')" class="text-blue-200 hover:text-white transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -49,7 +49,7 @@
                 </svg>
             </div>
             <div class="flex-1">
-                <p class="font-bold">Gagal!</p>
+                <p class="font-bold">Error</p>
                 <p id="error-message" class="text-sm text-red-100 mt-1"></p>
             </div>
             <button onclick="document.getElementById('error-toast').classList.add('hidden')" class="text-red-200 hover:text-white transition-colors">
@@ -66,9 +66,21 @@
             <!-- Header bar -->
             <div class="bg-white shadow-sm border-b border-gray-200">
                 <div class="px-4 md:px-6 py-4">
-                    <div class="flex items-center justify-between">
-                        <h1 class="text-xl md:text-2xl font-bold text-gray-900">Scanner Absensi</h1>
-                        
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h1 class="text-xl md:text-2xl font-bold text-gray-900">Scanner Absensi</h1>
+                            <p class="text-xs md:text-sm text-gray-600 mt-1">
+                                Mode:
+                                <span class="{{ $scanMode === 'kehadiran' ? 'text-blue-600 font-semibold' : 'text-gray-700' }}">
+                                    Kehadiran
+                                </span>
+                                <span class="text-gray-400 mx-1">|</span>
+                                <span class="{{ $scanMode === 'konsumsi' ? 'text-green-600 font-semibold' : 'text-gray-700' }}">
+                                    Konsumsi
+                                </span>
+                            </p>
+                        </div>
+
                         <form method="POST" action="{{ route('filament.admin.auth.logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center space-x-2 shadow-sm hover:shadow-md">
@@ -78,6 +90,36 @@
                                 <span>Logout</span>
                             </button>
                         </form>
+                    </div>
+
+                    <!-- Scanner Mode Selector -->
+                    <div class="flex items-center space-x-2 border-t pt-4">
+                        <span class="text-sm font-medium text-gray-700">Mode Scanner:</span>
+                        <div class="flex space-x-2">
+                            <button
+                                wire:click="toggleScanMode('kehadiran')"
+                                class="px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 {{ $scanMode === 'kehadiran' ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}"
+                            >
+                                <div class="flex items-center space-x-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                    </svg>
+                                    <span>Kehadiran</span>
+                                </div>
+                            </button>
+
+                            <button
+                                wire:click="toggleScanMode('konsumsi')"
+                                class="px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 {{ $scanMode === 'konsumsi' ? 'bg-green-600 text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}"
+                            >
+                                <div class="flex items-center space-x-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Konsumsi</span>
+                                </div>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -245,28 +287,80 @@
                         </div>
                     </div>
 
-                    <!-- Status card -->
-                    <div class="mt-6 bg-blue-50 border-l-4 border-blue-500 rounded-xl p-6 shadow-lg">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center flex-1">
-                                <div class="flex-shrink-0">
-                                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                    </svg>
+                    <!-- Last Scanned History Log -->
+                    <div class="mt-6 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                        <!-- Header -->
+                        <div class="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 px-6 py-4 flex items-center">
+                            <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h3 class="text-lg font-semibold text-gray-900 ml-3">Last Scanned</h3>
+                        </div>
+
+                        <!-- Scrollable History List -->
+                        <div class="max-h-96 overflow-y-auto">
+                            @if(count($scanHistory) > 0)
+                                <div class="divide-y divide-gray-100">
+                                    @foreach(array_reverse($scanHistory) as $scan)
+                                        <div class="px-6 py-3 {{ $scan['success'] ? 'bg-green-50 border-l-4 border-green-500' : 'bg-red-50 border-l-4 border-red-500' }} hover:bg-opacity-75 transition-colors">
+                                            <div class="flex items-start justify-between">
+                                                <div class="flex items-start space-x-3 flex-1">
+                                                    <!-- Status Icon -->
+                                                    <div class="flex-shrink-0 mt-1">
+                                                        @if($scan['success'])
+                                                            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                            </svg>
+                                                        @else
+                                                            <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                                            </svg>
+                                                        @endif
+                                                    </div>
+
+                                                    <!-- Scan Details -->
+                                                    <div class="flex-1 min-w-0">
+                                                        <div class="flex items-center justify-between gap-2 flex-wrap">
+                                                            <p class="text-sm font-semibold {{ $scan['success'] ? 'text-green-900' : 'text-red-900' }}">
+                                                                {{ $scan['mahasiswa_name'] ?? 'Unknown' }}
+                                                            </p>
+                                                            <span class="text-xs {{ $scan['success'] ? 'text-green-700 bg-green-200' : 'text-red-700 bg-red-200' }} px-2 py-1 rounded">
+                                                                {{ $scan['timestamp'] ?? '-' }}
+                                                            </span>
+                                                        </div>
+                                                        <p class="text-xs {{ $scan['success'] ? 'text-green-700' : 'text-red-700' }} mt-1">
+                                                            {{ $scan['role_label'] ?? 'Role' }} • {{ $scan['message'] }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <div class="ml-4">
-                                    <p class="text-lg font-semibold text-blue-900">Siap Memindai</p>
-                                    <p class="text-sm text-blue-700 mt-1">Arahkan kamera ke QR Code untuk memindai</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <button wire:click="forceReset" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md flex items-center space-x-2">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            @else
+                                <!-- Empty State -->
+                                <div class="px-6 py-12 text-center">
+                                    <svg class="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
-                                    <span>Reset</span>
-                                </button>
-                            </div>
+                                    <p class="text-sm text-gray-600">Belum ada scan</p>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Info Footer -->
+                        <div class="bg-gray-50 border-t border-gray-200 px-6 py-3 text-xs text-gray-600 flex items-center justify-between">
+                            <span>Total Scan: {{ count($scanHistory) }}</span>
+                            <button
+                                wire:click="forceReset"
+                                onclick="@this.set('scanHistory', []); @this.call('forceReset')"
+                                class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-xs font-semibold transition-all duration-200 flex items-center space-x-1"
+                            >
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                                <span>Reset Scanner & Clear</span>
+                            </button>
                         </div>
                     </div>
 
@@ -308,24 +402,36 @@
                             </div>
                         </div>
 
-                        <h2 class="text-2xl font-bold text-green-900 text-center">Absensi Berhasil!</h2>
+                        <h2 class="text-2xl font-bold text-green-900 text-center">
+                            @if($scanMode === 'kehadiran')
+                                Absensi Berhasil!
+                            @else
+                                Konsumsi Tercatat!
+                            @endif
+                        </h2>
 
                         @if($scanResult)
-                        <p class="text-center text-gray-700 mt-2 font-semibold">{{ $scanResult['mahasiswa_name'] }}</p>
+                        <p class="text-center text-gray-700 mt-2 font-semibold">
+                            {{ $scanResult['mahasiswa_name'] ?? $scanResult['mahasiswa_nama'] ?? 'Mahasiswa' }}
+                        </p>
                         <p class="text-center text-sm text-gray-600 mt-1">
-                            @switch($scanResult['role'] ?? 'mahasiswa')
-                                @case('mahasiswa')
-                                    Mahasiswa
-                                    @break
-                                @case('pendamping1')
-                                    Pendamping 1
-                                    @break
-                                @case('pendamping2')
-                                    Pendamping 2
-                                    @break
-                                @default
-                                    Peserta
-                            @endswitch
+                            @if($scanMode === 'kehadiran')
+                                @switch($scanResult['role'] ?? 'mahasiswa')
+                                    @case('mahasiswa')
+                                        Mahasiswa
+                                        @break
+                                    @case('pendamping1')
+                                        Pendamping 1
+                                        @break
+                                    @case('pendamping2')
+                                        Pendamping 2
+                                        @break
+                                    @default
+                                        Peserta
+                                @endswitch
+                            @else
+                                Konsumsi
+                            @endif
                         </p>
                         @endif
 
@@ -761,41 +867,127 @@ document.addEventListener('livewire:initialized', () => {
             const state = html5QrCode.getState();
             console.log('Scanner: Standard mode - current state:', state);
 
-            // Stop the scanner completely
-            html5QrCode.stop().then(() => {
-                console.log('Scanner: Stopped successfully for standard mode restart');
+            // Stop the scanner completely with error handling
+            // Note: html5-qrcode has a bug with removeChild that we need to gracefully handle
+            html5QrCode.stop()
+                .then(() => {
+                    console.log('Scanner: Stopped successfully for standard mode restart');
 
-                // Wait before restarting to ensure clean state
-                setTimeout(() => {
-                    console.log('Scanner: Restarting scanner for standard mode fresh state...');
-                    initScanner();
+                    // Wait before restarting to ensure clean state
+                    setTimeout(() => {
+                        console.log('Scanner: Restarting scanner for standard mode fresh state...');
+                        initScanner();
 
-                    const duration = (performance.now() - startTime).toFixed(2);
-                    console.log('Scanner: Standard mode restart completed', {
-                        duration_ms: duration,
-                        timestamp: new Date().toISOString()
-                    });
-                }, 100); // Optimized: 100ms delay before restart (faster than before)
+                        const duration = (performance.now() - startTime).toFixed(2);
+                        console.log('Scanner: Standard mode restart completed', {
+                            duration_ms: duration,
+                            timestamp: new Date().toISOString()
+                        });
+                    }, 100); // Optimized: 100ms delay before restart
+                })
+                .catch(err => {
+                    // html5-qrcode has a known bug with removeChild during stop()
+                    // This is not a critical error - camera is still working
+                    console.warn('Scanner: Minor error during stop (html5-qrcode library issue):', err.message);
+                    console.log('Scanner: Continuing with reinitialization despite stop error...');
 
-            }).catch(err => {
-                console.error('Scanner: Failed to stop in standard mode:', err);
-                // If stop fails, try to reinitialize anyway
-                console.log('Scanner: Attempting to reinitialize despite stop error...');
-                setTimeout(() => {
-                    initScanner();
-                }, 100);
-            });
+                    // Still reinitialize - the camera is in a usable state
+                    setTimeout(() => {
+                        try {
+                            initScanner();
+                        } catch (reinitErr) {
+                            console.error('Scanner: Error during reinitialize:', reinitErr);
+                        }
+                    }, 100);
+                });
 
         } catch (err) {
             console.error('Scanner: Error during standard mode restart:', err);
             // If error, try to reinitialize
             console.log('Scanner: Attempting to reinitialize...');
             setTimeout(() => {
-                initScanner();
+                try {
+                    initScanner();
+                } catch (reinitErr) {
+                    console.error('Scanner: Error during reinitialize:', reinitErr);
+                }
             }, 100);
         }
     }
-    
+
+    // Function to properly stop and restart scanner when mode changes
+    function restartScannerForModeChange() {
+        console.log('Scanner: Restarting for mode change...');
+
+        if (!html5QrCode) {
+            console.log('Scanner: No html5QrCode instance, initializing...');
+            initScanner();
+            return;
+        }
+
+        try {
+            const state = html5QrCode.getState();
+            console.log('Scanner: Current state before restart:', state);
+
+            // Stop the scanner completely with error handling
+            html5QrCode.stop()
+                .then(() => {
+                    console.log('Scanner: Stopped successfully, reinitializing...');
+
+                    // Small delay to ensure proper cleanup
+                    setTimeout(() => {
+                        console.log('Scanner: Reinitializing scanner after mode change...');
+                        initScanner();
+                    }, 100);
+                })
+                .catch(err => {
+                    // html5-qrcode has a known bug with removeChild during stop()
+                    // This is not critical - just continue with reinitialization
+                    console.warn('Scanner: Minor error during stop (html5-qrcode library issue):', err.message);
+                    console.log('Scanner: Continuing with reinitialization...');
+
+                    // Reinitialize after brief delay
+                    setTimeout(() => {
+                        try {
+                            initScanner();
+                        } catch (reinitErr) {
+                            console.error('Scanner: Error during reinitialize:', reinitErr);
+                        }
+                    }, 100);
+                });
+
+        } catch (err) {
+            console.error('Scanner: Error getting state:', err);
+            // Force reinitialize
+            console.log('Scanner: Force reinitializing scanner...');
+            try {
+                initScanner();
+            } catch (initErr) {
+                console.error('Scanner: Error during reinitialize:', initErr);
+            }
+        }
+    }
+
+    // Listen for mode change event
+    Livewire.on('update-scanMode', () => {
+        console.log('Scanner: Mode changed, restarting scanner...', {
+            new_mode: @this.scanMode,
+            timestamp: new Date().toISOString()
+        });
+
+        // Clear any pending resets
+        if (resetTimeout) {
+            clearTimeout(resetTimeout);
+            resetTimeout = null;
+        }
+
+        // Clear processing flag
+        isProcessing = false;
+
+        // Restart scanner for new mode
+        restartScannerForModeChange();
+    });
+
     // Listen for scanner-ready event to resume scanning
     Livewire.on('scanner-ready', () => {
         const currentStatus = @this.status;

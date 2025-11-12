@@ -47,6 +47,8 @@ class GraduationTicket extends Model
         'is_distributed',
         'distributed_at',
         'expires_at',
+        'konsumsi_diterima',
+        'konsumsi_at',
     ];
 
     /**
@@ -60,6 +62,8 @@ class GraduationTicket extends Model
             'is_distributed' => 'boolean',
             'distributed_at' => 'datetime',
             'expires_at' => 'datetime',
+            'konsumsi_diterima' => 'boolean',
+            'konsumsi_at' => 'datetime',
         ];
     }
 
@@ -85,6 +89,14 @@ class GraduationTicket extends Model
     public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class);
+    }
+
+    /**
+     * Get the konsumsi record for the ticket.
+     */
+    public function konsumsiRecord(): HasMany
+    {
+        return $this->hasMany(KonsumsiRecord::class);
     }
 
     /**

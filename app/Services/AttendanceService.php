@@ -88,13 +88,14 @@ class AttendanceService
             if (!$validationResult['valid']) {
                 $duration = round((microtime(true) - $startTime) * 1000, 2);
                 $this->logScanAttempt($qrData, $scanner, false, $validationResult['reason'], $duration);
-                
+
                 $response = [
                     'success' => false,
                     'message' => $validationResult['message'],
                     'data' => null,
+                    'reason' => $validationResult['reason'],
                 ];
-                
+
                 if (config('app.debug')) {
                     $response['debug'] = [
                         'step' => $validationResult['step'],
@@ -102,7 +103,7 @@ class AttendanceService
                         'duration_ms' => $duration,
                     ];
                 }
-                
+
                 return $response;
             }
 
@@ -539,6 +540,7 @@ class AttendanceService
             'success' => false,
             'message' => $this->getErrorMessage($errorCode),
             'data' => null,
+            'reason' => $errorCode,
         ];
 
         if (config('app.debug') && $durationMs !== null) {
