@@ -8,6 +8,7 @@ use App\Models\GraduationTicket;
 use App\Models\Mahasiswa;
 use App\Models\GraduationEvent;
 use App\Services\TicketService;
+use App\Exports\GraduationTicketsExport;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,6 +19,7 @@ use Filament\Infolists\Infolist;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Filament\Notifications\Notification;
+use Maatwebsite\Excel\Facades\Excel;
 
 class GraduationTicketResource extends Resource
 {
@@ -222,6 +224,19 @@ class GraduationTicketResource extends Resource
                                 ->body("✓ Dibuat: {$result['created']} | ⊘ Lewat: {$result['skipped']} | ✗ Gagal: {$result['failed']}")
                                 ->color($color)
                                 ->send();
+                        }),
+                    Tables\Actions\BulkAction::make('export_tickets')
+                        ->label('Export Excel')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->color('success')
+                        ->action(function (Collection $records) {
+                            $ticketIds = $records->pluck('id')->toArray();
+                            $fileName = 'Tiket-Wisuda-' . now()->format('Y-m-d-His') . '.xlsx';
+
+                            return Excel::download(
+                                new GraduationTicketsExport(null, $ticketIds),
+                                $fileName
+                            );
                         }),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),

@@ -6,6 +6,7 @@ use App\Filament\Resources\GraduationEventResource\Pages;
 use App\Filament\Resources\GraduationEventResource\RelationManagers;
 use App\Models\GraduationEvent;
 use App\Services\TicketService;
+use App\Exports\GraduationTicketsExport;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
+use Maatwebsite\Excel\Facades\Excel;
 
 class GraduationEventResource extends Resource
 {
@@ -135,6 +137,18 @@ class GraduationEventResource extends Resource
                             ->body("✓ Dibuat: {$result['created']} | ⊘ Lewat: {$result['skipped']} | ✗ Gagal: {$result['failed']}")
                             ->color($color)
                             ->send();
+                    }),
+                Action::make('export_tickets')
+                    ->label('Export Excel')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->action(function (GraduationEvent $record) {
+                        $fileName = 'Tiket-Wisuda-' . $record->name . '-' . now()->format('Y-m-d-His') . '.xlsx';
+
+                        return Excel::download(
+                            new GraduationTicketsExport($record),
+                            $fileName
+                        );
                     }),
                 Tables\Actions\Action::make('set_active')
                     ->label('Set Aktif')
