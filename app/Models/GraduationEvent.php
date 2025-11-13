@@ -23,6 +23,7 @@ class GraduationEvent extends Model
         'location_address',
         'location_lat',
         'location_lng',
+        'maps_url',
         'is_active',
     ];
 

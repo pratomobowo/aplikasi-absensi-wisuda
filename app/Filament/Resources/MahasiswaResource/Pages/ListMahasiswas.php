@@ -32,16 +32,24 @@ class ListMahasiswas extends ListRecords
                 ->form([
                     FileUpload::make('file')
                         ->label('File Excel')
+                        ->maxSize(10240) // 10MB
+                        ->required()
+                        ->helperText('Format: Excel (.xlsx, .xls) atau CSV. Kolom: NPM, Nama, Program Studi, IPK, Yudisium (opsional), Email (opsional), Phone (opsional)')
+                        ->disk('local')
+                        ->directory('temp-imports')
+                        ->visibility('private')
                         ->acceptedFileTypes([
                             'application/vnd.ms-excel',
                             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                             'text/csv',
+                            'text/comma-separated-values',
                         ])
-                        ->required()
-                        ->helperText('Format: NPM, Nama, Program Studi, IPK, Yudisium (opsional), Email (opsional), Phone (opsional)')
-                        ->disk('local')
-                        ->directory('temp-imports')
-                        ->visibility('private'),
+                        ->rules([
+                            'required',
+                            'file',
+                            'mimes:xls,xlsx,csv',
+                            'max:10240',
+                        ]),
                 ])
                 ->action(function (array $data) {
                     try {

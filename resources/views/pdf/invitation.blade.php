@@ -182,6 +182,16 @@
                 <div class="info-label">Alamat</div>
                 <div class="info-value">{{ $event->location_address }}</div>
             </div>
+            @if($event->maps_url)
+            <div class="info-row">
+                <div class="info-label">Link Maps</div>
+                <div class="info-value" style="word-break: break-all;">
+                    <a href="{{ $event->maps_url }}" style="color: #1e40af; text-decoration: underline;">
+                        {{ $event->maps_url }}
+                    </a>
+                </div>
+            </div>
+            @endif
         </div>
 
         <!-- QR Codes -->

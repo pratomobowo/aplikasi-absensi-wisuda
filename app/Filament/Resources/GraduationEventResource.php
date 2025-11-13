@@ -62,6 +62,11 @@ class GraduationEventResource extends Resource
                     ->label('Longitude')
                     ->numeric()
                     ->step(0.00000001),
+                Forms\Components\TextInput::make('maps_url')
+                    ->label('URL Maps')
+                    ->url()
+                    ->placeholder('https://maps.google.com/...')
+                    ->helperText('Masukkan URL lengkap dari Google Maps atau aplikasi maps lainnya'),
                 Forms\Components\Toggle::make('is_active')
                     ->label('Aktif')
                     ->default(true),
