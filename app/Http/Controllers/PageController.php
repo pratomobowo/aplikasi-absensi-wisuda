@@ -19,7 +19,11 @@ class PageController extends Controller
      */
     public function alurWisuda(): View
     {
-        return view('alur-wisuda');
+        return view('coming-soon', [
+            'title' => 'Alur Wisuda',
+            'description' => 'Halaman Alur Wisuda sedang dalam pengembangan. Kami akan menampilkan panduan lengkap proses wisuda dengan detail tahapan demi tahapan.',
+            'message' => 'Fitur ini akan segera tersedia. Terima kasih atas kesabaran Anda.'
+        ]);
     }
 
     /**
@@ -27,6 +31,10 @@ class PageController extends Controller
      */
     public function helpDesk(): View
     {
-        return view('help-desk');
+        return view('coming-soon', [
+            'title' => 'QnA',
+            'description' => 'Halaman QnA sedang dalam pengembangan. Kami akan menampilkan pertanyaan dan jawaban yang sering diajukan untuk membantu Anda mengenai wisuda.',
+            'message' => 'Fitur ini akan segera tersedia. Terima kasih atas kesabaran Anda.'
+        ]);
     }
 }
