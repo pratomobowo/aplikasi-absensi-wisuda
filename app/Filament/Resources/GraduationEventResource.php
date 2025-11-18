@@ -67,6 +67,13 @@ class GraduationEventResource extends Resource
                     ->url()
                     ->placeholder('https://maps.google.com/...')
                     ->helperText('Masukkan URL lengkap dari Google Maps atau aplikasi maps lainnya'),
+                Forms\Components\FileUpload::make('feature_image')
+                    ->label('Gambar Unggulan (Feature Image)')
+                    ->image()
+                    ->maxSize(2048)
+                    ->directory('event-features')
+                    ->visibility('public')
+                    ->helperText('Ukuran gambar: 1200x675px (16:9). Gambar ini akan ditampilkan sebagai meta image saat link undangan dibagikan di social media.'),
                 Forms\Components\Toggle::make('is_active')
                     ->label('Aktif')
                     ->default(true),

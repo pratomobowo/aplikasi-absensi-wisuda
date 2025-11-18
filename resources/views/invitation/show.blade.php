@@ -4,11 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undangan Wisuda - {{ $mahasiswa->nama }}</title>
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
-    
+
+    <!-- Open Graph Meta Tags for Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Undangan Wisuda - {{ $mahasiswa->nama }}">
+    <meta property="og:description" content="Undangan Wisuda {{ $event->name }} untuk {{ $mahasiswa->nama }} ({{ $mahasiswa->npm }})">
+    <meta property="og:url" content="{{ request()->url() }}">
+    @if($event->feature_image)
+    <meta property="og:image" content="{{ asset('storage/' . $event->feature_image) }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="675">
+    @endif
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Undangan Wisuda - {{ $mahasiswa->nama }}">
+    <meta name="twitter:description" content="Undangan Wisuda {{ $event->name }} untuk {{ $mahasiswa->nama }} ({{ $mahasiswa->npm }})">
+    @if($event->feature_image)
+    <meta name="twitter:image" content="{{ asset('storage/' . $event->feature_image) }}">
+    @endif
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 min-h-screen">
