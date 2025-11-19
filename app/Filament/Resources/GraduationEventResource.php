@@ -73,6 +73,7 @@ class GraduationEventResource extends Resource
                     ->maxSize(2048)
                     ->directory('event-features')
                     ->visibility('public')
+                    ->imagePreviewHeight('0')
                     ->helperText('Ukuran gambar: 1200x675px (16:9). Gambar ini akan ditampilkan sebagai meta image saat link undangan dibagikan di social media.'),
                 Forms\Components\Toggle::make('is_active')
                     ->label('Aktif')
