@@ -88,14 +88,14 @@ class InvitationController extends Controller
     {
         // Sanitize token input - only allow alphanumeric and basic characters
         $token = preg_replace('/[^a-zA-Z0-9\-_=]/', '', $token);
-        
+
         if (empty($token)) {
             abort(400, 'Token tidak valid');
         }
 
         // Rate limiting: 5 requests per minute per token
         $key = 'pdf-download:' . $token;
-        
+
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
             return response()->json([
@@ -115,18 +115,12 @@ class InvitationController extends Controller
         // Load relationships
         $ticket->load(['mahasiswa', 'graduationEvent']);
 
-        // Generate PDF
-        $pdfPath = $this->pdfService->generateInvitationPDF($ticket);
+        // Generate PDF and return as download
+        $filepath = $this->pdfService->generateInvitationPDF($ticket);
+        $filename = basename($filepath);
 
-        // Generate filename
-        $filename = sprintf(
-            'Undangan_Wisuda_%s_%s.pdf',
-            $ticket->mahasiswa->npm,
-            str_replace(' ', '_', $ticket->mahasiswa->nama)
-        );
-
-        return response()->download($pdfPath, $filename, [
+        return response()->download($filepath, $filename, [
             'Content-Type' => 'application/pdf',
-        ])->deleteFileAfterSend(true);
+        ]);
     }
 }

@@ -43,11 +43,11 @@ class PDFService
 
         // Generate PDF
         $pdf = Pdf::loadView('pdf.invitation', $data);
-        
-        // Set paper size to A4
+
+        // Set paper size to A4 Portrait
         $pdf->setPaper('a4', 'portrait');
-        
-        // Set options for better quality
+
+        // Set options for Dompdf PDF rendering
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
