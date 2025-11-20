@@ -12,7 +12,7 @@
     <!-- Open Graph Meta Tags for Social Media -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Undangan Wisuda - {{ $mahasiswa->nama }}">
-    <meta property="og:description" content="Undangan Wisuda {{ $event->name }} untuk {{ $mahasiswa->nama }} ({{ $mahasiswa->npm }})">
+    <meta property="og:description" content="Undangan {{ $event->name }} untuk {{ $mahasiswa->nama }} ({{ $mahasiswa->npm }})">
     <meta property="og:url" content="{{ request()->url() }}">
     @if($event->feature_image)
     <meta property="og:image" content="{{ asset('storage/' . $event->feature_image) }}">
@@ -256,7 +256,7 @@
                         <img src="{{ $qrCodes['mahasiswa'] }}" alt="QR Code Mahasiswa" class="w-40 h-40">
                     </div>
                     <div class="primary-bg text-white rounded-lg py-3 px-4">
-                        <p class="font-bold">Mahasiswa</p>
+                        <p class="font-bold">Wisudawan</p>
                         <p class="text-xs text-red-100">Pengguna Utama</p>
                     </div>
                 </div>

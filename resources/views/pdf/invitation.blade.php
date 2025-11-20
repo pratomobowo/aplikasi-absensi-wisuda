@@ -369,7 +369,7 @@
                         <div class="qr-image-wrapper">
                             <img src="{{ $qrCodes['mahasiswa'] }}" alt="QR Code Mahasiswa" class="qr-image">
                         </div>
-                        <div class="qr-label-mahasiswa">Mahasiswa</div>
+                        <div class="qr-label-mahasiswa">Wisudawan</div>
                         <div class="qr-sublabel">Pengguna Utama</div>
                     </div>
                 </div>
