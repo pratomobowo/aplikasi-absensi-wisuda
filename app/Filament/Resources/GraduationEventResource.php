@@ -155,7 +155,8 @@ class GraduationEventResource extends Resource
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
                     ->action(function (GraduationEvent $record) {
-                        $fileName = 'Tiket-Wisuda-' . $record->name . '-' . now()->format('Y-m-d-His') . '.xlsx';
+                        $cleanName = str_replace(['/', '\\'], '-', $record->name);
+                        $fileName = 'Tiket-Wisuda-' . $cleanName . '-' . now()->format('Y-m-d-His') . '.xlsx';
 
                         return Excel::download(
                             new GraduationTicketsExport($record),
