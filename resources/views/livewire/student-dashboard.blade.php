@@ -59,11 +59,11 @@
                 <!-- Sidebar -->
                 <aside class="lg:w-64 flex-shrink-0">
                     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                        <nav class="flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-visible">
+                        <nav class="flex flex-col">
                             <!-- Menu Item: Informasi Mahasiswa -->
                             <button
                                 wire:click="setActiveMenu('informasi')"
-                                class="flex items-center px-4 py-4 text-left transition-colors duration-200 border-b lg:border-b border-gray-100 whitespace-nowrap
+                                class="flex items-center px-4 py-4 text-left transition-colors duration-200 border-b border-gray-100
                                     {{ $activeMenu === 'informasi' ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-600' : 'text-gray-700 hover:bg-gray-50' }}"
                             >
                                 <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,33 +72,10 @@
                                 <span class="font-medium">Informasi Mahasiswa</span>
                             </button>
 
-                            <!-- Menu Item: Foto Wisuda -->
-                            <button
-                                wire:click="setActiveMenu('foto-wisuda')"
-                                class="flex flex-col items-start px-4 py-4 text-left transition-colors duration-200 border-b lg:border-b border-gray-100 relative
-                                    {{ $activeMenu === 'foto-wisuda' ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-600' : 'text-gray-700 hover:bg-gray-50' }}"
-                            >
-                                <div class="flex items-center">
-                                    <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                    <span class="font-medium">Foto</span>
-                                </div>
-                                @if(!$mahasiswa->hasFotoWisuda())
-                                    <span class="mt-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                        Belum Upload
-                                    </span>
-                                @else
-                                    <span class="mt-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        Tersedia
-                                    </span>
-                                @endif
-                            </button>
-
                             <!-- Menu Item: Undangan Wisuda -->
                             <button
                                 wire:click="setActiveMenu('undangan')"
-                                class="flex flex-col items-start px-4 py-4 text-left transition-colors duration-200 border-b lg:border-b border-gray-100 relative
+                                class="flex flex-col items-start px-4 py-4 text-left transition-colors duration-200 border-b border-gray-100
                                     {{ $activeMenu === 'undangan' ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-600' : 'text-gray-700 hover:bg-gray-50' }}"
                             >
                                 <div class="flex items-center">
@@ -121,7 +98,7 @@
                             <!-- Menu Item: Buku Wisuda -->
                             <button
                                 wire:click="setActiveMenu('buku-wisuda')"
-                                class="flex flex-col items-start px-4 py-4 text-left transition-colors duration-200 border-b lg:border-b border-gray-100 relative
+                                class="flex flex-col items-start px-4 py-4 text-left transition-colors duration-200 border-b border-gray-100
                                     {{ $activeMenu === 'buku-wisuda' ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-600' : 'text-gray-700 hover:bg-gray-50' }}"
                             >
                                 <div class="flex items-center">
@@ -130,15 +107,12 @@
                                     </svg>
                                     <span class="font-medium">Buku Wisuda</span>
                                 </div>
-                                <span class="mt-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    Siap Diunduh
-                                </span>
                             </button>
 
                             <!-- Menu Item: Keamanan -->
                             <button
                                 wire:click="setActiveMenu('keamanan')"
-                                class="flex items-center px-4 py-4 text-left transition-colors duration-200 whitespace-nowrap
+                                class="flex items-center px-4 py-4 text-left transition-colors duration-200 border-b border-gray-100
                                     {{ $activeMenu === 'keamanan' ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-600' : 'text-gray-700 hover:bg-gray-50' }}"
                             >
                                 <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -198,110 +172,6 @@
                                         </div>
                                     @endif
                                 </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Foto Wisuda Content -->
-                    @if($activeMenu === 'foto-wisuda')
-                        <div class="bg-white rounded-xl shadow-md p-6">
-                            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                                <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                Foto Wisuda
-                            </h2>
-
-                            <!-- Current Photo Display -->
-                            @if($mahasiswa->hasFotoWisuda())
-                                <div class="mb-6">
-                                    <p class="text-sm text-gray-600 mb-3">Foto Anda Saat Ini:</p>
-                                    <div class="relative inline-block">
-                                        <img
-                                            src="{{ $mahasiswa->foto_wisuda_url }}"
-                                            alt="Foto Wisuda {{ $mahasiswa->nama }}"
-                                            class="max-w-sm w-full h-auto rounded-lg shadow-lg border-4 border-blue-200"
-                                        >
-                                        <button
-                                            wire:click="deleteFoto"
-                                            wire:confirm="Apakah Anda yakin ingin menghapus foto ini?"
-                                            class="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors duration-200 shadow-lg"
-                                        >
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                            @else
-                                <div class="mb-6 p-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 text-center">
-                                    <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                    <p class="text-gray-600 font-medium">Belum ada foto wisuda</p>
-                                    <p class="text-sm text-gray-500 mt-1">Upload foto wisuda Anda di bawah ini</p>
-                                </div>
-                            @endif
-
-                            <!-- Upload Form -->
-                            <form wire:submit="uploadFoto">
-                                <div class="mb-4">
-                                    <label for="foto" class="block text-sm font-medium text-gray-700 mb-2">
-                                        {{ $mahasiswa->hasFotoWisuda() ? 'Ganti Foto Wisuda' : 'Upload Foto Wisuda' }}
-                                    </label>
-                                    <input
-                                        type="file"
-                                        id="foto"
-                                        wire:model="foto"
-                                        accept="image/jpeg,image/jpg,image/png"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('foto') border-red-500 @enderror"
-                                    >
-                                    @error('foto')
-                                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
-
-                                    <!-- Loading Indicator -->
-                                    <div wire:loading wire:target="foto" class="mt-2 flex items-center text-sm text-blue-600">
-                                        <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        Memuat file...
-                                    </div>
-                                </div>
-
-                                <!-- Upload Button -->
-                                <button
-                                    type="submit"
-                                    wire:loading.attr="disabled"
-                                    wire:target="foto,uploadFoto"
-                                    class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                                >
-                                    <span wire:loading.remove wire:target="uploadFoto">
-                                        <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                        </svg>
-                                        {{ $mahasiswa->hasFotoWisuda() ? 'Ganti Foto' : 'Upload Foto' }}
-                                    </span>
-                                    <span wire:loading wire:target="uploadFoto" class="flex items-center">
-                                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        Mengupload...
-                                    </span>
-                                </button>
-                            </form>
-
-                            <!-- Info -->
-                            <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                <p class="text-sm text-blue-800 font-semibold mb-2">Ketentuan Foto:</p>
-                                <ul class="text-sm text-blue-800 space-y-1 list-disc list-inside">
-                                    <li>Format: JPG, JPEG, atau PNG</li>
-                                    <li>Ukuran maksimal: 2MB</li>
-                                    <li>Foto akan otomatis tersimpan dengan nama NPM Anda</li>
-                                    <li>Foto lama akan otomatis terganti saat upload foto baru</li>
-                                </ul>
                             </div>
                         </div>
                     @endif
