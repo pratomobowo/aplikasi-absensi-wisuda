@@ -18,6 +18,13 @@ class StudentLogin extends Component
 
     public bool $remember = false;
 
+    public bool $showPassword = false;
+
+    public function togglePasswordVisibility()
+    {
+        $this->showPassword = !$this->showPassword;
+    }
+
     public function login()
     {
         $this->validate();
