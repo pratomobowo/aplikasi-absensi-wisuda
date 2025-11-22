@@ -30,6 +30,7 @@ class AttendanceService
     public const ERROR_SYSTEM = 'system_error';
     public const ERROR_EVENT_NOT_ACTIVE = 'event_not_active';
     public const ERROR_INVALID_EVENT = 'invalid_event';
+    public const ERROR_MAHASISWA_NOT_ATTENDED = 'mahasiswa_not_attended';
 
     // User-facing error messages in Bahasa Indonesia
     protected array $errorMessages = [
@@ -47,6 +48,7 @@ class AttendanceService
         self::ERROR_SYSTEM => 'Terjadi kesalahan sistem. Silakan coba lagi',
         self::ERROR_EVENT_NOT_ACTIVE => 'Acara wisuda belum dimulai atau sudah berakhir',
         self::ERROR_INVALID_EVENT => 'Acara wisuda tidak valid',
+        self::ERROR_MAHASISWA_NOT_ATTENDED => 'Wisudawan belum hadir',
     ];
 
     public function __construct(QRCodeService $qrCodeService)
@@ -121,15 +123,38 @@ class AttendanceService
                     'ticket_id' => $ticketId,
                 ]);
                 $this->logScanAttempt($qrData, $scanner, false, self::ERROR_DATABASE, $duration);
-                
+
                 return $this->buildErrorResponse(self::ERROR_DATABASE, $duration);
             }
-            
+
             if (!$ticket) {
                 $duration = round((microtime(true) - $startTime) * 1000, 2);
                 $this->logScanAttempt($qrData, $scanner, false, self::ERROR_TICKET_NOT_FOUND, $duration);
-                
+
                 return $this->buildErrorResponse(self::ERROR_TICKET_NOT_FOUND, $duration);
+            }
+
+            // Validate mahasiswa attendance for pendamping roles
+            if (in_array($role, ['pendamping1', 'pendamping2'])) {
+                $mahasiswaCheckResult = $this->checkMahasiswaAttendance($ticketId);
+                if (!$mahasiswaCheckResult['attended']) {
+                    $duration = round((microtime(true) - $startTime) * 1000, 2);
+                    $errorMessage = "Wisudawan ({$mahasiswaCheckResult['name']}) Belum hadir";
+                    $this->logScanAttempt($qrData, $scanner, false, self::ERROR_MAHASISWA_NOT_ATTENDED, $duration);
+
+                    Log::warning('AttendanceService: Pendamping scan blocked - Mahasiswa not attended', [
+                        'ticket_id' => $ticketId,
+                        'role' => $role,
+                        'mahasiswa_name' => $mahasiswaCheckResult['name'],
+                    ]);
+
+                    return [
+                        'success' => false,
+                        'message' => $errorMessage,
+                        'data' => null,
+                        'reason' => self::ERROR_MAHASISWA_NOT_ATTENDED,
+                    ];
+                }
             }
 
             // Validate event is active
@@ -817,6 +842,57 @@ class AttendanceService
                 'success' => false,
                 'message' => 'Terjadi kesalahan sistem. Silakan coba lagi',
                 'data' => null,
+            ];
+        }
+    }
+
+    /**
+     * Check if mahasiswa (main graduate) has already scanned attendance
+     *
+     * @param int $ticketId
+     * @return array ['attended' => bool, 'name' => string]
+     */
+    private function checkMahasiswaAttendance(int $ticketId): array
+    {
+        try {
+            $mahasiswaAttendance = Attendance::where('graduation_ticket_id', $ticketId)
+                ->where('role', 'mahasiswa')
+                ->exists();
+
+            if (!$mahasiswaAttendance) {
+                // Get mahasiswa name for error message
+                $ticket = GraduationTicket::find($ticketId);
+                $name = $ticket?->mahasiswa?->nama ?? 'Wisudawan';
+
+                Log::debug('AttendanceService: Mahasiswa has not attended', [
+                    'ticket_id' => $ticketId,
+                    'mahasiswa_name' => $name,
+                ]);
+
+                return [
+                    'attended' => false,
+                    'name' => $name,
+                ];
+            }
+
+            Log::debug('AttendanceService: Mahasiswa has attended', [
+                'ticket_id' => $ticketId,
+            ]);
+
+            return [
+                'attended' => true,
+                'name' => '',
+            ];
+        } catch (\Exception $e) {
+            Log::error('AttendanceService: Error checking mahasiswa attendance', [
+                'error' => $e->getMessage(),
+                'ticket_id' => $ticketId,
+            ]);
+
+            // Default to false on error to prevent unauthorized attendance
+            return [
+                'attended' => false,
+                'name' => 'Wisudawan',
             ];
         }
     }

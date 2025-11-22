@@ -642,6 +642,7 @@ class Scanner extends Component
                 'transaction_failed' => 'Gagal menyimpan data. Silakan coba lagi',
                 'event_not_active' => 'Acara wisuda belum dimulai atau sudah berakhir',
                 'invalid_event' => 'Acara wisuda tidak valid',
+                'mahasiswa_not_attended' => 'Wisudawan belum hadir',
                 'system_error' => 'Terjadi kesalahan sistem. Silakan coba lagi',
 
                 // Konsumsi service error codes (from KonsumsiService)
