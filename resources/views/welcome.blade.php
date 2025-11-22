@@ -97,7 +97,74 @@
             </svg>
         </div>
     </section>
-    
+
+    <!-- Tatacara Dresscode Wisuda Section -->
+    <section class="py-24 md:py-32 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <!-- Left Content -->
+                <div class="order-2 lg:order-1">
+                    <div class="inline-flex items-center px-4 py-2 bg-blue-50 rounded-full text-blue-600 text-sm font-semibold mb-6 border border-blue-200">
+                        Panduan Lengkap
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                        Tatacara Dresscode Wisuda
+                    </h2>
+                    <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                        Sebagai Wisudawan, Anda <span class="font-semibold text-gray-900">wajib menggunakan dress code sesuai dengan peraturan</span> yang telah ditetapkan oleh Universitas Sangga Buana.
+                    </p>
+                    <div class="space-y-4 mb-10">
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="flex items-center justify-center h-6 w-6 rounded-full bg-blue-600">
+                                    <svg class="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Wajib Sesuai Peraturan</h3>
+                                <p class="text-gray-600 mt-1">Semua mahasiswa harus mengikuti dress code yang telah ditetapkan universitas</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="flex items-center justify-center h-6 w-6 rounded-full bg-blue-600">
+                                    <svg class="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Lihat Panduan Video</h3>
+                                <p class="text-gray-600 mt-1">Video menjelaskan detail lengkap dress code dan tata cara wisuda</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Video/Frame -->
+                <div class="order-1 lg:order-2">
+                    <div class="relative">
+                        <!-- Video Frame -->
+                        <div class="aspect-video bg-gray-900 rounded-2xl shadow-2xl overflow-hidden">
+                            <iframe
+                                class="w-full h-full"
+                                src="https://drive.google.com/file/d/1pk6rar3ifQ3Wvm8656RZILGwqjIZOMMp/preview"
+                                title="Tatacara Dresscode Wisuda"
+                                allow="autoplay"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <!-- Decorative accent -->
+                        <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-blue-100 rounded-2xl opacity-50 z-0"></div>
+                        <div class="absolute -top-4 -left-4 w-24 h-24 bg-blue-50 rounded-2xl opacity-50 z-0"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Features Section -->
     <section id="features" class="py-24 md:py-32 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
