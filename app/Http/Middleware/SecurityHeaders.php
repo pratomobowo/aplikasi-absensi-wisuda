@@ -36,7 +36,7 @@ class SecurityHeaders
                 "img-src 'self' data: blob: https:; " .
                 "worker-src 'self' blob:; " .
                 "connect-src 'self'; " .
-                "frame-src 'self' https://www.google.com https://maps.google.com;"
+                "frame-src 'self' https://www.google.com https://maps.google.com https://drive.google.com;"
             );
         }
 
