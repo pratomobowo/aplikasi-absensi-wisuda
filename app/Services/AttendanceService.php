@@ -157,23 +157,6 @@ class AttendanceService
                 }
             }
 
-            // Validate event is active
-            if ($ticket->graduationEvent) {
-                $event = $ticket->graduationEvent;
-                $now = now();
-                
-                if ($event->date && $event->date->isFuture()) {
-                    $duration = round((microtime(true) - $startTime) * 1000, 2);
-                    Log::warning('AttendanceService: Event not started yet', [
-                        'event_id' => $event->id,
-                        'event_date' => $event->date->toIso8601String(),
-                    ]);
-                    $this->logScanAttempt($qrData, $scanner, false, self::ERROR_EVENT_NOT_ACTIVE, $duration);
-                    
-                    return $this->buildErrorResponse(self::ERROR_EVENT_NOT_ACTIVE, $duration);
-                }
-            }
-
             // Record attendance with transaction
             DB::beginTransaction();
             
