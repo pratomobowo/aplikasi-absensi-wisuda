@@ -47,9 +47,6 @@ class ManualCheckInAction extends Action
                         ->body($result['message'])
                         ->success()
                         ->send();
-
-                    // Dispatch event to refresh the table
-                    $this->dispatchBrowserEvent('refreshAttendanceTable');
                 } else {
                     Notification::make()
                         ->title('Gagal')
