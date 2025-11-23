@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\MahasiswaResource\Pages;
 
+use App\Exports\MahasiswaExport;
 use App\Exports\MahasiswaTemplateExport;
 use App\Filament\Resources\MahasiswaResource;
 use App\Imports\MahasiswaImport;
@@ -18,6 +19,14 @@ class ListMahasiswas extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('export')
+                ->label('Export Excel')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('success')
+                ->action(function () {
+                    $fileName = 'Data-Mahasiswa-' . now()->format('Y-m-d-His') . '.xlsx';
+                    return Excel::download(new MahasiswaExport(), $fileName);
+                }),
             Actions\Action::make('downloadTemplate')
                 ->label('Download Template')
                 ->icon('heroicon-o-arrow-down-tray')
