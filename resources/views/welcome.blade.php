@@ -84,8 +84,8 @@
                         </svg>
                     </a>
                 @endauth
-                <a href="#features" class="inline-flex items-center justify-center px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-xl border-2 border-white/30 hover:bg-white hover:text-blue-600 transition-all duration-200">
-                    Pelajari Lebih Lanjut
+                <a href="https://drive.google.com/file/d/1GJgvqFiFWBrjLsFdLLTkCXXjA4pm73gi/view?usp=sharing" target="_blank" class="inline-flex items-center justify-center px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-xl border-2 border-white/30 hover:bg-white hover:text-blue-600 transition-all duration-200">
+                    Rundown Acara
                 </a>
             </div>
         </div>
