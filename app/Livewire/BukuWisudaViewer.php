@@ -36,6 +36,6 @@ class BukuWisudaViewer extends Component
     public function render()
     {
         return view('livewire.buku-wisuda-viewer')
-            ->layout('layouts.app');
+            ->layout('layouts.public');
     }
 }

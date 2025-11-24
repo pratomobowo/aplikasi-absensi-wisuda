@@ -11,7 +11,7 @@ class BukuWisudaController extends Controller
 {
     /**
      * Get PDF file for flipbook viewer
-     * Only authenticated users can access
+     * Public access (no authentication required)
      */
     public function getPdf($slug)
     {
@@ -55,7 +55,7 @@ class BukuWisudaController extends Controller
 
     /**
      * Get PDF file for admin flipbook viewer
-     * Only authenticated admins can access
+     * Admin access only
      */
     public function getAdminPdf($slug)
     {
