@@ -70,6 +70,9 @@ class BukuWisudaController extends Controller
         // Get file path
         $filePath = Storage::disk('buku_wisuda')->path($buku->file_path);
 
+        // Record download
+        $buku->recordDownload();
+
         // Return file for streaming
         return response()->file($filePath, [
             'Content-Type' => 'application/pdf',
@@ -89,6 +92,9 @@ class BukuWisudaController extends Controller
         }
 
         $filePath = Storage::disk('buku_wisuda')->path($buku->file_path);
+
+        // Record download
+        $buku->recordDownload();
 
         return response()->download($filePath, $buku->filename);
     }
