@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class BukuWisuda extends Model
 {
@@ -18,6 +19,7 @@ class BukuWisuda extends Model
     protected $fillable = [
         'graduation_event_id',
         'filename',
+        'slug',
         'file_path',
         'file_size',
         'mime_type',
@@ -38,6 +40,40 @@ class BukuWisuda extends Model
     }
 
     /**
+     * Boot method to auto-generate slug from filename
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (!$model->slug) {
+                $model->slug = Str::slug($model->filename, '-');
+
+                // Handle duplicate slugs
+                $count = static::where('slug', 'like', $model->slug . '%')->count();
+                if ($count > 0) {
+                    $model->slug = $model->slug . '-' . ($count + 1);
+                }
+            }
+        });
+
+        static::updating(function ($model) {
+            if ($model->isDirty('filename') && !$model->isDirty('slug')) {
+                $model->slug = Str::slug($model->filename, '-');
+
+                // Handle duplicate slugs when updating
+                $count = static::where('slug', 'like', $model->slug . '%')
+                    ->where('id', '!=', $model->id)
+                    ->count();
+                if ($count > 0) {
+                    $model->slug = $model->slug . '-' . ($count + 1);
+                }
+            }
+        });
+    }
+
+    /**
      * Get the graduation event that owns the buku wisuda.
      */
     public function graduationEvent(): BelongsTo
@@ -50,7 +86,7 @@ class BukuWisuda extends Model
      */
     public function getDownloadUrl(): string
     {
-        return route('buku-wisuda.download', ['id' => $this->id, 'token' => base64_encode($this->file_path)]);
+        return route('buku-wisuda.download', ['slug' => $this->slug, 'token' => base64_encode($this->file_path)]);
     }
 
     /**

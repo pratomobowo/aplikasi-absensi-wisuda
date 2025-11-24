@@ -30,19 +30,19 @@ Route::get('/scanner', Scanner::class)
 
 // Buku Wisuda PDF serving routes - protected with student authentication
 Route::middleware('auth:mahasiswa')->group(function () {
-    Route::get('/buku-wisuda/viewer/{id}', App\Livewire\BukuWisudaViewer::class)->name('buku-wisuda.viewer');
-    Route::get('/buku-wisuda/pdf/{id}', [BukuWisudaController::class, 'getPdf'])
+    Route::get('/buku-wisuda/viewer/{slug}', App\Livewire\BukuWisudaViewer::class)->name('buku-wisuda.viewer');
+    Route::get('/buku-wisuda/pdf/{slug}', [BukuWisudaController::class, 'getPdf'])
         ->name('buku-wisuda.get-pdf');
-    Route::get('/buku-wisuda/download/{id}', [BukuWisudaController::class, 'download'])
+    Route::get('/buku-wisuda/download/{slug}', [BukuWisudaController::class, 'download'])
         ->name('buku-wisuda.download');
 });
 
 // Buku Wisuda admin routes - protected with admin authentication (auto-registered by Filament)
 Route::middleware('auth')->group(function () {
-    Route::get('/admin/buku-wisuda/viewer/{id}', App\Livewire\BukuWisudaAdminViewer::class)->name('buku-wisuda.admin-viewer');
-    Route::get('/admin/buku-wisuda/pdf/{id}', [BukuWisudaController::class, 'getAdminPdf'])
+    Route::get('/admin/buku-wisuda/viewer/{slug}', App\Livewire\BukuWisudaAdminViewer::class)->name('buku-wisuda.admin-viewer');
+    Route::get('/admin/buku-wisuda/pdf/{slug}', [BukuWisudaController::class, 'getAdminPdf'])
         ->name('buku-wisuda.admin-pdf');
-    Route::get('/admin/buku-wisuda/download/{id}', [BukuWisudaController::class, 'downloadAdmin'])
+    Route::get('/admin/buku-wisuda/download/{slug}', [BukuWisudaController::class, 'downloadAdmin'])
         ->name('buku-wisuda.admin-download');
 });
 

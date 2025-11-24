@@ -13,10 +13,10 @@ class BukuWisudaController extends Controller
      * Get PDF file for flipbook viewer
      * Only authenticated users can access
      */
-    public function getPdf($id)
+    public function getPdf($slug)
     {
-        // Get buku wisuda
-        $buku = BukuWisuda::findOrFail($id);
+        // Get buku wisuda by slug
+        $buku = BukuWisuda::where('slug', $slug)->firstOrFail();
 
         // Check if file exists
         if (!Storage::disk('buku_wisuda')->exists($buku->file_path)) {
@@ -39,9 +39,9 @@ class BukuWisudaController extends Controller
     /**
      * Download PDF file
      */
-    public function download($id)
+    public function download($slug)
     {
-        $buku = BukuWisuda::findOrFail($id);
+        $buku = BukuWisuda::where('slug', $slug)->firstOrFail();
 
         if (!Storage::disk('buku_wisuda')->exists($buku->file_path)) {
             abort(404, 'File not found');
@@ -57,10 +57,10 @@ class BukuWisudaController extends Controller
      * Get PDF file for admin flipbook viewer
      * Only authenticated admins can access
      */
-    public function getAdminPdf($id)
+    public function getAdminPdf($slug)
     {
-        // Get buku wisuda
-        $buku = BukuWisuda::findOrFail($id);
+        // Get buku wisuda by slug
+        $buku = BukuWisuda::where('slug', $slug)->firstOrFail();
 
         // Check if file exists
         if (!Storage::disk('buku_wisuda')->exists($buku->file_path)) {
@@ -80,9 +80,9 @@ class BukuWisudaController extends Controller
     /**
      * Download PDF file for admin
      */
-    public function downloadAdmin($id)
+    public function downloadAdmin($slug)
     {
-        $buku = BukuWisuda::findOrFail($id);
+        $buku = BukuWisuda::where('slug', $slug)->firstOrFail();
 
         if (!Storage::disk('buku_wisuda')->exists($buku->file_path)) {
             abort(404, 'File not found');

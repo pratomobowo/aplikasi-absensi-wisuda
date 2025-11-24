@@ -51,6 +51,12 @@ class BukuWisudaResource extends Resource
                             ->storeFileNamesIn('filename')
                             ->helperText('Format: PDF. Max: 1000MB'),
 
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug URL')
+                            ->readOnly()
+                            ->columnSpanFull()
+                            ->helperText('Auto-generated dari nama file'),
+
                         Forms\Components\Hidden::make('uploaded_at')
                             ->default(now()),
 
@@ -74,6 +80,13 @@ class BukuWisudaResource extends Resource
                     ->label('Nama File')
                     ->searchable()
                     ->limit(30),
+
+                Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug URL')
+                    ->searchable()
+                    ->limit(30)
+                    ->copyable()
+                    ->copyableState(fn (BukuWisuda $record): string => route('buku-wisuda.viewer', $record->slug)),
 
                 Tables\Columns\TextColumn::make('file_size')
                     ->label('Ukuran')
@@ -108,7 +121,7 @@ class BukuWisudaResource extends Resource
                 Tables\Actions\Action::make('view')
                     ->label('Lihat Buku')
                     ->icon('heroicon-o-eye')
-                    ->url(fn (BukuWisuda $record): string => route('buku-wisuda.admin-viewer', $record->id))
+                    ->url(fn (BukuWisuda $record): string => route('buku-wisuda.admin-viewer', $record->slug))
                     ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
