@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Log;
 
 class SiakadService
 {
-    protected string $baseUrl;
+    protected ?string $baseUrl;
     protected array  $headers;
-    protected string $fotoBaseUrl;
+    protected ?string $fotoBaseUrl;
 
     public function __construct()
     {
@@ -22,6 +22,10 @@ class SiakadService
             'X-App-Key'    => config('services.siakad.app_key'),
             'X-Secret-Key' => config('services.siakad.secret_key'),
         ];
+
+        if (empty($this->baseUrl)) {
+            throw new \RuntimeException('Konfigurasi SIAKAD_API_URL belum diatur di file .env');
+        }
     }
 
     public function fetchKelulusan(?string $periode = null): array
