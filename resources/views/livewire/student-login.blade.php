@@ -26,7 +26,7 @@
                         Portal Mahasiswa
                     </div>
                     <h1 class="text-5xl xl:text-6xl font-bold mb-4 leading-tight">
-                        Selamat Datang di<br/>Portal E-Wisuda
+                        Selamat Datang
                     </h1>
                     <p class="text-xl text-blue-50 leading-relaxed">
                         Login untuk mengakses dashboard Anda dan upload foto wisuda

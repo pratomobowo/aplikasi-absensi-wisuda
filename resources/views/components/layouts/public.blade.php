@@ -45,11 +45,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <div class="flex-shrink-0">
-                    <a href="{{ url('/') }}" class="flex items-center space-x-3 group">
+                    <a href="{{ url('/') }}" class="flex items-center group">
                         <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo E-Wisuda" class="h-12 w-auto transform group-hover:scale-110 transition-transform duration-200">
-                        <span class="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                            E-Wisuda
-                        </span>
                     </a>
                 </div>
                 
@@ -143,11 +140,10 @@
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div>
-                    <div class="flex items-center space-x-2 mb-4">
+                    <div class="flex items-center mb-4">
                         <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo E-Wisuda" class="h-10 w-auto">
-                        <h3 class="text-white text-lg font-bold">E-Wisuda</h3>
                     </div>
-                    <p class="text-sm leading-relaxed text-blue-100">Portal E-Wisuda Universitas Sangga Buana dengan sistem terintegrasi.</p>
+                    <p class="text-sm leading-relaxed text-blue-100">Portal Universitas Sangga Buana dengan sistem terintegrasi.</p>
                 </div>
                 <div>
                     <h3 class="text-white text-lg font-semibold mb-4">Menu Cepat</h3>
@@ -215,7 +211,7 @@
                 </div>
             </div>
             <div class="border-t border-white/20 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-sm text-blue-100">&copy; {{ date('Y') }} E-Wisuda Universitas Sangga Buana. All rights reserved.</p>
+                <p class="text-sm text-blue-100">&copy; {{ date('Y') }} Universitas Sangga Buana. All rights reserved.</p>
                 <div class="flex space-x-6 mt-4 md:mt-0">
                     <a href="#" class="text-blue-100 hover:text-white transition-colors duration-200 text-sm">Privacy</a>
                     <a href="#" class="text-blue-100 hover:text-white transition-colors duration-200 text-sm">Terms</a>
