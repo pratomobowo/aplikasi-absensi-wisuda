@@ -151,4 +151,27 @@ class MahasiswaController extends Controller
     {
         return Excel::download(new MahasiswaTemplateExport, 'template-mahasiswa.xlsx');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return redirect()->route('admin.mahasiswa.index')->with('error', 'Tidak ada data yang dipilih.');
+        }
+
+        $count = 0;
+        foreach ($ids as $id) {
+            $mahasiswa = Mahasiswa::find($id);
+            if ($mahasiswa) {
+                if ($mahasiswa->foto_wisuda) {
+                    Storage::disk('public')->delete('graduation-photos/' . $mahasiswa->foto_wisuda);
+                }
+                $mahasiswa->delete();
+                $count++;
+            }
+        }
+
+        return redirect()->route('admin.mahasiswa.index')->with('success', "{$count} data wisudawan berhasil dihapus.");
+    }
 }

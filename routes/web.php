@@ -97,6 +97,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/mahasiswa/template', [MahasiswaController::class, 'downloadTemplate'])->name('mahasiswa.template');
         Route::post('/mahasiswa/import', [MahasiswaController::class, 'import'])->name('mahasiswa.import');
         Route::post('/mahasiswa/{mahasiswa}/reset-password', [MahasiswaController::class, 'resetPassword'])->name('mahasiswa.reset-password');
+        Route::delete('/mahasiswa/bulk-delete', [MahasiswaController::class, 'bulkDelete'])->name('mahasiswa.bulk-delete');
         Route::resource('mahasiswa', MahasiswaController::class);
 
         // Graduation Events
