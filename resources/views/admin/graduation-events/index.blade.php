@@ -90,39 +90,6 @@
                                     </form>
                                 @endif
                                 
-                                <!-- Change Status Dropdown -->
-                                <div class="relative inline-block text-left" x-data="{ open: false }">
-                                    <button @click="open = !open" type="button" class="text-primary-600 hover:text-primary-800">
-                                        Ubah Status
-                                    </button>
-                                    <div x-show="open" @click.away="open = false" 
-                                         class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                                        <div class="py-1">
-                                            <form action="{{ route('admin.graduation-events.set-status', $event) }}" method="POST" class="block">
-                                                @csrf
-                                                <input type="hidden" name="status" value="upcoming">
-                                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ $event->status === 'upcoming' ? 'bg-blue-50 text-blue-700' : '' }}">
-                                                    Akan Datang
-                                                </button>
-                                            </form>
-                                            <form action="{{ route('admin.graduation-events.set-status', $event) }}" method="POST" class="block">
-                                                @csrf
-                                                <input type="hidden" name="status" value="active">
-                                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ $event->status === 'active' ? 'bg-green-50 text-green-700' : '' }}">
-                                                    Aktif
-                                                </button>
-                                            </form>
-                                            <form action="{{ route('admin.graduation-events.set-status', $event) }}" method="POST" class="block">
-                                                @csrf
-                                                <input type="hidden" name="status" value="completed">
-                                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 {{ $event->status === 'completed' ? 'bg-red-50' : '' }}" onclick="return confirm('Yakin menandai acara ini sebagai selesai? Data akan diarsipkan.')">
-                                                    Selesai (Arsip)
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                
                                 <form action="{{ route('admin.graduation-events.generate-tickets', $event) }}" method="POST" class="inline">
                                     @csrf
                                     <button type="submit" class="text-blue-600 hover:text-blue-800">Generate Tiket</button>

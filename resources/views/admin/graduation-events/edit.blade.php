@@ -76,7 +76,9 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Status *</label>
-                        <select name="status" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                        <select name="status" id="status-select" required 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                                onchange="if(this.value === 'completed' && !confirm('PERINGATAN: Menandai acara sebagai SELESAI akan mengarsipkan semua data tiket, kehadiran, dan konsumsi. Data tidak akan terhapus tapi tidak akan muncul di dashboard. Lanjutkan?')) { this.value = '{{ old('status', $graduationEvent->status) }}'; }">
                             <option value="upcoming" {{ old('status', $graduationEvent->status) == 'upcoming' ? 'selected' : '' }}>Akan Datang</option>
                             <option value="active" {{ old('status', $graduationEvent->status) == 'active' ? 'selected' : '' }}>Aktif</option>
                             <option value="completed" {{ old('status', $graduationEvent->status) == 'completed' ? 'selected' : '' }}>Selesai (Arsip)</option>
@@ -86,6 +88,9 @@
                             <strong>Aktif:</strong> Event sedang berlangsung | 
                             <strong>Selesai:</strong> Event selesai, data diarsipkan
                         </p>
+                        @if($graduationEvent->status === 'completed')
+                            <p class="text-xs text-red-600 mt-1 font-medium">⚠️ Acara ini sudah diarsip. Mengubah status akan mengembalikan data ke dashboard.</p>
+                        @endif
                     </div>
 
                     <input type="hidden" name="is_active" value="{{ $graduationEvent->is_active ? '1' : '0' }}">

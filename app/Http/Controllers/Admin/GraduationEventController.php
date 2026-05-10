@@ -70,6 +70,15 @@ class GraduationEventController extends Controller
     {
         $data = $request->validated();
 
+        // Handle status changes
+        if (isset($data['status']) && $data['status'] === 'completed' && $graduationEvent->status !== 'completed') {
+            $data['is_active'] = false;
+        } elseif (isset($data['status']) && $data['status'] === 'active') {
+            $data['is_active'] = true;
+        } elseif (isset($data['status']) && $data['status'] === 'upcoming') {
+            $data['is_active'] = false;
+        }
+
         if ($request->hasFile('feature_image')) {
             if ($graduationEvent->feature_image) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete('event-features/' . $graduationEvent->feature_image);
@@ -79,6 +88,27 @@ class GraduationEventController extends Controller
         }
 
         $graduationEvent->update($data);
+
+        // Archive data if status changed to completed
+        if (isset($data['status']) && $data['status'] === 'completed' && $graduationEvent->status === 'completed') {
+            $now = now();
+            
+            \App\Models\GraduationTicket::where('graduation_event_id', $graduationEvent->id)
+                ->whereNull('archived_at')
+                ->update(['archived_at' => $now]);
+            
+            \App\Models\Attendance::whereHas('graduationTicket', function ($q) use ($graduationEvent) {
+                $q->where('graduation_event_id', $graduationEvent->id);
+            })
+            ->whereNull('archived_at')
+            ->update(['archived_at' => $now]);
+            
+            \App\Models\KonsumsiRecord::whereHas('graduationTicket', function ($q) use ($graduationEvent) {
+                $q->where('graduation_event_id', $graduationEvent->id);
+            })
+            ->whereNull('archived_at')
+            ->update(['archived_at' => $now]);
+        }
 
         return redirect()->route('admin.graduation-events.index')->with('success', 'Acara wisuda berhasil diperbarui.');
     }
