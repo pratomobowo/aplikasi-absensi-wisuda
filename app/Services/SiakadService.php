@@ -42,7 +42,7 @@ class SiakadService
         $lastPage = $first->json('meta.last_page') ?? 1;
         $allData  = array_merge($allData, $first->json('data') ?? []);
 
-        echo "  Halaman 1/{$lastPage} (" . count($first->json('data') ?? []) . " data)\n";
+        Log::info("Fetch kelulusan halaman 1/{$lastPage} (" . count($first->json('data') ?? []) . " data)");
 
         // Halaman berikutnya
         for ($page = 2; $page <= $lastPage; $page++) {
@@ -60,7 +60,7 @@ class SiakadService
             $data    = $response->json('data') ?? [];
             $allData = array_merge($allData, $data);
 
-            echo "  Halaman {$page}/{$lastPage} (" . count($data) . " data)\n";
+            Log::info("Fetch kelulusan halaman {$page}/{$lastPage} (" . count($data) . " data)");
         }
 
         return $allData;
@@ -77,7 +77,7 @@ class SiakadService
                 return $response;
             }
 
-            echo "  403 pada halaman {$params['page']}, percobaan {$attempt}/{$maxRetry}, tunggu 3 detik...\n";
+            Log::warning("403 pada halaman {$params['page']}, percobaan {$attempt}/{$maxRetry}, tunggu 3 detik...");
             sleep(3);
         }
 
