@@ -11,7 +11,7 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Attendance::notArchived()-with([
+        $query = Attendance::notArchived()->with([
             'graduationTicket.mahasiswa',
             'graduationTicket.graduationEvent',
             'scannedBy'

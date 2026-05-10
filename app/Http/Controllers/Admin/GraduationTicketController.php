@@ -15,7 +15,7 @@ class GraduationTicketController extends Controller
 {
     public function index(Request $request)
     {
-        $query = GraduationTicket::notArchived()-with(['mahasiswa', 'graduationEvent', 'attendances']);
+        $query = GraduationTicket::notArchived()->with(['mahasiswa', 'graduationEvent', 'attendances']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
