@@ -87,10 +87,12 @@ class BukuWisudaController extends Controller
     {
         $preview = $this->bukuWisudaService->generatePreview($event);
         $bukuWisuda = BukuWisuda::where('graduation_event_id', $event->id)->first();
+        $grouped = $this->bukuWisudaService->groupByJurusan($preview['mahasiswa']);
         
         return view('admin.buku-wisuda.preview', array_merge($preview, [
             'bukuWisuda' => $bukuWisuda,
             'event' => $event,
+            'grouped' => $grouped,
         ]));
     }
 

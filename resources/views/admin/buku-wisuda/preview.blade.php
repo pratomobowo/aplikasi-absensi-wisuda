@@ -88,54 +88,59 @@
             </div>
         </div>
 
-        <!-- Preview List -->
+        <!-- Preview List Grouped by Jurusan -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-900">Preview Data Wisudawan</h3>
-                <p class="text-sm text-gray-600 mt-1">Berikut adalah data yang akan dimasukkan ke dalam buku wisuda</p>
+                <p class="text-sm text-gray-600 mt-1">Data dikelompokkan berdasarkan Program Studi</p>
             </div>
-            <table class="w-full">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Foto</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">NPM</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Program Studi</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Judul Skripsi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    @forelse($mahasiswa as $index => $mhs)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 text-sm text-gray-900">{{ $index + 1 }}</td>
-                            <td class="px-6 py-4">
-                                @if($mhs->foto_wisuda)
-                                    <img src="{{ $mhs->getFotoWisudaUrlAttribute() }}" 
-                                         alt="{{ $mhs->nama }}"
-                                         class="w-12 h-16 object-cover rounded border border-gray-200">
-                                @else
-                                    <div class="w-12 h-16 bg-gray-200 rounded flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                        </svg>
-                                    </div>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $mhs->nama }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $mhs->npm }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $mhs->program_studi ?? '-' }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600 max-w-md truncate">{{ $mhs->judul_skripsi ?? '-' }}</td>
-                        </tr>
-                    @empty
+            
+            @forelse($grouped as $jurusan => $listMahasiswa)
+                <div class="bg-blue-50 px-6 py-3 border-b border-blue-100">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-blue-900">{{ $jurusan }}</h4>
+                        <span class="text-sm text-blue-700">{{ count($listMahasiswa) }} Mahasiswa</span>
+                    </div>
+                </div>
+                <table class="w-full">
+                    <thead class="bg-gray-50">
                         <tr>
-                            <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">
-                                Tidak ada data wisudawan untuk acara ini
-                            </td>
+                            <th class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase w-12">No</th>
+                            <th class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase w-16">Foto</th>
+                            <th class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                            <th class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase">NPM</th>
+                            <th class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase">Judul Skripsi</th>
                         </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @foreach($listMahasiswa as $index => $mhs)
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-3 text-sm text-gray-900">{{ $index + 1 }}</td>
+                                <td class="px-6 py-3">
+                                    @if($mhs->foto_wisuda)
+                                        <img src="{{ $mhs->getFotoWisudaUrlAttribute() }}" 
+                                             alt="{{ $mhs->nama }}"
+                                             class="w-10 h-12 object-cover rounded border border-gray-200">
+                                    @else
+                                        <div class="w-10 h-12 bg-gray-200 rounded flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                            </svg>
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-3 text-sm font-medium text-gray-900">{{ $mhs->nama }}</td>
+                                <td class="px-6 py-3 text-sm text-gray-600">{{ $mhs->npm }}</td>
+                                <td class="px-6 py-3 text-sm text-gray-600 max-w-md truncate">{{ $mhs->judul_skripsi ?? '-' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @empty
+                <div class="px-6 py-8 text-center text-sm text-gray-500">
+                    Tidak ada data wisudawan untuk acara ini
+                </div>
+            @endforelse
         </div>
     </div>
 @endsection

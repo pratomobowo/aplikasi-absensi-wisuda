@@ -20,6 +20,7 @@ class BukuWisudaService
             $query->where('graduation_event_id', $event->id)
                   ->whereNull('archived_at');
         })
+        ->orderBy('program_studi', 'asc')
         ->orderBy('nama', 'asc')
         ->get();
     }
@@ -39,11 +40,28 @@ class BukuWisudaService
     }
 
     /**
+     * Group mahasiswa by program studi
+     */
+    public function groupByJurusan($mahasiswa): array
+    {
+        $grouped = [];
+        foreach ($mahasiswa as $mhs) {
+            $jurusan = $mhs->program_studi ?? 'Belum diisi';
+            if (!isset($grouped[$jurusan])) {
+                $grouped[$jurusan] = [];
+            }
+            $grouped[$jurusan][] = $mhs;
+        }
+        return $grouped;
+    }
+
+    /**
      * Generate PDF for buku wisuda using Browsershot
      */
     public function generatePdf(GraduationEvent $event, string $generatedBy): BukuWisuda
     {
         $mahasiswa = $this->getMahasiswaForEvent($event);
+        $grouped = $this->groupByJurusan($mahasiswa);
         
         // Generate filename
         $filename = 'Buku_Wisuda_' . Str::slug($event->name) . '_' . now()->format('Y-m-d') . '.pdf';
@@ -52,6 +70,7 @@ class BukuWisudaService
         $html = view('admin.buku-wisuda.pdf-template', [
             'event' => $event,
             'mahasiswa' => $mahasiswa,
+            'grouped' => $grouped,
         ])->render();
         
         // Path untuk menyimpan PDF
