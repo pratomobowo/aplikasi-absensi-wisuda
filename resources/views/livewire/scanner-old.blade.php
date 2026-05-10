@@ -11,7 +11,7 @@
                         <h1 class="text-xl md:text-2xl font-bold text-gray-900">Scanner Absensi</h1>
                         
                         <!-- Logout button on the right -->
-                        <form method="POST" action="{{ route('filament.admin.auth.logout') }}" class="inline">
+                        <form method="POST" action="{{ route('admin.logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center space-x-2 shadow-sm hover:shadow-md">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,7 +97,7 @@
                 <div class="px-4 md:px-6 py-4">
                     <div class="flex items-center justify-between">
                         <h1 class="text-xl md:text-2xl font-bold text-gray-900">Scanner Absensi</h1>
-                        <form method="POST" action="{{ route('filament.admin.auth.logout') }}" class="inline">
+                        <form method="POST" action="{{ route('admin.logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center space-x-2 shadow-sm hover:shadow-md">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -182,7 +182,7 @@
                 <div class="px-4 md:px-6 py-4">
                     <div class="flex items-center justify-between">
                         <h1 class="text-xl md:text-2xl font-bold text-gray-900">Scanner Absensi</h1>
-                        <form method="POST" action="{{ route('filament.admin.auth.logout') }}" class="inline">
+                        <form method="POST" action="{{ route('admin.logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center space-x-2 shadow-sm hover:shadow-md">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

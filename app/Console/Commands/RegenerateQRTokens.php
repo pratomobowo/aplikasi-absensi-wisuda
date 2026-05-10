@@ -20,7 +20,7 @@ class RegenerateQRTokens extends Command
      *
      * @var string
      */
-    protected $description = 'Regenerate QR tokens for graduation tickets with proper encryption';
+    protected $description = 'Regenerate QR tokens for graduation tickets with v2 encryption';
 
     protected QRCodeService $qrCodeService;
 
@@ -39,7 +39,9 @@ class RegenerateQRTokens extends Command
         $this->newLine();
 
         // Get tickets to regenerate
-        if ($ticketId = $this->option('ticket')) {
+        $ticketId = $this->option('ticket');
+
+        if ($ticketId !== null) {
             $tickets = GraduationTicket::where('id', $ticketId)->get();
 
             if ($tickets->isEmpty()) {
@@ -94,10 +96,14 @@ class RegenerateQRTokens extends Command
 
                     $encrypted = $this->qrCodeService->encryptQRData($data);
 
-                    // Verify encryption worked
+                    // Verify v2 encryption worked
                     $decrypted = $this->qrCodeService->decryptQRData($encrypted);
 
-                    if (!$decrypted) {
+                    if (!$decrypted ||
+                        ($decrypted['version'] ?? null) !== 2 ||
+                        ($decrypted['ticket_id'] ?? null) !== $ticket->id ||
+                        ($decrypted['role'] ?? null) !== $role ||
+                        ($decrypted['event_id'] ?? null) !== $ticket->graduation_event_id) {
                         throw new \Exception("Failed to verify encrypted token for role: {$role}");
                     }
 

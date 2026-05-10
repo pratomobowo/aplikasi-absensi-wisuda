@@ -1,6 +1,16 @@
 <?php
 
-use App\Http\Controllers\BukuWisudaController;
+use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\AttendanceController;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\BukuWisudaController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\GraduationEventController;
+use App\Http\Controllers\Admin\GraduationTicketController;
+use App\Http\Controllers\Admin\KonsumsiController;
+use App\Http\Controllers\Admin\MahasiswaController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\BukuWisudaController as PublicBukuWisudaController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\StudentAuthController;
@@ -30,17 +40,17 @@ Route::get('/scanner', Scanner::class)
 
 // Buku Wisuda PDF serving routes - public (no authentication required)
 Route::get('/buku-wisuda/viewer/{slug}', App\Livewire\BukuWisudaViewer::class)->name('buku-wisuda.viewer');
-Route::get('/buku-wisuda/pdf/{slug}', [BukuWisudaController::class, 'getPdf'])
+Route::get('/buku-wisuda/pdf/{slug}', [PublicBukuWisudaController::class, 'getPdf'])
     ->name('buku-wisuda.get-pdf');
-Route::get('/buku-wisuda/download/{slug}', [BukuWisudaController::class, 'download'])
+Route::get('/buku-wisuda/download/{slug}', [PublicBukuWisudaController::class, 'download'])
     ->name('buku-wisuda.download');
 
-// Buku Wisuda admin routes - protected with admin authentication (auto-registered by Filament)
-Route::middleware('auth')->group(function () {
+// Buku Wisuda admin routes - protected with admin authentication
+Route::middleware(['auth', 'admin.only'])->group(function () {
     Route::get('/admin/buku-wisuda/viewer/{slug}', App\Livewire\BukuWisudaAdminViewer::class)->name('buku-wisuda.admin-viewer');
-    Route::get('/admin/buku-wisuda/pdf/{slug}', [BukuWisudaController::class, 'getAdminPdf'])
+    Route::get('/admin/buku-wisuda/pdf/{slug}', [PublicBukuWisudaController::class, 'getAdminPdf'])
         ->name('buku-wisuda.admin-pdf');
-    Route::get('/admin/buku-wisuda/download/{slug}', [BukuWisudaController::class, 'downloadAdmin'])
+    Route::get('/admin/buku-wisuda/download/{slug}', [PublicBukuWisudaController::class, 'downloadAdmin'])
         ->name('buku-wisuda.admin-download');
 });
 
@@ -48,7 +58,9 @@ Route::middleware('auth')->group(function () {
 Route::prefix('student')->name('student.')->group(function () {
     // Guest routes (not authenticated)
     Route::middleware('guest:mahasiswa')->group(function () {
-        Route::get('/login', App\Livewire\StudentLogin::class)->name('login');
+        Route::get('/login', App\Livewire\StudentLogin::class)
+            ->middleware('throttle:student-login')
+            ->name('login');
     });
 
     // Protected routes (authenticated students only)
@@ -65,5 +77,54 @@ Route::prefix('student')->name('student.')->group(function () {
     });
 });
 
-// Filament routes are auto-registered by the Filament package
-// Admin panel accessible at /admin
+// Admin routes
+Route::prefix('admin')->name('admin.')->group(function () {
+    // Auth routes
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [AuthController::class, 'login']);
+    });
+
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+    // Protected admin routes
+    Route::middleware(['auth', 'admin.only'])->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Mahasiswa
+        Route::get('/mahasiswa/export', [MahasiswaController::class, 'export'])->name('mahasiswa.export');
+        Route::get('/mahasiswa/template', [MahasiswaController::class, 'downloadTemplate'])->name('mahasiswa.template');
+        Route::post('/mahasiswa/import', [MahasiswaController::class, 'import'])->name('mahasiswa.import');
+        Route::post('/mahasiswa/{mahasiswa}/reset-password', [MahasiswaController::class, 'resetPassword'])->name('mahasiswa.reset-password');
+        Route::resource('mahasiswa', MahasiswaController::class);
+
+        // Graduation Events
+        Route::post('/graduation-events/{graduation_event}/set-active', [GraduationEventController::class, 'setActive'])->name('graduation-events.set-active');
+        Route::post('/graduation-events/{graduation_event}/generate-tickets', [GraduationEventController::class, 'generateTickets'])->name('graduation-events.generate-tickets');
+        Route::get('/graduation-events/{graduation_event}/export-tickets', [GraduationEventController::class, 'exportTickets'])->name('graduation-events.export-tickets');
+        Route::resource('graduation-events', GraduationEventController::class);
+
+        // Graduation Tickets
+        Route::post('/graduation-tickets/bulk-create', [GraduationTicketController::class, 'bulkCreate'])->name('graduation-tickets.bulk-create');
+        Route::resource('graduation-tickets', GraduationTicketController::class);
+
+        // Buku Wisuda
+        Route::resource('buku-wisuda', BukuWisudaController::class);
+
+        // Attendance
+        Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+
+        // Konsumsi
+        Route::post('/konsumsi/{ticket}/toggle', [KonsumsiController::class, 'toggle'])->name('konsumsi.toggle');
+        Route::post('/konsumsi/bulk-mark-received', [KonsumsiController::class, 'bulkMarkReceived'])->name('konsumsi.bulk-mark-received');
+        Route::post('/konsumsi/bulk-mark-not-received', [KonsumsiController::class, 'bulkMarkNotReceived'])->name('konsumsi.bulk-mark-not-received');
+        Route::get('/konsumsi', [KonsumsiController::class, 'index'])->name('konsumsi.index');
+
+        // Users
+        Route::resource('users', UserController::class);
+
+        // Activity Logs
+        Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+        Route::get('/activity-logs/{activity_log}', [ActivityLogController::class, 'show'])->name('activity-logs.show');
+    });
+});

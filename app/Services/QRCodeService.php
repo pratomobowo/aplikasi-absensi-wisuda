@@ -6,6 +6,8 @@ use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Crypt;
 
 class QRCodeService
 {
@@ -30,38 +32,52 @@ class QRCodeService
     }
 
     /**
-     * Generate QR token (plain JSON without encryption)
-     *
-     * @param array $data
-     * @return string JSON token
+     * Generate an authenticated encrypted QR token.
      */
     public function encryptQRData(array $data): string
     {
-        // Add timestamp for reference
+        $data['version'] = 2;
         $data['timestamp'] = now()->toIso8601String();
-        
-        // Return plain JSON
-        return json_encode($data);
+
+        return Crypt::encryptString(json_encode($data, JSON_THROW_ON_ERROR));
     }
 
     /**
-     * Decode QR token (plain JSON without encryption)
-     *
-     * @param string $token
-     * @return array|null Decoded data or null if invalid
+     * Decode QR token. Supports v2 encrypted tokens and temporary legacy JSON.
      */
     public function decryptQRData(string $token): ?array
     {
         try {
-            // Decode JSON directly
-            $data = json_decode($token, true);
-            
+            $decrypted = Crypt::decryptString($token);
+            $data = json_decode($decrypted, true, 512, JSON_THROW_ON_ERROR);
+
             if (!is_array($data)) {
                 return null;
             }
-            
+
+            $data['_legacy'] = false;
+
             return $data;
-        } catch (\Exception $e) {
+        } catch (DecryptException|\JsonException) {
+            return $this->decodeLegacyQRData($token);
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
+    private function decodeLegacyQRData(string $token): ?array
+    {
+        try {
+            $data = json_decode($token, true, 512, JSON_THROW_ON_ERROR);
+
+            if (!is_array($data)) {
+                return null;
+            }
+
+            $data['_legacy'] = true;
+
+            return $data;
+        } catch (\JsonException) {
             return null;
         }
     }

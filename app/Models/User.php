@@ -3,14 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -75,13 +73,4 @@ class User extends Authenticatable implements FilamentUser
         return $query->where('role', 'scanner');
     }
 
-    /**
-     * Determine if the user can access the Filament panel.
-     */
-    public function canAccessPanel(Panel $panel): bool
-    {
-        // Allow both admin and scanner to login through Filament
-        // Scanner will be redirected to /scanner after login
-        return in_array($this->role, ['admin', 'scanner']);
-    }
 }

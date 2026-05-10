@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\GraduationTicket;
 use App\Models\KonsumsiRecord;
 use App\Models\Mahasiswa;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
@@ -21,6 +22,7 @@ class KonsumsiService
         'decryption_exception' => 'ERROR_DECRYPTION_EXCEPTION',
         'decryption_failed' => 'ERROR_DECRYPTION_FAILED',
         'missing_fields' => 'ERROR_MISSING_FIELDS',
+        'invalid_role' => 'ERROR_INVALID_ROLE',
         'ticket_not_found' => 'ERROR_TICKET_NOT_FOUND',
         'ticket_expired' => 'ERROR_TICKET_EXPIRED',
         'duplicate' => 'ERROR_KONSUMSI_DUPLICATE',
@@ -65,7 +67,30 @@ class KonsumsiService
             $ticket = $validation['ticket'];
 
             // Begin database transaction
-            return DB::transaction(function () use ($ticketId, $ticket, $scanner) {
+            return DB::transaction(function () use ($ticketId, $scanner) {
+                $ticket = GraduationTicket::with(['mahasiswa', 'graduationEvent'])
+                    ->whereKey($ticketId)
+                    ->lockForUpdate()
+                    ->first();
+
+                if (!$ticket) {
+                    return [
+                        'success' => false,
+                        'message' => $this->getErrorMessage(self::ERROR_CODES['ticket_not_found']),
+                        'data' => null,
+                        'reason' => self::ERROR_CODES['ticket_not_found'],
+                    ];
+                }
+
+                if ($ticket->konsumsi_diterima || $ticket->konsumsiRecord()->exists()) {
+                    return [
+                        'success' => false,
+                        'message' => $this->getErrorMessage(self::ERROR_CODES['duplicate']),
+                        'data' => null,
+                        'reason' => self::ERROR_CODES['duplicate'],
+                    ];
+                }
+
                 // Create konsumsi record
                 $konsumsi = KonsumsiRecord::create([
                     'graduation_ticket_id' => $ticketId,
@@ -101,6 +126,27 @@ class KonsumsiService
                     'reason' => 'success',
                 ];
             });
+        } catch (QueryException $e) {
+            Log::error('Database error recording konsumsi', [
+                'error' => $e->getMessage(),
+                'error_code' => $e->getCode(),
+            ]);
+
+            if ($this->isDuplicateKeyException($e)) {
+                return [
+                    'success' => false,
+                    'message' => $this->getErrorMessage(self::ERROR_CODES['duplicate']),
+                    'data' => null,
+                    'reason' => self::ERROR_CODES['duplicate'],
+                ];
+            }
+
+            return [
+                'success' => false,
+                'message' => $this->getErrorMessage(self::ERROR_CODES['database']),
+                'data' => null,
+                'reason' => self::ERROR_CODES['database'],
+            ];
         } catch (\Throwable $e) {
             Log::error('Error recording konsumsi', [
                 'error' => $e->getMessage(),
@@ -167,7 +213,7 @@ class KonsumsiService
         }
 
         // Step 3: Structure validation
-        if (!isset($decrypted['ticket_id']) || !isset($decrypted['event_id'])) {
+        if (!isset($decrypted['ticket_id']) || !isset($decrypted['event_id']) || !isset($decrypted['role'])) {
             return [
                 'valid' => false,
                 'ticket_id' => null,
@@ -178,6 +224,16 @@ class KonsumsiService
 
         $ticketId = $decrypted['ticket_id'];
         $eventId = $decrypted['event_id'];
+        $role = $decrypted['role'];
+
+        if ($role !== 'mahasiswa') {
+            return [
+                'valid' => false,
+                'ticket_id' => $ticketId,
+                'ticket' => null,
+                'reason' => self::ERROR_CODES['invalid_role'],
+            ];
+        }
 
         // Step 4: Database lookup
         $ticket = GraduationTicket::find($ticketId);
@@ -192,7 +248,7 @@ class KonsumsiService
         }
 
         // Step 5: Verify event exists and is active
-        if ($ticket->graduation_event_id !== $eventId) {
+        if ((int) $ticket->graduation_event_id !== (int) $eventId) {
             return [
                 'valid' => false,
                 'ticket_id' => $ticketId,
@@ -252,6 +308,7 @@ class KonsumsiService
             'ERROR_DECRYPTION_EXCEPTION' => 'Gagal menguraikan QR Code',
             'ERROR_DECRYPTION_FAILED' => 'QR Code tidak dapat diuraikan',
             'ERROR_MISSING_FIELDS' => 'QR Code tidak lengkap',
+            'ERROR_INVALID_ROLE' => 'QR Code konsumsi harus milik mahasiswa',
             'ERROR_TICKET_NOT_FOUND' => 'Tiket tidak ditemukan',
             'ERROR_TICKET_EXPIRED' => 'Tiket sudah kadaluarsa',
             'ERROR_KONSUMSI_DUPLICATE' => 'Mahasiswa ini sudah menerima konsumsi',
@@ -262,6 +319,18 @@ class KonsumsiService
         ];
 
         return $messages[$errorCode] ?? 'Terjadi kesalahan yang tidak diketahui';
+    }
+
+    private function isDuplicateKeyException(QueryException $e): bool
+    {
+        $driverCode = $e->errorInfo[1] ?? null;
+
+        if ($driverCode === 1062) {
+            return true;
+        }
+
+        return str_contains($e->getMessage(), 'UNIQUE constraint failed') ||
+            str_contains($e->getMessage(), 'Duplicate entry');
     }
 
     /**

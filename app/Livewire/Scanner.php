@@ -116,19 +116,6 @@ class Scanner extends Component
             return;
         }
 
-        // Sanitize input
-        $originalLength = strlen($qrData);
-        $qrData = strip_tags($qrData);
-        $sanitizedLength = strlen($qrData);
-
-        if ($originalLength !== $sanitizedLength) {
-            Log::info('Scanner: Input sanitized', [
-                'scanner_id' => $scannerId,
-                'original_length' => $originalLength,
-                'sanitized_length' => $sanitizedLength,
-            ]);
-        }
-
         // Change status to scanning
         $previousStatus = $this->status;
         $this->status = 'scanning';
@@ -298,19 +285,6 @@ class Scanner extends Component
             $this->errorMessage = 'Data QR code tidak valid';
             $this->dispatch('scanner-auto-reset', delay: 1000);
             return;
-        }
-
-        // Sanitize input
-        $originalLength = strlen($qrData);
-        $qrData = strip_tags($qrData);
-        $sanitizedLength = strlen($qrData);
-
-        if ($originalLength !== $sanitizedLength) {
-            Log::info('Scanner: Konsumsi - Input sanitized', [
-                'scanner_id' => $scannerId,
-                'original_length' => $originalLength,
-                'sanitized_length' => $sanitizedLength,
-            ]);
         }
 
         // Change status to scanning

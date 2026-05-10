@@ -37,7 +37,9 @@ class GenerateBukuWisudaSlugs extends Command
         $this->info('Generating slugs untuk ' . $bukuWisudas->count() . ' records...');
 
         foreach ($bukuWisudas as $buku) {
-            $slug = Str::slug($buku->filename, '-');
+            // Get filename without extension
+            $filenameWithoutExt = pathinfo($buku->filename, PATHINFO_FILENAME);
+            $slug = Str::slug($filenameWithoutExt, '-');
 
             // Check for duplicate slugs
             $count = BukuWisuda::where('slug', 'like', $slug . '%')

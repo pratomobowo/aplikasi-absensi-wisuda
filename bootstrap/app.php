@@ -16,13 +16,18 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
 
-        // Redirect unauthenticated users to Filament admin login
-        $middleware->redirectGuestsTo('/admin/login');
+        // Redirect unauthenticated users to the correct guard login.
+        $middleware->redirectGuestsTo(function ($request) {
+            return $request->is('student') || $request->is('student/*')
+                ? route('student.login')
+                : '/admin/login';
+        });
 
         // Register aliases for custom middleware
         $middleware->alias([
             'check.mahasiswa.password.change' => \App\Http\Middleware\CheckMahasiswaPasswordChange::class,
             'no.cache' => \App\Http\Middleware\NoCache::class,
+            'admin.only' => \App\Http\Middleware\EnsureAdminUser::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

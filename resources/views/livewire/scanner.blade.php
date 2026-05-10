@@ -81,7 +81,7 @@
                             </p>
                         </div>
 
-                        <form method="POST" action="{{ route('filament.admin.auth.logout') }}" class="inline">
+                        <form method="POST" action="{{ route('admin.logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center space-x-2 shadow-sm hover:shadow-md">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -178,7 +178,7 @@
                                         </svg>
                                         <span>Coba Lagi</span>
                                     </button>
-                                    <a href="{{ route('filament.admin.pages.dashboard') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors">
+                                    <a href="{{ route('admin.dashboard') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors">
                                         Kembali ke Dashboard
                                     </a>
                                 </div>
@@ -216,7 +216,7 @@
                                         </svg>
                                         <span>Coba Lagi</span>
                                     </button>
-                                    <a href="{{ route('filament.admin.pages.dashboard') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors">
+                                    <a href="{{ route('admin.dashboard') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors">
                                         Kembali ke Dashboard
                                     </a>
                                 </div>
@@ -247,7 +247,7 @@
                                 </div>
                                 
                                 <div class="flex flex-col space-y-3">
-                                    <a href="{{ route('filament.admin.pages.dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg inline-block">
+                                    <a href="{{ route('admin.dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg inline-block">
                                         Kembali ke Dashboard
                                     </a>
                                 </div>
@@ -279,7 +279,7 @@
                                         </svg>
                                         <span>Coba Lagi</span>
                                     </button>
-                                    <a href="{{ route('filament.admin.pages.dashboard') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors">
+                                    <a href="{{ route('admin.dashboard') }}" class="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors">
                                         Kembali ke Dashboard
                                     </a>
                                 </div>
@@ -376,7 +376,7 @@
                 <div class="px-4 md:px-6 py-4">
                     <div class="flex items-center justify-between">
                         <h1 class="text-xl md:text-2xl font-bold text-gray-900">Scanner Absensi</h1>
-                        <form method="POST" action="{{ route('filament.admin.auth.logout') }}" class="inline">
+                        <form method="POST" action="{{ route('admin.logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center space-x-2 shadow-sm hover:shadow-md">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -449,7 +449,7 @@
                 <div class="px-4 md:px-6 py-4">
                     <div class="flex items-center justify-between">
                         <h1 class="text-xl md:text-2xl font-bold text-gray-900">Scanner Absensi</h1>
-                        <form method="POST" action="{{ route('filament.admin.auth.logout') }}" class="inline">
+                        <form method="POST" action="{{ route('admin.logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center space-x-2 shadow-sm hover:shadow-md">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

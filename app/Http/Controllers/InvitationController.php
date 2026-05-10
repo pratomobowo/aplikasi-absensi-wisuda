@@ -45,7 +45,8 @@ class InvitationController extends Controller
 
         // Log magic link access
         Log::channel('stack')->info('Magic Link Access', [
-            'token' => $token,
+            'token_hash' => hash('sha256', $token),
+            'token_prefix' => substr($token, 0, 8),
             'ip' => request()->ip(),
             'user_agent' => request()->userAgent()
         ]);

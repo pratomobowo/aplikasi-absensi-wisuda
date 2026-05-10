@@ -32,7 +32,7 @@ class TicketService
         $ticket->mahasiswa_id = $mahasiswa->id;
         $ticket->graduation_event_id = $event->id;
         $ticket->magic_link_token = $this->generateUniqueToken();
-        $ticket->expires_at = $event->date->addDays(1); // Expire 1 day after event
+        $ticket->expires_at = $event->date->copy()->addDay(); // Expire 1 day after event
         
         // Set placeholder QR tokens (will be updated after save)
         $ticket->qr_token_mahasiswa = '{}';

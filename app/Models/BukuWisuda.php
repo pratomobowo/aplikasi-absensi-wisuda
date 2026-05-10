@@ -48,7 +48,9 @@ class BukuWisuda extends Model
 
         static::creating(function ($model) {
             if (!$model->slug) {
-                $model->slug = Str::slug($model->filename, '-');
+                // Get filename without extension
+                $filenameWithoutExt = pathinfo($model->filename, PATHINFO_FILENAME);
+                $model->slug = Str::slug($filenameWithoutExt, '-');
 
                 // Handle duplicate slugs
                 $count = static::where('slug', 'like', $model->slug . '%')->count();
@@ -60,7 +62,9 @@ class BukuWisuda extends Model
 
         static::updating(function ($model) {
             if ($model->isDirty('filename') && !$model->isDirty('slug')) {
-                $model->slug = Str::slug($model->filename, '-');
+                // Get filename without extension
+                $filenameWithoutExt = pathinfo($model->filename, PATHINFO_FILENAME);
+                $model->slug = Str::slug($filenameWithoutExt, '-');
 
                 // Handle duplicate slugs when updating
                 $count = static::where('slug', 'like', $model->slug . '%')

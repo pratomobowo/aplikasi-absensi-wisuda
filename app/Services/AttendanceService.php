@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\GraduationEvent;
 use App\Models\GraduationTicket;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Services\ScannerCacheService;
@@ -190,13 +191,27 @@ class AttendanceService
                     'data' => [
                         'mahasiswa_name' => $ticket->mahasiswa->nama,
                         'npm' => $ticket->mahasiswa->npm,
+                        'ticket_id' => $ticketId,
+                        'event_id' => $ticket->graduation_event_id,
                         'role' => $role,
                         'scanned_at' => $attendance->scanned_at->format('Y-m-d H:i:s'),
                     ],
                 ];
-            } catch (\Illuminate\Database\QueryException $e) {
+            } catch (QueryException $e) {
                 DB::rollBack();
                 $duration = round((microtime(true) - $startTime) * 1000, 2);
+
+                if ($this->isDuplicateKeyException($e)) {
+                    Log::warning('AttendanceService: Duplicate attendance caught by database constraint', [
+                        'ticket_id' => $ticketId,
+                        'role' => $role,
+                        'error_code' => $e->getCode(),
+                    ]);
+
+                    $this->logScanAttempt($qrData, $scanner, false, self::ERROR_DUPLICATE, $duration);
+
+                    return $this->buildErrorResponse(self::ERROR_DUPLICATE, $duration);
+                }
                 
                 Log::error('AttendanceService: Database transaction failed', [
                     'error' => $e->getMessage(),
@@ -276,13 +291,6 @@ class AttendanceService
 
         // Step 2: Decryption
         Log::debug('AttendanceService: Validation Step 2 - Decryption');
-        
-        if (config('app.debug')) {
-            // Log partial raw data for debugging (first 50 chars)
-            Log::debug('AttendanceService: Raw QR data (partial)', [
-                'data_preview' => substr($qrData, 0, 50) . '...',
-            ]);
-        }
         
         try {
             $data = $this->qrCodeService->decryptQRData($qrData);
@@ -413,6 +421,39 @@ class AttendanceService
                 self::ERROR_TICKET_NOT_FOUND,
                 'database_lookup',
                 ['ticket_id' => $data['ticket_id']]
+            );
+        }
+
+        $eventId = (int) $data['event_id'];
+
+        if ($eventId !== (int) $ticket->graduation_event_id) {
+            Log::warning('AttendanceService: Validation failed at Step 4 - Invalid event', [
+                'ticket_id' => $data['ticket_id'],
+                'qr_event_id' => $eventId,
+                'ticket_event_id' => $ticket->graduation_event_id,
+            ]);
+
+            return $this->buildValidationError(
+                self::ERROR_INVALID_EVENT,
+                'database_lookup',
+                [
+                    'ticket_id' => $data['ticket_id'],
+                    'qr_event_id' => $eventId,
+                    'ticket_event_id' => $ticket->graduation_event_id,
+                ]
+            );
+        }
+
+        if (!$ticket->graduationEvent || !$ticket->graduationEvent->is_active) {
+            Log::warning('AttendanceService: Validation failed at Step 4 - Event not active', [
+                'ticket_id' => $data['ticket_id'],
+                'event_id' => $ticket->graduation_event_id,
+            ]);
+
+            return $this->buildValidationError(
+                self::ERROR_EVENT_NOT_ACTIVE,
+                'database_lookup',
+                ['ticket_id' => $data['ticket_id'], 'event_id' => $ticket->graduation_event_id]
             );
         }
         
@@ -559,6 +600,18 @@ class AttendanceService
         }
 
         return $response;
+    }
+
+    private function isDuplicateKeyException(QueryException $e): bool
+    {
+        $driverCode = $e->errorInfo[1] ?? null;
+
+        if ($driverCode === 1062) {
+            return true;
+        }
+
+        return str_contains($e->getMessage(), 'UNIQUE constraint failed') ||
+            str_contains($e->getMessage(), 'Duplicate entry');
     }
 
     /**

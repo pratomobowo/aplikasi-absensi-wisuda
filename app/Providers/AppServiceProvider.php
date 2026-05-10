@@ -67,5 +67,10 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('scanner', function (Request $request) {
             return Limit::perMinute(30)->by($request->user()?->id ?: $request->ip());
         });
+
+        // Rate limiter for student login page access
+        RateLimiter::for('student-login', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
     }
 }
