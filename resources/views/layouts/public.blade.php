@@ -47,7 +47,7 @@
             <div class="flex justify-between items-center h-20">
                 <div class="flex-shrink-0">
                     <a href="{{ url('/') }}" class="flex items-center space-x-3 group">
-                        <img src="{{ asset('images/icons/logo-sanggabuana.png') }}" alt="Logo E-Wisuda" class="h-12 w-auto transform group-hover:scale-110 transition-transform duration-200">
+                        <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo E-Wisuda" class="h-12 w-auto transform group-hover:scale-110 transition-transform duration-200">
                         <span class="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                             E-Wisuda
                         </span>
@@ -158,7 +158,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
-                        <img src="{{ asset('images/icons/logo-sanggabuana.png') }}" alt="Logo" class="h-10 w-auto">
+                        <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo E-Wisuda" class="h-10 w-auto">
                         <h3 class="text-white text-lg font-bold">E-Wisuda</h3>
                     </div>
                     <p class="text-sm leading-relaxed text-blue-100">Portal E-Wisuda Universitas Sangga Buana dengan sistem terintegrasi.</p>

@@ -99,7 +99,7 @@
             <div class="flex flex-col sm:flex-row items-center gap-6">
                 <!-- Logo -->
                 <div class="flex-shrink-0">
-                    <img src="{{ asset('images/icons/logo-sanggabuana.png') }}" alt="Logo Sanggabuana" class="h-24 w-24 object-contain">
+                    <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo E-Wisuda" class="h-24 w-auto object-contain">
                 </div>
 
                 <!-- Header Text -->

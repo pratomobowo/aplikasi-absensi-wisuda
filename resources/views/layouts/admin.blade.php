@@ -20,8 +20,8 @@
         <!-- Sidebar -->
         <aside class="w-64 bg-white border-r border-gray-200 flex-shrink-0">
             <div class="h-16 flex items-center px-6 border-b border-gray-200">
-                <a href="{{ route('admin.dashboard') }}" class="text-xl font-bold text-primary-600">
-                    E-Wisuda
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center">
+                    <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo E-Wisuda" class="h-10 w-auto">
                 </a>
             </div>
 

@@ -14,7 +14,7 @@
             <div class="relative z-10 flex flex-col justify-center px-12 xl:px-16 text-white">
                 <!-- Logo -->
                 <div class="mb-8">
-                    <img src="{{ asset('images/icons/logo-sanggabuana.png') }}" alt="Logo USB" class="h-20 w-auto">
+                    <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo E-Wisuda" class="h-20 w-auto">
                 </div>
 
                 <!-- Welcome Text -->
@@ -93,7 +93,7 @@
                         </svg>
                         <span class="font-medium">Kembali ke Beranda</span>
                     </a>
-                    <img src="{{ asset('images/icons/logo-sanggabuana.png') }}" alt="Logo USB" class="h-16 w-auto mx-auto mb-4">
+                    <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo E-Wisuda" class="h-16 w-auto mx-auto mb-4">
                 </div>
 
                 <!-- Login Card -->
