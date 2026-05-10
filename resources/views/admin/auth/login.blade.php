@@ -17,7 +17,7 @@
     <div class="min-h-screen flex items-center justify-center">
         <div class="w-full max-w-md p-8 bg-white rounded-xl shadow-lg">
             <div class="text-center mb-8">
-                <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo E-Wisuda" class="h-16 w-auto mx-auto mb-4">
+                <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo E-Wisuda" class="h-24 w-auto mx-auto mb-4">
                 <p class="text-sm text-gray-600">Admin Login</p>
             </div>
 

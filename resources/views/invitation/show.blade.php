@@ -99,7 +99,7 @@
             <div class="flex flex-col sm:flex-row items-center gap-6">
                 <!-- Logo -->
                 <div class="flex-shrink-0">
-                    <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo E-Wisuda" class="h-24 w-auto object-contain">
+                    <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo E-Wisuda" class="h-40 w-auto object-contain">
                 </div>
 
                 <!-- Header Text -->
