@@ -16,6 +16,7 @@
     },
     "dependencies": {
         "alpinejs": "^3.15.12",
-        "dflip": "^1.0.0"
+        "dflip": "^1.0.0",
+        "puppeteer": "^24.43.0"
     }
 }
