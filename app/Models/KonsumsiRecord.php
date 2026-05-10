@@ -11,11 +11,23 @@ class KonsumsiRecord extends Model
         'graduation_ticket_id',
         'scanned_by',
         'scanned_at',
+        'archived_at',
     ];
 
     protected $casts = [
         'scanned_at' => 'datetime',
+        'archived_at' => 'datetime',
     ];
+
+    public function scopeNotArchived($query)
+    {
+        return $query->whereNull('archived_at');
+    }
+
+    public function scopeArchived($query)
+    {
+        return $query->whereNotNull('archived_at');
+    }
 
     /**
      * Get the graduation ticket associated with this konsumsi record

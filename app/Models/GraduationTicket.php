@@ -49,6 +49,7 @@ class GraduationTicket extends Model
         'expires_at',
         'konsumsi_diterima',
         'konsumsi_at',
+        'archived_at',
     ];
 
     /**
@@ -64,7 +65,23 @@ class GraduationTicket extends Model
             'expires_at' => 'datetime',
             'konsumsi_diterima' => 'boolean',
             'konsumsi_at' => 'datetime',
+            'archived_at' => 'datetime',
         ];
+    }
+
+    public function scopeNotArchived($query)
+    {
+        return $query->whereNull('archived_at');
+    }
+
+    public function scopeArchived($query)
+    {
+        return $query->whereNotNull('archived_at');
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->archived_at !== null;
     }
 
     /**

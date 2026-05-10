@@ -15,7 +15,7 @@ class GraduationTicketController extends Controller
 {
     public function index(Request $request)
     {
-        $query = GraduationTicket::with(['mahasiswa', 'graduationEvent', 'attendances']);
+        $query = GraduationTicket::notArchived()-with(['mahasiswa', 'graduationEvent', 'attendances']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -47,7 +47,7 @@ class GraduationTicketController extends Controller
         }
 
         $tickets = $query->latest()->paginate(20)->withQueryString();
-        $events = GraduationEvent::pluck('name', 'id');
+        $events = GraduationEvent::where('status', '!=', 'completed')->pluck('name', 'id');
 
         return view('admin.graduation-tickets.index', compact('tickets', 'events'));
     }

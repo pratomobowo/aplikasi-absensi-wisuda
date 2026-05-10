@@ -13,7 +13,10 @@ class BukuWisudaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = BukuWisuda::with('graduationEvent');
+        $query = BukuWisuda::with('graduationEvent')
+            ->whereHas('graduationEvent', function ($q) {
+                $q->where('status', '!=', 'completed');
+            });
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -28,14 +31,14 @@ class BukuWisudaController extends Controller
         }
 
         $bukuWisudas = $query->latest('uploaded_at')->paginate(15)->withQueryString();
-        $events = GraduationEvent::pluck('name', 'id');
+        $events = GraduationEvent::where('status', '!=', 'completed')->pluck('name', 'id');
 
         return view('admin.buku-wisuda.index', compact('bukuWisudas', 'events'));
     }
 
     public function create()
     {
-        $events = GraduationEvent::pluck('name', 'id');
+        $events = GraduationEvent::where('status', '!=', 'completed')->pluck('name', 'id');
         return view('admin.buku-wisuda.create', compact('events'));
     }
 
@@ -65,7 +68,7 @@ class BukuWisudaController extends Controller
 
     public function edit(BukuWisuda $bukuWisuda)
     {
-        $events = GraduationEvent::pluck('name', 'id');
+        $events = GraduationEvent::where('status', '!=', 'completed')->pluck('name', 'id');
         return view('admin.buku-wisuda.edit', compact('bukuWisuda', 'events'));
     }
 

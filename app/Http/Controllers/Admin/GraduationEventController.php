@@ -126,6 +126,30 @@ class GraduationEventController extends Controller
 
         $graduationEvent->update($updates);
 
+        // Archive all related data if status is completed
+        if ($status === 'completed') {
+            $now = now();
+            
+            // Archive all graduation tickets for this event
+            \App\Models\GraduationTicket::where('graduation_event_id', $graduationEvent->id)
+                ->whereNull('archived_at')
+                ->update(['archived_at' => $now]);
+            
+            // Archive all attendances for tickets in this event
+            \App\Models\Attendance::whereHas('graduationTicket', function ($q) use ($graduationEvent) {
+                $q->where('graduation_event_id', $graduationEvent->id);
+            })
+            ->whereNull('archived_at')
+            ->update(['archived_at' => $now]);
+            
+            // Archive all konsumsi records for tickets in this event
+            \App\Models\KonsumsiRecord::whereHas('graduationTicket', function ($q) use ($graduationEvent) {
+                $q->where('graduation_event_id', $graduationEvent->id);
+            })
+            ->whereNull('archived_at')
+            ->update(['archived_at' => $now]);
+        }
+
         $labels = [
             'upcoming' => 'Akan Datang',
             'active' => 'Aktif',

@@ -14,7 +14,7 @@ class KonsumsiController extends Controller
 {
     public function index(Request $request)
     {
-        $query = GraduationTicket::with(['mahasiswa', 'graduationEvent', 'konsumsiRecord.scannedBy']);
+        $query = GraduationTicket::notArchived()-with(['mahasiswa', 'graduationEvent', 'konsumsiRecord.scannedBy']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -41,7 +41,7 @@ class KonsumsiController extends Controller
         }
 
         $tickets = $query->latest('konsumsi_at')->paginate(50)->withQueryString();
-        $events = GraduationEvent::pluck('name', 'id');
+        $events = GraduationEvent::where('status', '!=', 'completed')->pluck('name', 'id');
 
         return view('admin.konsumsi.index', compact('tickets', 'events'));
     }

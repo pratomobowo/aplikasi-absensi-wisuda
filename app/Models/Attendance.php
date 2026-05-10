@@ -20,6 +20,7 @@ class Attendance extends Model
         'role',
         'scanned_by',
         'scanned_at',
+        'archived_at',
     ];
 
     /**
@@ -32,7 +33,18 @@ class Attendance extends Model
         return [
             'role' => 'string',
             'scanned_at' => 'datetime',
+            'archived_at' => 'datetime',
         ];
+    }
+
+    public function scopeNotArchived($query)
+    {
+        return $query->whereNull('archived_at');
+    }
+
+    public function scopeArchived($query)
+    {
+        return $query->whereNotNull('archived_at');
     }
 
     /**

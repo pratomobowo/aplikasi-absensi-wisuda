@@ -11,7 +11,7 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Attendance::with([
+        $query = Attendance::notArchived()-with([
             'graduationTicket.mahasiswa',
             'graduationTicket.graduationEvent',
             'scannedBy'
@@ -47,7 +47,7 @@ class AttendanceController extends Controller
         }
 
         $attendances = $query->latest('scanned_at')->paginate(30)->withQueryString();
-        $events = GraduationEvent::pluck('name', 'id');
+        $events = GraduationEvent::where('status', '!=', 'completed')->pluck('name', 'id');
 
         return view('admin.attendance.index', compact('attendances', 'events'));
     }

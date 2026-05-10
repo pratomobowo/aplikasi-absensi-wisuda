@@ -17,7 +17,11 @@ class MahasiswaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Mahasiswa::with('graduationTickets');
+        $query = Mahasiswa::whereDoesntHave('graduationTickets', function ($q) {
+            $q->whereNotNull('archived_at');
+        })->with(['graduationTickets' => function ($q) {
+            $q->whereNull('archived_at');
+        }]);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
