@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\GraduationEventController;
 use App\Http\Controllers\Admin\GraduationTicketController;
 use App\Http\Controllers\Admin\KonsumsiController;
 use App\Http\Controllers\Admin\MahasiswaController;
+use App\Http\Controllers\Admin\SiakadSyncController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BukuWisudaController as PublicBukuWisudaController;
 use App\Http\Controllers\InvitationController;
