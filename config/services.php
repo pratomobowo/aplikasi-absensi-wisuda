@@ -39,4 +39,14 @@ return [
         'api_key' => env('GOOGLE_MAPS_API_KEY'),
     ],
 
+    'siakad' => [
+        'url' => env('SIAKAD_API_URL'),
+        'app_key' => env('SIAKAD_APP_KEY'),
+        'secret_key' => env('SIAKAD_SECRET_KEY'),
+    ],
+
+    'foto' => [
+        'base_url' => env('FOTO_BASE_URL'),
+    ],
+
 ];
