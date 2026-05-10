@@ -14,7 +14,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $activeEvent = GraduationEvent::where('is_active', true)->first();
+        $activeEvent = GraduationEvent::where('status', 'active')->first();
 
         $stats = [
             'total_mahasiswa' => Mahasiswa::count(),

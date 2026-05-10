@@ -20,11 +20,12 @@
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
                 </div>
                 <div class="w-48">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select name="is_active" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
-                        <option value="">Semua</option>
-                        <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Aktif</option>
-                        <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Tidak Aktif</option>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status Event</label>
+                    <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                        <option value="">Semua Status</option>
+                        <option value="upcoming" {{ request('status') === 'upcoming' ? 'selected' : '' }}>Akan Datang</option>
+                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Aktif</option>
+                        <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Selesai (Arsip)</option>
                     </select>
                 </div>
                 <div class="w-40">
@@ -58,26 +59,70 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @forelse($events as $event)
-                        <tr class="hover:bg-gray-50">
+                        @php
+                            $statusColors = [
+                                'upcoming' => 'bg-blue-100 text-blue-800',
+                                'active' => 'bg-green-100 text-green-800',
+                                'completed' => 'bg-gray-100 text-gray-800',
+                            ];
+                            $statusLabels = [
+                                'upcoming' => 'Akan Datang',
+                                'active' => 'Aktif',
+                                'completed' => 'Selesai',
+                            ];
+                        @endphp
+                        <tr class="hover:bg-gray-50 {{ $event->status === 'completed' ? 'opacity-60' : '' }}">
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $event->name }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $event->date->format('d M Y') }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $event->time->format('H:i') }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $event->location_name }}</td>
                             <td class="px-6 py-4">
-                                @if($event->is_active)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Aktif</span>
-                                @else
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Tidak Aktif</span>
-                                @endif
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $statusColors[$event->status] ?? 'bg-gray-100 text-gray-800' }}">
+                                    {{ $statusLabels[$event->status] ?? $event->status }}
+                                </span>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $event->graduation_tickets_count }}</td>
                             <td class="px-6 py-4 text-sm space-x-2">
-                                @if(!$event->is_active)
+                                @if($event->status !== 'active')
                                     <form action="{{ route('admin.graduation-events.set-active', $event) }}" method="POST" class="inline">
                                         @csrf
                                         <button type="submit" class="text-green-600 hover:text-green-800">Set Aktif</button>
                                     </form>
                                 @endif
+                                
+                                <!-- Change Status Dropdown -->
+                                <div class="relative inline-block text-left" x-data="{ open: false }">
+                                    <button @click="open = !open" type="button" class="text-primary-600 hover:text-primary-800">
+                                        Ubah Status
+                                    </button>
+                                    <div x-show="open" @click.away="open = false" 
+                                         class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                        <div class="py-1">
+                                            <form action="{{ route('admin.graduation-events.set-status', $event) }}" method="POST" class="block">
+                                                @csrf
+                                                <input type="hidden" name="status" value="upcoming">
+                                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ $event->status === 'upcoming' ? 'bg-blue-50 text-blue-700' : '' }}">
+                                                    Akan Datang
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('admin.graduation-events.set-status', $event) }}" method="POST" class="block">
+                                                @csrf
+                                                <input type="hidden" name="status" value="active">
+                                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ $event->status === 'active' ? 'bg-green-50 text-green-700' : '' }}">
+                                                    Aktif
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('admin.graduation-events.set-status', $event) }}" method="POST" class="block">
+                                                @csrf
+                                                <input type="hidden" name="status" value="completed">
+                                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 {{ $event->status === 'completed' ? 'bg-red-50' : '' }}" onclick="return confirm('Yakin menandai acara ini sebagai selesai? Data akan diarsipkan.')">
+                                                    Selesai (Arsip)
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                
                                 <form action="{{ route('admin.graduation-events.generate-tickets', $event) }}" method="POST" class="inline">
                                     @csrf
                                     <button type="submit" class="text-blue-600 hover:text-blue-800">Generate Tiket</button>

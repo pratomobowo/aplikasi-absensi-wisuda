@@ -284,7 +284,7 @@
                             </h2>
 
                             @php
-                                $event = \App\Models\GraduationEvent::active()->first();
+                                $event = \App\Models\GraduationEvent::where('status', 'active')->first();
                                 $bukuWisuda = $event ? $event->bukuWisuda()->first() : null;
                             @endphp
 

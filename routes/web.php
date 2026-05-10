@@ -100,6 +100,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Graduation Events
         Route::post('/graduation-events/{graduation_event}/set-active', [GraduationEventController::class, 'setActive'])->name('graduation-events.set-active');
+        Route::post('/graduation-events/{graduation_event}/set-status', [GraduationEventController::class, 'setStatus'])->name('graduation-events.set-status');
         Route::post('/graduation-events/{graduation_event}/generate-tickets', [GraduationEventController::class, 'generateTickets'])->name('graduation-events.generate-tickets');
         Route::get('/graduation-events/{graduation_event}/export-tickets', [GraduationEventController::class, 'exportTickets'])->name('graduation-events.export-tickets');
         Route::resource('graduation-events', GraduationEventController::class);

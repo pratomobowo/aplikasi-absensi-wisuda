@@ -30,6 +30,7 @@ class UpdateGraduationEventRequest extends FormRequest
             'location_lat' => ['nullable', 'numeric', 'between:-90,90'],
             'location_lng' => ['nullable', 'numeric', 'between:-180,180'],
             'is_active' => ['boolean'],
+            'status' => ['required', 'in:upcoming,active,completed'],
         ];
     }
 

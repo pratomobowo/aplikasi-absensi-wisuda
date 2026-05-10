@@ -25,6 +25,10 @@ class GraduationEventController extends Controller
             $query->where('is_active', $request->boolean('is_active'));
         }
 
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
         if ($request->filled('date_from')) {
             $query->whereDate('date', '>=', $request->input('date_from'));
         }
@@ -88,10 +92,48 @@ class GraduationEventController extends Controller
 
     public function setActive(GraduationEvent $graduationEvent)
     {
-        GraduationEvent::where('id', '!=', $graduationEvent->id)->update(['is_active' => false]);
-        $graduationEvent->update(['is_active' => true]);
+        // Deactivate all other events and set them to upcoming
+        GraduationEvent::where('id', '!=', $graduationEvent->id)
+            ->where('status', '!=', 'completed')
+            ->update(['is_active' => false, 'status' => 'upcoming']);
+        
+        // Set this event as active
+        $graduationEvent->update(['is_active' => true, 'status' => 'active']);
 
         return redirect()->route('admin.graduation-events.index')->with('success', 'Acara wisuda diatur sebagai aktif.');
+    }
+
+    public function setStatus(Request $request, GraduationEvent $graduationEvent)
+    {
+        $request->validate([
+            'status' => ['required', 'in:upcoming,active,completed'],
+        ]);
+
+        $status = $request->input('status');
+        $updates = ['status' => $status];
+
+        if ($status === 'active') {
+            // Set is_active to true and deactivate others
+            GraduationEvent::where('id', '!=', $graduationEvent->id)
+                ->where('status', '!=', 'completed')
+                ->update(['is_active' => false, 'status' => 'upcoming']);
+            $updates['is_active'] = true;
+        } elseif ($status === 'completed') {
+            $updates['is_active'] = false;
+        } else {
+            $updates['is_active'] = false;
+        }
+
+        $graduationEvent->update($updates);
+
+        $labels = [
+            'upcoming' => 'Akan Datang',
+            'active' => 'Aktif',
+            'completed' => 'Selesai',
+        ];
+
+        return redirect()->route('admin.graduation-events.index')
+            ->with('success', "Status acara wisuda diubah menjadi {$labels[$status]}.");
     }
 
     public function generateTickets(GraduationEvent $graduationEvent)

@@ -24,7 +24,7 @@ class ScannerCacheService
             'scanner:active_event',
             self::CACHE_TTL_MINUTES,
             function () {
-                return GraduationEvent::where('is_active', true)->first();
+                return GraduationEvent::where('status', 'active')->first();
             }
         );
     }
@@ -58,7 +58,7 @@ class ScannerCacheService
             'scanner:active_event_with_tickets',
             self::CACHE_TTL_MINUTES,
             function () {
-                return GraduationEvent::where('is_active', true)
+                return GraduationEvent::where('status', 'active')
                     ->with('graduationTickets')
                     ->first();
             }

@@ -74,11 +74,21 @@
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
                     </div>
 
-                    <div class="flex items-center">
-                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $graduationEvent->is_active) ? 'checked' : '' }}
-                               class="h-4 w-4 text-primary-600 border-gray-300 rounded">
-                        <label class="ml-2 text-sm text-gray-700">Aktif</label>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Status *</label>
+                        <select name="status" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                            <option value="upcoming" {{ old('status', $graduationEvent->status) == 'upcoming' ? 'selected' : '' }}>Akan Datang</option>
+                            <option value="active" {{ old('status', $graduationEvent->status) == 'active' ? 'selected' : '' }}>Aktif</option>
+                            <option value="completed" {{ old('status', $graduationEvent->status) == 'completed' ? 'selected' : '' }}>Selesai (Arsip)</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">
+                            <strong>Akan Datang:</strong> Event belum aktif | 
+                            <strong>Aktif:</strong> Event sedang berlangsung | 
+                            <strong>Selesai:</strong> Event selesai, data diarsipkan
+                        </p>
                     </div>
+
+                    <input type="hidden" name="is_active" value="{{ $graduationEvent->is_active ? '1' : '0' }}">
                 </div>
 
                 <div class="mt-6 flex items-center space-x-3">

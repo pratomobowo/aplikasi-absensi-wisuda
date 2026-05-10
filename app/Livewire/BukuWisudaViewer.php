@@ -19,7 +19,7 @@ class BukuWisudaViewer extends Component
             $this->bukuWisuda = BukuWisuda::where('slug', $slug)->firstOrFail();
         } else {
             // Otherwise get from active graduation event (for dashboard)
-            $event = \App\Models\GraduationEvent::active()->first();
+            $event = \App\Models\GraduationEvent::where('status', 'active')->first();
             if ($event) {
                 $this->bukuWisuda = $event->bukuWisuda()->first();
             }

@@ -721,7 +721,7 @@ class AttendanceService
                     Log::warning('AttendanceService: Cache lookup failed, falling back to database', [
                         'error' => $e->getMessage(),
                     ]);
-                    $event = GraduationEvent::where('is_active', true)->first();
+                    $event = GraduationEvent::where('status', 'active')->first();
                 }
             }
 

@@ -26,6 +26,7 @@ class GraduationEvent extends Model
         'maps_url',
         'feature_image',
         'is_active',
+        'status',
     ];
 
     /**
@@ -41,7 +42,38 @@ class GraduationEvent extends Model
             'location_lat' => 'decimal:8',
             'location_lng' => 'decimal:8',
             'is_active' => 'boolean',
+            'status' => 'string',
         ];
+    }
+
+    public function isUpcoming(): bool
+    {
+        return $this->status === 'upcoming';
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->status === 'completed';
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->status === 'completed';
+    }
+
+    public function scopeNotArchived($query)
+    {
+        return $query->where('status', '!=', 'completed');
+    }
+
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'completed');
     }
 
     /**
@@ -61,15 +93,15 @@ class GraduationEvent extends Model
     }
 
     /**
-     * Scope a query to only include active events.
+     * Scope a query to only include active events (status = active).
      */
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('status', 'active');
     }
 
     /**
-     * Scope a query to only include upcoming events.
+     * Scope a query to only include upcoming events (based on date, not status).
      */
     public function scopeUpcoming($query)
     {

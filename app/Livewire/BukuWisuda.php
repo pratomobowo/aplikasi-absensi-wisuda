@@ -33,7 +33,7 @@ class BukuWisuda extends Component
 
     public function render()
     {
-        $events = GraduationEvent::where('is_active', true)
+        $events = GraduationEvent::where('status', '!=', 'completed')
             ->orHas('bukuWisuda')
             ->orderBy('created_at', 'desc')
             ->get();
