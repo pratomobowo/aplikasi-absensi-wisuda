@@ -102,14 +102,14 @@
         }
 
         /* ===== CONTENT PAGE ===== */
-        .content-page {
+        .page {
             width: 100%;
             page-break-after: always;
             position: relative;
             min-height: 100vh;
         }
 
-        .content-page:last-child {
+        .page:last-child {
             page-break-after: auto;
         }
 
@@ -137,9 +137,15 @@
             text-transform: uppercase;
         }
 
-        .page-header-event {
+        .page-header-jurusan {
             font-size: 8pt;
             color: #64748b;
+            font-weight: 600;
+        }
+
+        .page-header-event {
+            font-size: 7.5pt;
+            color: #94a3b8;
         }
 
         /* Page Footer */
@@ -153,29 +159,6 @@
             border-top: 1px solid #e2e8f0;
             font-size: 8pt;
             color: #94a3b8;
-        }
-
-        /* ===== JURUSAN HEADER ===== */
-        .jurusan-header {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            margin: 10px 0 8px 0;
-            page-break-inside: avoid;
-        }
-
-        .jurusan-name {
-            font-size: 10pt;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .jurusan-count {
-            font-size: 7.5pt;
-            opacity: 0.9;
-            margin-top: 2px;
         }
 
         /* ===== STUDENT CARDS LAYOUT ===== */
@@ -317,106 +300,173 @@
 
     <!-- ===== CONTENT PAGES ===== -->
     @php
-        $totalMahasiswa = $mahasiswa->count();
         $itemsPerPage = 8;
-        $totalPages = ceil($totalMahasiswa / $itemsPerPage);
         $currentPage = 0;
-        $itemCount = 0;
+        $allMahasiswa = [];
+        
+        // Flatten grouped data
+        foreach($grouped as $jurusan => $listMahasiswa) {
+            foreach($listMahasiswa as $mhs) {
+                $mhs->_jurusan = $jurusan;
+                $allMahasiswa[] = $mhs;
+            }
+        }
+        
+        $totalItems = count($allMahasiswa);
+        $totalPages = ceil($totalItems / $itemsPerPage);
     @endphp
 
-    <div class="content-page">
-        <!-- Page Header -->
-        <div class="page-header clearfix">
-            <div class="page-header-left">
-                <div class="page-header-title">Buku Wisuda</div>
+    @for($page = 0; $page < $totalPages; $page++)
+        <div class="page">
+            @php
+                $startIdx = $page * $itemsPerPage;
+                $endIdx = min($startIdx + $itemsPerPage, $totalItems);
+                $pageItems = array_slice($allMahasiswa, $startIdx, $itemsPerPage);
+                $firstItem = $pageItems[0] ?? null;
+                $jurusanName = $firstItem ? ($firstItem->_jurusan ?? '-') : '-';
+            @endphp
+            
+            <!-- Page Header -->
+            <div class="page-header clearfix">
+                <div class="page-header-left">
+                    <div class="page-header-title">Buku Wisuda</div>
+                    <div class="page-header-jurusan">{{ $jurusanName }}</div>
+                </div>
+                <div class="page-header-right">
+                    <div class="page-header-event">{{ $event->name }}</div>
+                </div>
             </div>
-            <div class="page-header-right">
-                <div class="page-header-event">{{ $event->name }}</div>
-            </div>
-        </div>
 
-        @foreach($grouped as $jurusan => $listMahasiswa)
-            <!-- Jurusan Header -->
-            <div class="jurusan-header">
-                <div class="jurusan-name">{{ $jurusan }}</div>
-                <div class="jurusan-count">{{ count($listMahasiswa) }} Mahasiswa</div>
-            </div>
-
-            @foreach($listMahasiswa as $index => $mhs)
+            <!-- Students Grid -->
+            @for($row = 0; $row < 4; $row++)
                 @php
-                    $itemCount++;
-                    $isLeft = ($index % 2) == 0;
+                    $idx1 = $startIdx + ($row * 2);
+                    $idx2 = $idx1 + 1;
                 @endphp
-
-                @if($isLeft)
-                    <div class="cards-row clearfix">
-                @endif
                 
-                <div class="{{ $isLeft ? 'card-left' : 'card-right' }}">
-                    <div class="student-card">
-                        <div class="student-main clearfix">
-                            @if($mhs->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mhs->foto_wisuda)))
-                                <img src="{{ public_path('storage/graduation-photos/' . $mhs->foto_wisuda) }}" 
-                                     alt="{{ $mhs->nama }}"
-                                     class="student-photo">
-                            @else
-                                <div class="student-photo-placeholder">Foto</div>
-                            @endif
-                            
-                            <div class="student-data">
-                                <div class="data-line">
-                                    <span class="data-label">NPM</span>
-                                    <span class="data-sep">:</span>
-                                    <span class="data-value">{{ $mhs->npm }}</span>
+                @if($idx1 < $endIdx)
+                    <div class="cards-row clearfix">
+                        @php $mhs1 = $allMahasiswa[$idx1]; @endphp
+                        <div class="card-left">
+                            <div class="student-card">
+                                <div class="student-main clearfix">
+                                    @if($mhs1->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mhs1->foto_wisuda)))
+                                        <img src="{{ public_path('storage/graduation-photos/' . $mhs1->foto_wisuda) }}" 
+                                             alt="{{ $mhs1->nama }}"
+                                             class="student-photo">
+                                    @else
+                                        <div class="student-photo-placeholder">Foto</div>
+                                    @endif
+                                    
+                                    <div class="student-data">
+                                        <div class="data-line">
+                                            <span class="data-label">NPM</span>
+                                            <span class="data-sep">:</span>
+                                            <span class="data-value">{{ $mhs1->npm }}</span>
+                                        </div>
+                                        <div class="data-line">
+                                            <span class="data-label">Nama</span>
+                                            <span class="data-sep">:</span>
+                                            <span class="data-value">{{ $mhs1->nama }}</span>
+                                        </div>
+                                        <div class="data-line">
+                                            <span class="data-label">Prodi</span>
+                                            <span class="data-sep">:</span>
+                                            <span class="data-value">{{ $mhs1->program_studi ?? '-' }}</span>
+                                        </div>
+                                        <div class="data-line">
+                                            <span class="data-label">IPK</span>
+                                            <span class="data-sep">:</span>
+                                            <span class="data-value">{{ $mhs1->ipk ?? '-' }}</span>
+                                        </div>
+                                        <div class="data-line">
+                                            <span class="data-label">Yudisium</span>
+                                            <span class="data-sep">:</span>
+                                            <span class="data-value">{{ $mhs1->yudisium ?? '-' }}</span>
+                                        </div>
+                                        <div class="data-line">
+                                            <span class="data-label">Email</span>
+                                            <span class="data-sep">:</span>
+                                            <span class="data-value">{{ $mhs1->email ?? '-' }}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="data-line">
-                                    <span class="data-label">Nama</span>
-                                    <span class="data-sep">:</span>
-                                    <span class="data-value">{{ $mhs->nama }}</span>
-                                </div>
-                                <div class="data-line">
-                                    <span class="data-label">Prodi</span>
-                                    <span class="data-sep">:</span>
-                                    <span class="data-value">{{ $mhs->program_studi ?? '-' }}</span>
-                                </div>
-                                <div class="data-line">
-                                    <span class="data-label">IPK</span>
-                                    <span class="data-sep">:</span>
-                                    <span class="data-value">{{ $mhs->ipk ?? '-' }}</span>
-                                </div>
-                                <div class="data-line">
-                                    <span class="data-label">Yudisium</span>
-                                    <span class="data-sep">:</span>
-                                    <span class="data-value">{{ $mhs->yudisium ?? '-' }}</span>
-                                </div>
-                                <div class="data-line">
-                                    <span class="data-label">Email</span>
-                                    <span class="data-sep">:</span>
-                                    <span class="data-value">{{ $mhs->email ?? '-' }}</span>
-                                </div>
+                                
+                                @if($mhs1->judul_skripsi)
+                                    <div class="thesis-box">
+                                        <div class="thesis-label">Judul Skripsi / Tugas Akhir</div>
+                                        <div class="thesis-text">{{ $mhs1->judul_skripsi }}</div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                         
-                        @if($mhs->judul_skripsi)
-                            <div class="thesis-box">
-                                <div class="thesis-label">Judul Skripsi / Tugas Akhir</div>
-                                <div class="thesis-text">{{ $mhs->judul_skripsi }}</div>
+                        @if($idx2 < $endIdx)
+                            @php $mhs2 = $allMahasiswa[$idx2]; @endphp
+                            
+                            <div class="card-right">
+                                <div class="student-card">
+                                    <div class="student-main clearfix">
+                                        @if($mhs2->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mhs2->foto_wisuda)))
+                                            <img src="{{ public_path('storage/graduation-photos/' . $mhs2->foto_wisuda) }}" 
+                                                 alt="{{ $mhs2->nama }}"
+                                                 class="student-photo">
+                                        @else
+                                            <div class="student-photo-placeholder">Foto</div>
+                                        @endif
+                                        
+                                        <div class="student-data">
+                                            <div class="data-line">
+                                                <span class="data-label">NPM</span>
+                                                <span class="data-sep">:</span>
+                                                <span class="data-value">{{ $mhs2->npm }}</span>
+                                            </div>
+                                            <div class="data-line">
+                                                <span class="data-label">Nama</span>
+                                                <span class="data-sep">:</span>
+                                                <span class="data-value">{{ $mhs2->nama }}</span>
+                                            </div>
+                                            <div class="data-line">
+                                                <span class="data-label">Prodi</span>
+                                                <span class="data-sep">:</span>
+                                                <span class="data-value">{{ $mhs2->program_studi ?? '-' }}</span>
+                                            </div>
+                                            <div class="data-line">
+                                                <span class="data-label">IPK</span>
+                                                <span class="data-sep">:</span>
+                                                <span class="data-value">{{ $mhs2->ipk ?? '-' }}</span>
+                                            </div>
+                                            <div class="data-line">
+                                                <span class="data-label">Yudisium</span>
+                                                <span class="data-sep">:</span>
+                                                <span class="data-value">{{ $mhs2->yudisium ?? '-' }}</span>
+                                            </div>
+                                            <div class="data-line">
+                                                <span class="data-label">Email</span>
+                                                <span class="data-sep">:</span>
+                                                <span class="data-value">{{ $mhs2->email ?? '-' }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    @if($mhs2->judul_skripsi)
+                                        <div class="thesis-box">
+                                            <div class="thesis-label">Judul Skripsi / Tugas Akhir</div>
+                                            <div class="thesis-text">{{ $mhs2->judul_skripsi }}</div>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         @endif
                     </div>
-                </div>
-                
-                @if(!$isLeft || $loop->last)
-                    </div style="clear: both;"></div>
-                    </div class="clearfix"></div>
                 @endif
-            @endforeach
-        @endforeach
+            @endfor
 
-        <!-- Page Footer -->
-        <div class="page-footer">
-            {{ $event->name }}
+            <!-- Page Footer -->
+            <div class="page-footer">
+                {{ $event->name }} | Halaman {{ $page + 1 }} dari {{ $totalPages }}
+            </div>
         </div>
-    </div>
+    @endfor
 </body>
 </html>
