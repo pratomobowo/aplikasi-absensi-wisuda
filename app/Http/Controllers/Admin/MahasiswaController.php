@@ -17,16 +17,24 @@ class MahasiswaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Mahasiswa::where(function ($q) {
-            // Mahasiswa yang belum punya tiket sama sekali
-            $q->doesntHave('graduationTickets')
-              // Atau punya setidaknya 1 tiket yang belum diarsip (event masih aktif)
-              ->orWhereHas('graduationTickets', function ($q) {
-                  $q->whereNull('archived_at');
-              });
+        // Base query: only show mahasiswa with tickets for active (non-completed) events
+        // If event_id filter is provided, show only for that specific event
+        $query = Mahasiswa::whereHas('graduationTickets', function ($q) {
+            $q->whereHas('graduationEvent', function ($q2) {
+                $q2->where('status', '!=', 'completed');
+            });
         })->with(['graduationTickets' => function ($q) {
-            $q->whereNull('archived_at');
+            $q->whereHas('graduationEvent', function ($q2) {
+                $q2->where('status', '!=', 'completed');
+            })->with('graduationEvent');
         }]);
+
+        // Filter by specific graduation event
+        if ($request->filled('graduation_event_id')) {
+            $query->whereHas('graduationTickets', function ($q) use ($request) {
+                $q->where('graduation_event_id', $request->input('graduation_event_id'));
+            });
+        }
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -44,8 +52,13 @@ class MahasiswaController extends Controller
 
         $mahasiswas = $query->latest()->paginate(20)->withQueryString();
         $programStudis = Mahasiswa::distinct()->pluck('program_studi', 'program_studi');
+        
+        // Get active events for filter dropdown
+        $events = \App\Models\GraduationEvent::where('status', '!=', 'completed')
+            ->orderBy('date', 'desc')
+            ->get();
 
-        return view('admin.mahasiswa.index', compact('mahasiswas', 'programStudis'));
+        return view('admin.mahasiswa.index', compact('mahasiswas', 'programStudis', 'events'));
     }
 
     public function create()

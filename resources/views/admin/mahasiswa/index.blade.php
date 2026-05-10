@@ -1,11 +1,11 @@
 @extends('layouts.admin')
 
-@section('title', 'Mahasiswa')
+@section('title', 'List Wisudawan')
 
 @section('content')
     <div class="space-y-6">
         <div class="flex items-center justify-between">
-            <h1 class="text-2xl font-bold text-gray-900">Mahasiswa</h1>
+            <h1 class="text-2xl font-bold text-gray-900">List Wisudawan</h1>
             <div class="flex items-center space-x-3">
                 <a href="{{ route('admin.mahasiswa.create') }}" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
                     + Tambah Mahasiswa
@@ -39,6 +39,17 @@
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
                 </div>
                 <div class="w-64">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Acara Wisuda</label>
+                    <select name="graduation_event_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                        <option value="">Semua Acara Aktif</option>
+                        @foreach($events as $event)
+                            <option value="{{ $event->id }}" {{ request('graduation_event_id') == $event->id ? 'selected' : '' }}>
+                                {{ $event->name }} ({{ $event->date->format('d M Y') }})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="w-64">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Program Studi</label>
                     <select name="program_studi" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
                         <option value="">Semua Program Studi</option>
@@ -62,6 +73,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Program Studi</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">IPK</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Yudisium</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acara Wisuda</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Foto</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                     </tr>
@@ -74,6 +86,17 @@
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $mahasiswa->program_studi }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ number_format($mahasiswa->ipk, 2) }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $mahasiswa->yudisium ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">
+                                @if($mahasiswa->graduationTickets->isNotEmpty())
+                                    @foreach($mahasiswa->graduationTickets as $ticket)
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-1">
+                                            {{ $ticket->graduationEvent->name ?? 'Unknown' }}
+                                        </span>
+                                    @endforeach
+                                @else
+                                    <span class="text-xs text-gray-400">Belum ada tiket</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4">
                                 @if($mahasiswa->foto_wisuda)
                                     <img src="{{ $mahasiswa->foto_wisuda_url }}" alt="Foto" class="w-10 h-10 rounded-full object-cover">
@@ -96,7 +119,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-sm text-gray-500">Tidak ada data mahasiswa</td>
+                            <td colspan="8" class="px-6 py-8 text-center text-sm text-gray-500">Tidak ada data wisudawan untuk acara ini</td>
                         </tr>
                     @endforelse
                 </tbody>
