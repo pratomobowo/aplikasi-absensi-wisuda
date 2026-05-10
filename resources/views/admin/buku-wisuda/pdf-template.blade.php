@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buku Wisuda - {{ $event->name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         @page {
-            size: A4 landscape;
-            margin: 20mm 25mm;
+            size: A4 portrait;
+            margin: 18mm 16mm 22mm 16mm;
         }
 
         * {
@@ -17,16 +18,16 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 9pt;
-            line-height: 1.4;
-            color: #1e293b;
-            background: #fff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 8.5pt;
+            line-height: 1.35;
+            color: #1a1a2e;
+            background: white;
         }
 
-        /* Cover Page */
+        /* ===== COVER PAGE ===== */
         .cover {
-            width: 100vw;
+            width: 100%;
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -34,212 +35,312 @@
             justify-content: center;
             text-align: center;
             page-break-after: always;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3b82f6 100%);
-            color: white;
+            position: relative;
+            background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+        }
+
+        .cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
         }
 
         .cover-content {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 60px 80px;
-            border-radius: 20px;
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
-            color: #1e293b;
-            max-width: 600px;
+            padding: 40px;
+            max-width: 85%;
         }
 
-        .cover-icon {
-            width: 80px;
-            height: 80px;
-            background: #1e40af;
+        .cover-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            background: #1e3a8a;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 30px;
-            font-size: 36px;
+        }
+
+        .cover-logo svg {
+            width: 50px;
+            height: 50px;
             color: white;
         }
 
-        .cover h1 {
-            font-size: 42pt;
+        .cover-title {
+            font-size: 28pt;
             font-weight: 800;
-            margin-bottom: 15px;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            letter-spacing: 4px;
-            color: #1e40af;
         }
 
-        .cover h2 {
-            font-size: 18pt;
-            font-weight: 500;
-            margin-bottom: 10px;
+        .cover-subtitle {
+            font-size: 14pt;
+            font-weight: 600;
             color: #334155;
+            margin-bottom: 25px;
         }
 
         .cover-divider {
-            width: 120px;
-            height: 4px;
-            background: #1e40af;
-            margin: 25px auto;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            margin: 0 auto 25px;
             border-radius: 2px;
         }
 
-        .cover-info {
+        .cover-event {
             font-size: 11pt;
-            margin-top: 25px;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+
+        .cover-date {
+            font-size: 10pt;
             color: #64748b;
+            margin-bottom: 5px;
         }
 
-        .cover-info p {
-            margin: 5px 0;
+        .cover-location {
+            font-size: 10pt;
+            color: #64748b;
+            margin-bottom: 30px;
         }
 
-        /* Content Pages */
-        .page {
+        .cover-stats {
+            display: inline-block;
+            background: #f1f5f9;
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-size: 10pt;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .cover-footer {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 9pt;
+            color: #94a3b8;
+        }
+
+        /* ===== CONTENT PAGE ===== */
+        .content-page {
             width: 100%;
-            padding: 0;
             page-break-after: always;
+            position: relative;
         }
 
-        .page:last-child {
+        .content-page:last-child {
             page-break-after: auto;
         }
 
-        /* Two Column Layout */
-        .two-column {
+        /* Page Header */
+        .page-header {
             display: flex;
-            gap: 20px;
-            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 2px solid #1e3a8a;
+            margin-bottom: 14px;
         }
 
-        .column {
-            flex: 1;
-            width: 50%;
+        .page-header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Student Card */
+        .page-header-icon {
+            width: 22px;
+            height: 22px;
+            background: #1e3a8a;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-header-icon svg {
+            width: 13px;
+            height: 13px;
+            color: white;
+        }
+
+        .page-header-title {
+            font-size: 9pt;
+            font-weight: 700;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .page-header-event {
+            font-size: 8pt;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Page Footer */
+        .page-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 8px 0;
+            border-top: 1px solid #e2e8f0;
+            font-size: 8pt;
+            color: #94a3b8;
+        }
+
+        .page-number {
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        /* ===== GRID LAYOUT: 2x2 ===== */
+        .students-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 12px;
+            height: calc(100% - 50px);
+        }
+
+        /* ===== STUDENT CARD ===== */
         .student-card {
-            background: #ffffff;
-            border-radius: 12px;
             border: 1.5px solid #e2e8f0;
-            overflow: hidden;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .card-body {
-            padding: 16px;
-        }
-
-        /* Info Section */
-        .info-section {
+            border-radius: 10px;
+            padding: 12px;
+            background: white;
             display: flex;
-            gap: 14px;
-            margin-bottom: 12px;
+            flex-direction: column;
+            page-break-inside: avoid;
         }
 
-        .photo-wrapper {
+        .student-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .student-photo-wrapper {
             flex-shrink: 0;
         }
 
         .student-photo {
-            width: 90px;
-            height: 120px;
+            width: 70px;
+            height: 90px;
             object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            border: 1.5px solid #e2e8f0;
         }
 
-        .photo-placeholder {
-            width: 90px;
-            height: 120px;
-            border-radius: 8px;
-            background: #f1f5f9;
-            border: 2px solid #e2e8f0;
+        .student-photo-placeholder {
+            width: 70px;
+            height: 90px;
+            border-radius: 6px;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 8pt;
+            font-size: 7pt;
             color: #94a3b8;
             text-align: center;
+            flex-shrink: 0;
         }
 
-        .data-wrapper {
+        .student-info {
             flex: 1;
             min-width: 0;
         }
 
-        .data-row {
+        .info-row {
             display: flex;
-            margin-bottom: 3px;
-            align-items: baseline;
+            margin-bottom: 2px;
+            font-size: 7.5pt;
         }
 
-        .data-label {
-            width: 85px;
+        .info-label {
+            width: 72px;
             font-weight: 700;
-            color: #1e40af;
-            font-size: 8pt;
+            color: #1e3a8a;
             flex-shrink: 0;
         }
 
-        .data-separator {
-            width: 15px;
+        .info-separator {
+            width: 10px;
             font-weight: 700;
-            color: #1e40af;
-            font-size: 8pt;
+            color: #1e3a8a;
             flex-shrink: 0;
         }
 
-        .data-value {
+        .info-value {
+            flex: 1;
             color: #334155;
-            font-size: 8.5pt;
             font-weight: 500;
-            word-break: break-word;
+            word-wrap: break-word;
         }
 
         /* Thesis Section */
         .thesis-section {
-            background: #eff6ff;
-            border-radius: 10px;
-            padding: 10px 12px;
+            background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
             border: 1px solid #dbeafe;
+            border-radius: 6px;
+            padding: 6px 8px;
+            margin-top: auto;
         }
 
         .thesis-header {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 6px;
+            gap: 5px;
+            margin-bottom: 3px;
         }
 
         .thesis-icon {
-            width: 22px;
-            height: 22px;
-            background: #1e40af;
+            width: 14px;
+            height: 14px;
+            background: #1e3a8a;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 10px;
             flex-shrink: 0;
         }
 
-        .thesis-label {
-            font-size: 7pt;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #1e40af;
+        .thesis-icon svg {
+            width: 8px;
+            height: 8px;
+            color: white;
         }
 
-        .thesis-title {
-            font-size: 8pt;
+        .thesis-label-text {
+            font-size: 6.5pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #1e3a8a;
+            letter-spacing: 0.3px;
+        }
+
+        .thesis-content {
+            font-size: 7.5pt;
             color: #475569;
-            line-height: 1.5;
+            line-height: 1.4;
             font-style: italic;
-            padding-left: 30px;
+            padding-left: 19px;
         }
 
         /* Print optimization */
@@ -247,133 +348,139 @@
             .student-card {
                 break-inside: avoid;
             }
-            
-            .page {
-                break-after: page;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Cover Page -->
+    <!-- ===== COVER PAGE ===== -->
     <div class="cover">
         <div class="cover-content">
-            <div class="cover-icon">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <div class="cover-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
                     <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
                 </svg>
             </div>
-            <h1>Buku Wisuda</h1>
+            <div class="cover-title">Buku Wisuda</div>
+            <div class="cover-subtitle">Universitas Sangga Buana YPKP</div>
             <div class="cover-divider"></div>
-            <h2>{{ $event->name }}</h2>
-            <div class="cover-info">
-                <p>{{ $event->date->format('l, d F Y') }}</p>
-                <p>Pukul {{ $event->time->format('H:i') }} WIB</p>
-                <p>{{ $event->location_name }}</p>
-                <p style="margin-top: 15px; font-weight: 600;">Total Wisudawan: {{ $mahasiswa->count() }}</p>
-            </div>
+            <div class="cover-event">{{ $event->name }}</div>
+            <div class="cover-date">{{ $event->date->format('l, d F Y') }}</div>
+            <div class="cover-location">{{ $event->location_name }}</div>
+            <div class="cover-stats">Total Wisudawan: {{ $mahasiswa->count() }} Orang</div>
+        </div>
+        <div class="cover-footer">
+            Dokumen Resmi Wisuda - Universitas Sangga Buana YPKP
         </div>
     </div>
 
-    <!-- Content Pages -->
+    <!-- ===== CONTENT PAGES ===== -->
     @php
         $totalMahasiswa = $mahasiswa->count();
-        $itemsPerPage = 2;
+        $itemsPerPage = 4;
         $totalPages = ceil($totalMahasiswa / $itemsPerPage);
     @endphp
-    
+
     @for($page = 0; $page < $totalPages; $page++)
-        <div class="page">
-            <div class="two-column">
-                @for($col = 0; $col < 2; $col++)
+        <div class="content-page">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-header-left">
+                    <div class="page-header-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                        </svg>
+                    </div>
+                    <div class="page-header-title">Buku Wisuda</div>
+                </div>
+                <div class="page-header-event">{{ $event->name }}</div>
+            </div>
+
+            <!-- Students Grid (2x2) -->
+            <div class="students-grid">
+                @for($i = 0; $i < 4; $i++)
                     @php
-                        $index = ($page * $itemsPerPage) + $col;
+                        $index = ($page * $itemsPerPage) + $i;
                     @endphp
                     
                     @if($index < $totalMahasiswa)
                         @php $mhs = $mahasiswa[$index]; @endphp
                         
-                        <div class="column">
-                            <div class="student-card">
-                                <div class="card-body">
-                                    <!-- Section 1: Photo + Info -->
-                                    <div class="info-section">
-                                        <div class="photo-wrapper">
-                                            @if($mhs->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mhs->foto_wisuda)))
-                                                <img src="{{ public_path('storage/graduation-photos/' . $mhs->foto_wisuda) }}" 
-                                                     alt="{{ $mhs->nama }}"
-                                                     class="student-photo">
-                                            @else
-                                                <div class="photo-placeholder">
-                                                    Foto
-                                                    <br>
-                                                    Tidak
-                                                    <br>
-                                                    Tersedia
-                                                </div>
-                                            @endif
-                                        </div>
-                                        
-                                        <div class="data-wrapper">
-                                            <div class="data-row">
-                                                <span class="data-label">NPM</span>
-                                                <span class="data-separator">:</span>
-                                                <span class="data-value">{{ $mhs->npm }}</span>
-                                            </div>
-                                            
-                                            <div class="data-row">
-                                                <span class="data-label">Nama Lengkap</span>
-                                                <span class="data-separator">:</span>
-                                                <span class="data-value">{{ $mhs->nama }}</span>
-                                            </div>
-                                            
-                                            <div class="data-row">
-                                                <span class="data-label">Program Studi</span>
-                                                <span class="data-separator">:</span>
-                                                <span class="data-value">{{ $mhs->program_studi ?? '-' }}</span>
-                                            </div>
-                                            
-                                            <div class="data-row">
-                                                <span class="data-label">IPK</span>
-                                                <span class="data-separator">:</span>
-                                                <span class="data-value">{{ $mhs->ipk ?? '-' }}</span>
-                                            </div>
-                                            
-                                            <div class="data-row">
-                                                <span class="data-label">Yudisium</span>
-                                                <span class="data-separator">:</span>
-                                                <span class="data-value">{{ $mhs->yudisium ?? '-' }}</span>
-                                            </div>
-                                            
-                                            <div class="data-row">
-                                                <span class="data-label">Email</span>
-                                                <span class="data-separator">:</span>
-                                                <span class="data-value">{{ $mhs->email ?? '-' }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Section 2: Thesis Title -->
-                                    @if($mhs->judul_skripsi)
-                                        <div class="thesis-section">
-                                            <div class="thesis-header">
-                                                <div class="thesis-icon">
-                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                                                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                                                    </svg>
-                                                </div>
-                                                <div class="thesis-label">Judul Skripsi / Tugas Akhir</div>
-                                            </div>
-                                            <div class="thesis-title">{{ $mhs->judul_skripsi }}</div>
+                        <div class="student-card">
+                            <div class="student-header">
+                                <div class="student-photo-wrapper">
+                                    @if($mhs->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mhs->foto_wisuda)))
+                                        <img src="{{ public_path('storage/graduation-photos/' . $mhs->foto_wisuda) }}" 
+                                             alt="{{ $mhs->nama }}"
+                                             class="student-photo">
+                                    @else
+                                        <div class="student-photo-placeholder">
+                                            Foto
+                                            <br>
+                                            Tidak
+                                            <br>
+                                            Tersedia
                                         </div>
                                     @endif
                                 </div>
+                                
+                                <div class="student-info">
+                                    <div class="info-row">
+                                        <span class="info-label">NPM</span>
+                                        <span class="info-separator">:</span>
+                                        <span class="info-value">{{ $mhs->npm }}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Nama</span>
+                                        <span class="info-separator">:</span>
+                                        <span class="info-value">{{ $mhs->nama }}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Prodi</span>
+                                        <span class="info-separator">:</span>
+                                        <span class="info-value">{{ $mhs->program_studi ?? '-' }}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">IPK</span>
+                                        <span class="info-separator">:</span>
+                                        <span class="info-value">{{ $mhs->ipk ?? '-' }}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Yudisium</span>
+                                        <span class="info-separator">:</span>
+                                        <span class="info-value">{{ $mhs->yudisium ?? '-' }}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Email</span>
+                                        <span class="info-separator">:</span>
+                                        <span class="info-value">{{ $mhs->email ?? '-' }}</span>
+                                    </div>
+                                </div>
                             </div>
+                            
+                            @if($mhs->judul_skripsi)
+                                <div class="thesis-section">
+                                    <div class="thesis-header">
+                                        <div class="thesis-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="thesis-label-text">Judul Skripsi / Tugas Akhir</span>
+                                    </div>
+                                    <div class="thesis-content">{{ $mhs->judul_skripsi }}</div>
+                                </div>
+                            @endif
                         </div>
                     @endif
                 @endfor
+            </div>
+
+            <!-- Page Footer with Number -->
+            <div class="page-footer">
+                Halaman <span class="page-number">{{ $page + 1 }}</span> dari {{ $totalPages }}
             </div>
         </div>
     @endfor

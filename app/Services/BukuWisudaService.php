@@ -60,8 +60,6 @@ class BukuWisudaService
         
         // Generate PDF dengan Browsershot
         Browsershot::html($html)
-            ->landscape()
-            ->margins(20, 25, 20, 25)
             ->format('A4')
             ->noSandbox() // Required for servers without sandbox capabilities
             ->waitUntilNetworkIdle()
