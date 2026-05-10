@@ -127,5 +127,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Activity Logs
         Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
         Route::get('/activity-logs/{activity_log}', [ActivityLogController::class, 'show'])->name('activity-logs.show');
+
+        // Siakad Sync
+        Route::get('/siakad-sync', [SiakadSyncController::class, 'index'])->name('siakad-sync.index');
+        Route::post('/siakad-sync/preview', [SiakadSyncController::class, 'preview'])->name('siakad-sync.preview');
+        Route::post('/siakad-sync/sync', [SiakadSyncController::class, 'sync'])->name('siakad-sync.sync');
     });
 });
