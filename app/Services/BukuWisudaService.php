@@ -62,7 +62,10 @@ class BukuWisudaService
         Browsershot::html($html)
             ->format('A4')
             ->noSandbox() // Required for servers without sandbox capabilities
+            ->windowSize(1200, 1600)
+            ->deviceScaleFactor(2)
             ->waitUntilNetworkIdle()
+            ->setDelay(2000) // Wait for fonts and images to load
             ->ignoreHttpsErrors()
             ->save($fullPath);
         
