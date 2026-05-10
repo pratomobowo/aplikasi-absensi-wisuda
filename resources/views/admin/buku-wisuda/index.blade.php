@@ -33,6 +33,25 @@
             </form>
         </div>
 
+        <!-- Events Without Buku Wisuda -->
+        @if($eventsWithoutBuku->count() > 0)
+            <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-yellow-900 mb-3">Acara Belum Memiliki Buku Wisuda</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @foreach($eventsWithoutBuku as $event)
+                        <div class="bg-white p-4 rounded-lg border border-yellow-200">
+                            <p class="font-medium text-gray-900">{{ $event->name }}</p>
+                            <p class="text-sm text-gray-600 mb-3">{{ $event->date->format('d M Y') }}</p>
+                            <a href="{{ route('admin.buku-wisuda.preview', $event) }}" 
+                               class="inline-flex items-center px-3 py-1.5 bg-primary-600 text-white text-sm rounded hover:bg-primary-700">
+                                Preview & Generate
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
         <!-- Table -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <table class="w-full">
@@ -40,7 +59,7 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acara</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama File</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Slug</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ukuran</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Downloads</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
@@ -51,7 +70,15 @@
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $buku->graduationEvent->name ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900 truncate max-w-xs">{{ $buku->filename }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $buku->slug }}</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    @if($buku->status === 'draft') bg-gray-100 text-gray-800
+                                    @elseif($buku->status === 'generated') bg-yellow-100 text-yellow-800
+                                    @else bg-green-100 text-green-800
+                                    @endif">
+                                    {{ ucfirst($buku->status) }}
+                                </span>
+                            </td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $buku->getHumanFileSize() }}</td>
                             <td class="px-6 py-4">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -59,6 +86,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-sm space-x-2">
+                                <a href="{{ route('admin.buku-wisuda.preview', $buku->graduation_event_id) }}" class="text-blue-600 hover:text-blue-800">Preview</a>
                                 <a href="{{ route('buku-wisuda.admin-viewer', $buku->slug) }}" target="_blank" class="text-primary-600 hover:text-primary-800">Lihat</a>
                                 <a href="{{ route('admin.buku-wisuda.edit', $buku) }}" class="text-primary-600 hover:text-primary-800">Edit</a>
                                 <form action="{{ route('admin.buku-wisuda.destroy', $buku) }}" method="POST" class="inline">
@@ -70,7 +98,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">Tidak ada data buku wisuda</td>
+                            <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">Tidak ada data buku wisuda</td>
                         </tr>
                     @endforelse
                 </tbody>

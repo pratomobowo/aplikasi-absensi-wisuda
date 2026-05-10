@@ -112,6 +112,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('graduation-tickets', GraduationTicketController::class);
 
         // Buku Wisuda
+        Route::get('/buku-wisuda/preview/{event}', [BukuWisudaController::class, 'preview'])->name('buku-wisuda.preview');
+        Route::post('/buku-wisuda/generate/{event}', [BukuWisudaController::class, 'generate'])->name('buku-wisuda.generate');
+        Route::patch('/buku-wisuda/{bukuWisuda}/publish', [BukuWisudaController::class, 'publish'])->name('buku-wisuda.publish');
         Route::resource('buku-wisuda', BukuWisudaController::class);
 
         // Attendance

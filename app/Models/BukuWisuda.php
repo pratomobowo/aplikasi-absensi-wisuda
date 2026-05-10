@@ -18,6 +18,7 @@ class BukuWisuda extends Model
      */
     protected $fillable = [
         'graduation_event_id',
+        'status',
         'filename',
         'slug',
         'file_path',
@@ -25,6 +26,8 @@ class BukuWisuda extends Model
         'mime_type',
         'download_count',
         'uploaded_at',
+        'generated_at',
+        'generated_by',
     ];
 
     /**
@@ -36,6 +39,7 @@ class BukuWisuda extends Model
     {
         return [
             'uploaded_at' => 'datetime',
+            'generated_at' => 'datetime',
         ];
     }
 

@@ -5,12 +5,20 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\BukuWisuda;
 use App\Models\GraduationEvent;
+use App\Services\BukuWisudaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class BukuWisudaController extends Controller
 {
+    protected $bukuWisudaService;
+
+    public function __construct(BukuWisudaService $bukuWisudaService)
+    {
+        $this->bukuWisudaService = $bukuWisudaService;
+    }
+
     public function index(Request $request)
     {
         $query = BukuWisuda::with('graduationEvent')
@@ -32,13 +40,21 @@ class BukuWisudaController extends Controller
 
         $bukuWisudas = $query->latest('uploaded_at')->paginate(15)->withQueryString();
         $events = GraduationEvent::where('status', '!=', 'completed')->pluck('name', 'id');
+        
+        $eventsWithBuku = BukuWisuda::whereHas('graduationEvent', function ($q) {
+            $q->where('status', '!=', 'completed');
+        })->pluck('graduation_event_id')->toArray();
+        
+        $eventsWithoutBuku = GraduationEvent::where('status', '!=', 'completed')
+            ->whereNotIn('id', $eventsWithBuku)
+            ->get();
 
-        return view('admin.buku-wisuda.index', compact('bukuWisudas', 'events'));
+        return view('admin.buku-wisuda.index', compact('bukuWisudas', 'events', 'eventsWithoutBuku'));
     }
 
     public function create()
     {
-        $events = GraduationEvent::where('status', '!=', 'completed')->pluck('name', 'id');
+        $events = GraduationEvent::where('status', '!=', 'completed')->get();
         return view('admin.buku-wisuda.create', compact('events'));
     }
 
@@ -55,6 +71,7 @@ class BukuWisudaController extends Controller
 
         BukuWisuda::create([
             'graduation_event_id' => $data['graduation_event_id'],
+            'status' => 'published',
             'filename' => $filename,
             'file_path' => $path,
             'file_size' => $file->getSize(),
@@ -64,6 +81,44 @@ class BukuWisudaController extends Controller
         ]);
 
         return redirect()->route('admin.buku-wisuda.index')->with('success', 'Buku wisuda berhasil diupload.');
+    }
+
+    public function preview(GraduationEvent $event)
+    {
+        $preview = $this->bukuWisudaService->generatePreview($event);
+        $bukuWisuda = BukuWisuda::where('graduation_event_id', $event->id)->first();
+        
+        return view('admin.buku-wisuda.preview', array_merge($preview, [
+            'bukuWisuda' => $bukuWisuda,
+            'event' => $event,
+        ]));
+    }
+
+    public function generate(Request $request, GraduationEvent $event)
+    {
+        try {
+            $bukuWisuda = $this->bukuWisudaService->generatePdf(
+                $event,
+                $request->user()->name ?? 'Admin'
+            );
+
+            return redirect()
+                ->route('admin.buku-wisuda.preview', $event)
+                ->with('success', 'Buku wisuda berhasil digenerate. Silakan review dan publish jika sudah OK.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('admin.buku-wisuda.preview', $event)
+                ->with('error', 'Gagal generate buku wisuda: ' . $e->getMessage());
+        }
+    }
+
+    public function publish(BukuWisuda $bukuWisuda)
+    {
+        $this->bukuWisudaService->publish($bukuWisuda);
+        
+        return redirect()
+            ->route('admin.buku-wisuda.preview', $bukuWisuda->graduation_event_id)
+            ->with('success', 'Buku wisuda berhasil dipublish.');
     }
 
     public function edit(BukuWisuda $bukuWisuda)
