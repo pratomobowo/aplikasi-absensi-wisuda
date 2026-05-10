@@ -5,11 +5,9 @@ namespace App\Services;
 use App\Models\BukuWisuda;
 use App\Models\GraduationEvent;
 use App\Models\Mahasiswa;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Browsershot\Browsershot;
-use Symfony\Component\Process\Process;
 
 class BukuWisudaService
 {
@@ -41,32 +39,7 @@ class BukuWisudaService
     }
 
     /**
-     * Check if Browsershot/Chromium is available
-     */
-    private function isBrowsershotAvailable(): bool
-    {
-        try {
-            // Check if node is available
-            $process = new Process(['which', 'node']);
-            $process->run();
-            if (!$process->isSuccessful()) {
-                return false;
-            }
-
-            // Check if puppeteer/chromium is available
-            $nodePath = trim($process->getOutput());
-            $process = new Process([$nodePath, '-e', "try { require('puppeteer'); console.log('OK'); } catch(e) { console.log('FAIL'); }"]);
-            $process->run();
-            $output = trim($process->getOutput());
-            
-            return $output === 'OK';
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
-
-    /**
-     * Generate PDF for buku wisuda
+     * Generate PDF for buku wisuda using Browsershot
      */
     public function generatePdf(GraduationEvent $event, string $generatedBy): BukuWisuda
     {
@@ -75,16 +48,25 @@ class BukuWisudaService
         // Generate filename
         $filename = 'Buku_Wisuda_' . Str::slug($event->name) . '_' . now()->format('Y-m-d') . '.pdf';
         
+        // Generate HTML content
+        $html = view('admin.buku-wisuda.pdf-template', [
+            'event' => $event,
+            'mahasiswa' => $mahasiswa,
+        ])->render();
+        
         // Path untuk menyimpan PDF
         $path = 'generated/' . $filename;
         $fullPath = Storage::disk('buku_wisuda')->path($path);
         
-        // Try Browsershot first, fallback to DOMPDF
-        if ($this->isBrowsershotAvailable()) {
-            $this->generateWithBrowsershot($event, $mahasiswa, $fullPath);
-        } else {
-            $this->generateWithDompdf($event, $mahasiswa, $fullPath);
-        }
+        // Generate PDF dengan Browsershot
+        Browsershot::html($html)
+            ->landscape()
+            ->margins(20, 25, 20, 25)
+            ->format('A4')
+            ->noSandbox() // Required for servers without sandbox capabilities
+            ->waitUntilNetworkIdle()
+            ->ignoreHttpsErrors()
+            ->save($fullPath);
         
         // Create or update BukuWisuda record
         $bukuWisuda = BukuWisuda::updateOrCreate(
@@ -105,83 +87,6 @@ class BukuWisudaService
         );
         
         return $bukuWisuda;
-    }
-
-    /**
-     * Generate PDF using Browsershot (Chromium)
-     */
-    private function generateWithBrowsershot(GraduationEvent $event, $mahasiswa, string $fullPath): void
-    {
-        $html = view('admin.buku-wisuda.pdf-template', [
-            'event' => $event,
-            'mahasiswa' => $mahasiswa,
-        ])->render();
-        
-        Browsershot::html($html)
-            ->landscape()
-            ->margins(20, 25, 20, 25)
-            ->format('A4')
-            ->waitUntilNetworkIdle()
-            ->ignoreHttpsErrors()
-            ->headerHtml($this->getHeaderHtml($event))
-            ->footerHtml($this->getFooterHtml())
-            ->save($fullPath);
-    }
-
-    /**
-     * Generate PDF using DOMPDF (fallback)
-     */
-    private function generateWithDompdf(GraduationEvent $event, $mahasiswa, string $fullPath): void
-    {
-        $pdf = Pdf::loadView('admin.buku-wisuda.pdf-template-dompdf', [
-            'event' => $event,
-            'mahasiswa' => $mahasiswa,
-        ]);
-        
-        $pdf->setPaper('A4', 'landscape');
-        
-        file_put_contents($fullPath, $pdf->output());
-    }
-
-    /**
-     * Get header HTML for PDF
-     */
-    private function getHeaderHtml(GraduationEvent $event): string
-    {
-        return '<div style="
-            font-family: Arial, sans-serif;
-            font-size: 9pt;
-            color: #1e40af;
-            width: 100%;
-            padding: 10px 20px;
-            border-bottom: 2px solid #1e40af;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        ">
-            <div style="font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Buku Wisuda</div>
-            <div style="font-weight: 500; color: #64748b;">' . htmlspecialchars($event->name) . '</div>
-        </div>';
-    }
-
-    /**
-     * Get footer HTML for PDF
-     */
-    private function getFooterHtml(): string
-    {
-        return '<div style="
-            font-family: Arial, sans-serif;
-            font-size: 8pt;
-            color: #64748b;
-            width: 100%;
-            padding: 10px 25px;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-between;
-        ">
-            <span>Universitas Sangga Buana YPKP</span>
-            <span class="pageNumber"></span>
-        </div>';
     }
 
     /**

@@ -18,10 +18,10 @@ class BukuWisudaAdminViewer extends Component
         $this->bukuWisuda = BukuWisuda::where('slug', $slug)->firstOrFail();
 
         if ($this->bukuWisuda) {
-            // Generate PDF URL for inline viewing (using admin route)
-            $this->pdfUrl = route('buku-wisuda.admin-pdf', ['slug' => $this->bukuWisuda->slug]);
-            // Generate download URL (using admin route)
-            $this->downloadUrl = route('buku-wisuda.admin-download', ['slug' => $this->bukuWisuda->slug]);
+            // Generate PDF URL for inline viewing (using public route)
+            $this->pdfUrl = route('buku-wisuda.get-pdf', ['slug' => $this->bukuWisuda->slug]);
+            // Generate download URL (using public route)
+            $this->downloadUrl = route('buku-wisuda.download', ['slug' => $this->bukuWisuda->slug]);
         }
     }
 
