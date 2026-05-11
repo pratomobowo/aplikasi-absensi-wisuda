@@ -6,7 +6,7 @@
     <style>
         @page {
             size: A4 portrait;
-            margin: 15mm 10mm 20mm 10mm;
+            margin: 12mm 10mm 15mm 10mm;
         }
 
         * {
@@ -18,7 +18,7 @@
         body {
             font-family: Helvetica, Arial, sans-serif;
             font-size: 7pt;
-            line-height: 1.2;
+            line-height: 1.15;
             color: #1a1a2e;
         }
 
@@ -27,7 +27,7 @@
             width: 100%;
             height: 100vh;
             text-align: center;
-            padding: 60px 40px;
+            padding: 50px 35px;
             page-break-after: always;
             position: relative;
         }
@@ -35,69 +35,69 @@
         .cover-border {
             border: 3px solid #1e3a8a;
             border-radius: 15px;
-            padding: 50px 30px;
+            padding: 45px 25px;
             height: 100%;
         }
 
         .cover-icon {
-            font-size: 48pt;
+            font-size: 44pt;
             color: #1e3a8a;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .cover-title {
-            font-size: 26pt;
+            font-size: 24pt;
             font-weight: bold;
             color: #1e3a8a;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
         .cover-subtitle {
-            font-size: 13pt;
+            font-size: 12pt;
             font-weight: bold;
             color: #334155;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .cover-line {
-            width: 80px;
+            width: 70px;
             height: 3px;
             background: #1e3a8a;
-            margin: 0 auto 20px;
+            margin: 0 auto 18px;
         }
 
         .cover-event {
-            font-size: 11pt;
+            font-size: 10pt;
             color: #475569;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
 
         .cover-info {
-            font-size: 10pt;
+            font-size: 9pt;
             color: #64748b;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .cover-stats {
-            margin-top: 25px;
-            padding: 10px 20px;
+            margin-top: 20px;
+            padding: 8px 18px;
             background: #f1f5f9;
-            border-radius: 15px;
+            border-radius: 12px;
             display: inline-block;
-            font-size: 10pt;
+            font-size: 9pt;
             font-weight: bold;
             color: #1e3a8a;
         }
 
         .cover-footer {
             position: absolute;
-            bottom: 30px;
+            bottom: 25px;
             left: 0;
             right: 0;
             text-align: center;
-            font-size: 9pt;
+            font-size: 8pt;
             color: #94a3b8;
         }
 
@@ -106,8 +106,8 @@
             width: 100%;
             page-break-after: always;
             position: relative;
-            min-height: 250mm;
-            padding-bottom: 10mm;
+            min-height: 265mm;
+            padding-bottom: 8mm;
         }
 
         .page:last-child {
@@ -117,8 +117,8 @@
         /* Page Header */
         .page-header {
             border-bottom: 2px solid #1e3a8a;
-            padding: 4px 0 6px 0;
-            margin-bottom: 6px;
+            padding: 3px 0 5px 0;
+            margin-bottom: 5px;
             overflow: hidden;
         }
 
@@ -152,69 +152,63 @@
         /* Page Footer */
         .page-footer {
             border-top: 1px solid #e2e8f0;
-            padding: 4px 0;
+            padding: 3px 0;
             font-size: 7pt;
             color: #94a3b8;
             text-align: center;
-            margin-top: 6px;
+            margin-top: 4px;
         }
 
-        /* ===== STUDENT CARDS LAYOUT: 3 COLUMNS ===== */
+        /* ===== STUDENT CARDS LAYOUT: 2 COLUMNS x 6 ROWS ===== */
         .cards-row {
             overflow: hidden;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
-        .card-col1 {
-            width: 32%;
+        .card-left {
+            width: 49%;
             float: left;
         }
 
-        .card-col2 {
-            width: 32%;
-            float: left;
-            margin-left: 2%;
-        }
-
-        .card-col3 {
-            width: 32%;
+        .card-right {
+            width: 49%;
             float: right;
         }
 
         /* Student Card */
         .student-card {
             border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 6px;
+            border-radius: 5px;
+            padding: 5px;
             background: white;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .student-main {
             overflow: hidden;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .student-photo {
-            width: 42px;
-            height: 55px;
+            width: 38px;
+            height: 48px;
             float: left;
-            margin-right: 5px;
+            margin-right: 4px;
             border-radius: 3px;
             border: 1px solid #e2e8f0;
             object-fit: cover;
         }
 
         .student-photo-placeholder {
-            width: 42px;
-            height: 55px;
+            width: 38px;
+            height: 48px;
             float: left;
-            margin-right: 5px;
+            margin-right: 4px;
             border-radius: 3px;
             border: 1px solid #e2e8f0;
             background: #f8fafc;
             text-align: center;
-            line-height: 55px;
+            line-height: 48px;
             font-size: 6pt;
             color: #94a3b8;
         }
@@ -250,7 +244,7 @@
             background: #f0f7ff;
             border: 1px solid #dbeafe;
             border-radius: 3px;
-            padding: 3px 5px;
+            padding: 2px 4px;
             clear: both;
         }
 
@@ -259,14 +253,14 @@
             font-weight: bold;
             color: #1e3a8a;
             text-transform: uppercase;
-            margin-bottom: 1px;
+            margin-bottom: 0.5px;
         }
 
         .thesis-text {
             font-size: 6pt;
             color: #475569;
             font-style: italic;
-            line-height: 1.2;
+            line-height: 1.15;
         }
 
         /* Clearfix */
@@ -353,19 +347,18 @@
                 </div>
             </div>
 
-            <!-- Students Grid (4 rows x 3 columns = 12 per page) -->
-            @for($row = 0; $row < 4; $row++)
+            <!-- Students Grid: 6 rows x 2 columns = 12 per page -->
+            @for($row = 0; $row < 6; $row++)
                 @php
-                    $idx1 = $startIdx + ($row * 3);
+                    $idx1 = $startIdx + ($row * 2);
                     $idx2 = $idx1 + 1;
-                    $idx3 = $idx1 + 2;
                 @endphp
                 
                 @if($idx1 < $endIdx)
                     <div class="cards-row clearfix">
                         <!-- Column 1 -->
                         @php $mhs1 = $allMahasiswa[$idx1]; @endphp
-                        <div class="card-col1">
+                        <div class="card-left">
                             <div class="student-card">
                                 <div class="student-main clearfix">
                                     @if($mhs1->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mhs1->foto_wisuda)))
@@ -423,7 +416,7 @@
                         @if($idx2 < $endIdx)
                             @php $mhs2 = $allMahasiswa[$idx2]; @endphp
                             
-                            <div class="card-col2">
+                            <div class="card-right">
                                 <div class="student-card">
                                     <div class="student-main clearfix">
                                         @if($mhs2->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mhs2->foto_wisuda)))
@@ -472,65 +465,6 @@
                                         <div class="thesis-box">
                                             <div class="thesis-label">Judul Skripsi / Tugas Akhir</div>
                                             <div class="thesis-text">{{ $mhs2->judul_skripsi }}</div>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                        @endif
-                        
-                        <!-- Column 3 -->
-                        @if($idx3 < $endIdx)
-                            @php $mhs3 = $allMahasiswa[$idx3]; @endphp
-                            
-                            <div class="card-col3">
-                                <div class="student-card">
-                                    <div class="student-main clearfix">
-                                        @if($mhs3->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mhs3->foto_wisuda)))
-                                            <img src="{{ public_path('storage/graduation-photos/' . $mhs3->foto_wisuda) }}" 
-                                                 alt="{{ $mhs3->nama }}"
-                                                 class="student-photo">
-                                        @else
-                                            <div class="student-photo-placeholder">Foto</div>
-                                        @endif
-                                        
-                                        <div class="student-data">
-                                            <div class="data-line">
-                                                <span class="data-label">NPM</span>
-                                                <span class="data-sep">:</span>
-                                                <span class="data-value">{{ $mhs3->npm }}</span>
-                                            </div>
-                                            <div class="data-line">
-                                                <span class="data-label">Nama</span>
-                                                <span class="data-sep">:</span>
-                                                <span class="data-value">{{ $mhs3->nama }}</span>
-                                            </div>
-                                            <div class="data-line">
-                                                <span class="data-label">Prodi</span>
-                                                <span class="data-sep">:</span>
-                                                <span class="data-value">{{ $mhs3->program_studi ?? '-' }}</span>
-                                            </div>
-                                            <div class="data-line">
-                                                <span class="data-label">IPK</span>
-                                                <span class="data-sep">:</span>
-                                                <span class="data-value">{{ $mhs3->ipk ?? '-' }}</span>
-                                            </div>
-                                            <div class="data-line">
-                                                <span class="data-label">Yudisium</span>
-                                                <span class="data-sep">:</span>
-                                                <span class="data-value">{{ $mhs3->yudisium ?? '-' }}</span>
-                                            </div>
-                                            <div class="data-line">
-                                                <span class="data-label">Email</span>
-                                                <span class="data-sep">:</span>
-                                                <span class="data-value">{{ $mhs3->email ?? '-' }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    @if($mhs3->judul_skripsi)
-                                        <div class="thesis-box">
-                                            <div class="thesis-label">Judul Skripsi / Tugas Akhir</div>
-                                            <div class="thesis-text">{{ $mhs3->judul_skripsi }}</div>
                                         </div>
                                     @endif
                                 </div>
