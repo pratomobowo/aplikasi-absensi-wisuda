@@ -46,7 +46,7 @@ return [
     ],
 
     'foto' => [
-        'base_url' => env('FOTO_BASE_URL'),
+        'base_url' => env('FOTO_BASE_URL', 'https://siforter.usbypkp.ac.id/uploads/univsanggabuana/fotomhs/thumb'),
     ],
 
 ];

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SyncSiakadJob;
 use App\Models\Mahasiswa;
 use App\Services\SiakadService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class SiakadSyncController extends Controller
 {
@@ -92,108 +95,47 @@ class SiakadSyncController extends Controller
         ]);
 
         $periode = $request->input('periode');
+        $skipPhoto = $request->boolean('skip_foto', false);
         
-        // Ambil data dari session (bukan dari form input)
         $data = session()->get('siakad_preview_data');
         $sessionPeriode = session()->get('siakad_preview_periode');
         
-        \Log::info('Siakad Sync: Starting sync from session', [
-            'periode' => $periode,
-            'session_periode' => $sessionPeriode,
-            'data_count' => is_array($data) ? count($data) : 0,
-            'has_session_data' => !is_null($data),
-        ]);
-        
         if (empty($data) || !is_array($data)) {
-            \Log::error('Siakad Sync: Data tidak ditemukan di session', [
-                'data_type' => gettype($data),
-                'session_periode' => $sessionPeriode,
-                'request_periode' => $periode,
-            ]);
-            
             return redirect()->route('admin.siakad-sync.index')
                 ->with('error', 'Data preview tidak ditemukan. Silakan lakukan preview ulang.');
         }
         
-        // Validasi periode cocok
-        if ($sessionPeriode && $sessionPeriode !== $periode) {
-            \Log::warning('Siakad Sync: Periode tidak cocok', [
-                'session_periode' => $sessionPeriode,
-                'request_periode' => $periode,
+        $jobId = Str::uuid()->toString();
+        
+        \Log::info('Siakad Sync: Dispatching job', [
+            'job_id' => $jobId,
+            'periode' => $periode,
+            'data_count' => count($data),
+        ]);
+        
+        // Dispatch ke queue (background)
+        SyncSiakadJob::dispatch($jobId, $periode, $data, $skipPhoto);
+        
+        // Hapus session data
+        session()->forget(['siakad_preview_data', 'siakad_preview_periode']);
+        
+        return redirect()->route('admin.siakad-sync.progress', ['job_id' => $jobId]);
+    }
+    
+    public function progress(Request $request, string $jobId)
+    {
+        $progress = Cache::get("siakad_sync_{$jobId}");
+        
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json($progress ?? [
+                'current' => 0,
+                'total' => 0,
+                'percentage' => 0,
+                'status' => 'Starting...',
             ]);
         }
         
-        $siakad = app(SiakadService::class);
-
-        $created = 0;
-        $updated = 0;
-        $failed = 0;
-        $photoDownloaded = 0;
-        $skipPhoto = $request->boolean('skip_foto', false);
-
-        foreach ($data as $item) {
-            try {
-                $attr = $item['attributes'] ?? [];
-                $nim = $attr['nim'] ?? null;
-
-                if (!$nim) {
-                    $failed++;
-                    continue;
-                }
-
-                $password = bcrypt($nim);
-
-                $mahasiswa = Mahasiswa::updateOrCreate(
-                    ['npm' => $nim],
-                    [
-                        'nama' => $attr['nama'] ?? '-',
-                        'program_studi' => $attr['program_studi'] ?? '-',
-                        'ipk' => $attr['ipk_lulusan'] ?? 0,
-                        'yudisium' => ($attr['nama_predikat'] ?? '') !== '' ? $attr['nama_predikat'] : null,
-                        'password' => $password,
-                    ]
-                );
-
-                if ($mahasiswa->wasRecentlyCreated) {
-                    $created++;
-                } else {
-                    $updated++;
-                }
-
-                // Download foto
-                if (!$skipPhoto) {
-                    $fotoPath = $siakad->downloadFoto($nim);
-                    if ($fotoPath) {
-                        $mahasiswa->update(['foto_wisuda' => basename($fotoPath)]);
-                        $photoDownloaded++;
-                    }
-                }
-
-            } catch (\Exception $e) {
-                $failed++;
-                \Log::error('Gagal sync mahasiswa: ' . $e->getMessage(), ['nim' => $nim ?? 'unknown']);
-            }
-        }
-
-        // Hapus data dari session setelah sync selesai
-        session()->forget(['siakad_preview_data', 'siakad_preview_periode']);
-        
-        \Log::info('Siakad Sync: Completed', [
-            'created' => $created,
-            'updated' => $updated,
-            'failed' => $failed,
-            'photo_downloaded' => $photoDownloaded,
-        ]);
-
-        $message = "Sync selesai! {$created} baru, {$updated} diupdate";
-        if ($photoDownloaded > 0) {
-            $message .= ", {$photoDownloaded} foto didownload";
-        }
-        if ($failed > 0) {
-            $message .= ", {$failed} gagal";
-        }
-
-        return redirect()->route('admin.siakad-sync.index')->with('success', $message);
+        return view('admin.siakad-sync.progress', compact('jobId', 'progress'));
     }
 
     /**
