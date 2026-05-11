@@ -179,7 +179,7 @@
         .student-main {
             overflow: hidden;
             margin-bottom: 4px;
-            height: calc(100% - 45px);
+            height: calc(100% - 55px);
         }
 
         .student-photo {
@@ -241,7 +241,7 @@
             border: 1px solid #dbeafe;
             border-radius: 4px;
             padding: 2px 6px;
-            height: 38px;
+            height: 48px;
             overflow: hidden;
         }
 
