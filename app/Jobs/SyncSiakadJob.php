@@ -1,4 +1,4 @@
-&lt;?php
+<?php
 
 namespace App\Jobs;
 
@@ -23,98 +23,96 @@ class SyncSiakadJob implements ShouldQueue
 
     public function __construct(string $jobId, string $periode, array $data, bool $skipPhoto = false)
     {
-        $this-&gt;jobId = $jobId;
-        $this-&gt;periode = $periode;
-        $this-&gt;data = $data;
-        $this-&gt;skipPhoto = $skipPhoto;
+        $this->jobId = $jobId;
+        $this->periode = $periode;
+        $this->data = $data;
+        $this->skipPhoto = $skipPhoto;
     }
 
     public function handle(SiakadService $siakad): void
     {
-        $total = count($this-&gt;data);
+        $total = count($this->data);
         $created = 0;
         $updated = 0;
         $failed = 0;
         $photoDownloaded = 0;
 
-        $this-&gt;updateProgress(0, $total, 'Processing...', compact('created', 'updated', 'failed', 'photoDownloaded'));
+        $this->updateProgress(0, $total, 'Processing...', compact('created', 'updated', 'failed', 'photoDownloaded'));
 
-        foreach ($this-&gt;data as $index =&gt; $item) {
+        foreach ($this->data as $index => $item) {
             try {
                 $attr = $item['attributes'] ?? [];
                 $nim = $attr['nim'] ?? null;
 
                 if (!$nim) {
                     $failed++;
-                    $this-&gt;updateProgress($index + 1, $total, "Processing...", compact('created', 'updated', 'failed', 'photoDownloaded'));
+                    $this->updateProgress($index + 1, $total, "Processing...", compact('created', 'updated', 'failed', 'photoDownloaded'));
                     continue;
                 }
 
                 $password = bcrypt($nim);
 
                 $mahasiswa = Mahasiswa::updateOrCreate(
-                    ['npm' =&gt; $nim],
+                    ['npm' => $nim],
                     [
-                        'nama' =&gt; $attr['nama'] ?? '-',
-                        'program_studi' =&gt; $attr['program_studi'] ?? '-',
-                        'ipk' =&gt; $attr['ipk_lulusan'] ?? 0,
-                        'yudisium' =&gt; ($attr['nama_predikat'] ?? '') !== '' ? $attr['nama_predikat'] : null,
-                        'password' =&gt; $password,
+                        'nama' => $attr['nama'] ?? '-',
+                        'program_studi' => $attr['program_studi'] ?? '-',
+                        'ipk' => $attr['ipk_lulusan'] ?? 0,
+                        'yudisium' => ($attr['nama_predikat'] ?? '') !== '' ? $attr['nama_predikat'] : null,
+                        'password' => $password,
                     ]
                 );
 
-                if ($mahasiswa-&gt;wasRecentlyCreated) {
+                if ($mahasiswa->wasRecentlyCreated) {
                     $created++;
                 } else {
                     $updated++;
                 }
 
-                // Download foto
-                if (!$this-&gt;skipPhoto) {
-                    $fotoPath = $siakad-&gt;downloadFoto($nim);
+                if (!$this->skipPhoto) {
+                    $fotoPath = $siakad->downloadFoto($nim);
                     if ($fotoPath) {
-                        $mahasiswa-&gt;update(['foto_wisuda' =&gt; basename($fotoPath)]);
+                        $mahasiswa->update(['foto_wisuda' => basename($fotoPath)]);
                         $photoDownloaded++;
                     }
                 }
-
             } catch (\Exception $e) {
                 $failed++;
-                Log::error('Gagal sync mahasiswa: ' . $e-&gt;getMessage(), ['nim' =&gt; $nim ?? 'unknown']);
+                Log::error('Gagal sync mahasiswa: ' . $e->getMessage(), ['nim' => $nim ?? 'unknown']);
             }
 
-            $this-&gt;updateProgress($index + 1, $total, "Processing...", compact('created', 'updated', 'failed', 'photoDownloaded'));
+            $this->updateProgress($index + 1, $total, "Processing...", compact('created', 'updated', 'failed', 'photoDownloaded'));
         }
 
-        $this-&gt;updateProgress($total, $total, 'Completed', compact('created', 'updated', 'failed', 'photoDownloaded'));
+        $this->updateProgress($total, $total, 'Completed', compact('created', 'updated', 'failed', 'photoDownloaded'));
     }
 
     private function updateProgress(int $current, int $total, string $status, array $stats): void
     {
-        Cache::put("siakad_sync_{$this-&gt;jobId}", [
-            'current' =&gt; $current,
-            'total' =&gt; $total,
-            'percentage' =&gt; $total &gt; 0 ? round(($current / $total) * 100, 1) : 0,
-            'status' =&gt; $status,
-            'stats' =&gt; $stats,
-            'updated_at' =&gt; now()-&gt;toIso8601String(),
-        ], now()-&gt;addMinutes(30));
+        Cache::put("siakad_sync_{$this->jobId}", [
+            'current' => $current,
+            'total' => $total,
+            'percentage' => $total > 0 ? round(($current / $total) * 100, 1) : 0,
+            'status' => $status,
+            'stats' => $stats,
+            'updated_at' => now()->toIso8601String(),
+        ], now()->addMinutes(30));
     }
 
     public function failed(\Throwable $exception): void
     {
-        Cache::put("siakad_sync_{$this-&gt;jobId}", [
-            'current' =&gt; 0,
-            'total' =&gt; count($this-&gt;data),
-            'percentage' =&gt; 0,
-            'status' =&gt; 'Failed',
-            'error' =&gt; $exception-&gt;getMessage(),
-            'updated_at' =&gt; now()-&gt;toIso8601String(),
-        ], now()-&gt;addMinutes(30));
+        Cache::put("siakad_sync_{$this->jobId}", [
+            'current' => 0,
+            'total' => count($this->data),
+            'percentage' => 0,
+            'status' => 'Failed',
+            'error' => $exception->getMessage(),
+            'updated_at' => now()->toIso8601String(),
+        ], now()->addMinutes(30));
 
         Log::error('SyncSiakadJob failed', [
-            'job_id' =&gt; $this-&gt;jobId,
-            'error' =&gt; $exception-&gt;getMessage(),
+            'job_id' => $this->jobId,
+            'error' => $exception->getMessage(),
         ]);
     }
 }
