@@ -140,8 +140,8 @@
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div>
-                    <div class="flex items-center mb-4">
-                        <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo E-Wisuda" class="h-16 w-auto">
+                    <div class="flex items-center mb-4 bg-white p-2 rounded-lg inline-block">
+                        <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo E-Wisuda" class="h-12 w-auto">
                     </div>
                     <p class="text-sm leading-relaxed text-blue-100">Portal Universitas Sangga Buana dengan sistem terintegrasi.</p>
                 </div>
