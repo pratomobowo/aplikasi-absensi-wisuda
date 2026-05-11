@@ -53,22 +53,15 @@
             </div>
         </div>
 
-        <!-- QR Codes -->
+        <!-- QR Code -->
         <div class="mt-6 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">QR Codes</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="text-center">
-                    <p class="text-sm font-medium text-gray-700 mb-2">Mahasiswa</p>
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">QR Code Absensi & Konsumsi</h2>
+            <div class="flex justify-center">
+                <div class="text-center max-w-sm">
+                    <p class="text-sm font-medium text-gray-700 mb-2">Wisudawan</p>
                     @php $qrService = app(\App\Services\QRCodeService::class); @endphp
-                    <img src="{{ $qrService->generateQRCode($graduationTicket->qr_token_mahasiswa) }}" alt="QR Mahasiswa" class="mx-auto">
-                </div>
-                <div class="text-center">
-                    <p class="text-sm font-medium text-gray-700 mb-2">Pendamping 1</p>
-                    <img src="{{ $qrService->generateQRCode($graduationTicket->qr_token_pendamping1) }}" alt="QR Pendamping 1" class="mx-auto">
-                </div>
-                <div class="text-center">
-                    <p class="text-sm font-medium text-gray-700 mb-2">Pendamping 2</p>
-                    <img src="{{ $qrService->generateQRCode($graduationTicket->qr_token_pendamping2) }}" alt="QR Pendamping 2" class="mx-auto">
+                    <img src="{{ $qrService->generateQRCode($graduationTicket->qr_token_mahasiswa) }}" alt="QR Mahasiswa" class="mx-auto w-64 h-64">
+                    <p class="text-xs text-gray-500 mt-2">Scan pagi untuk absensi, scan sore untuk konsumsi</p>
                 </div>
             </div>
         </div>

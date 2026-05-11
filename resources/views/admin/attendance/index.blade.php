@@ -30,8 +30,6 @@
                     <select name="role" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
                         <option value="">Semua</option>
                         <option value="mahasiswa" {{ request('role') === 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
-                        <option value="pendamping1" {{ request('role') === 'pendamping1' ? 'selected' : '' }}>Pendamping 1</option>
-                        <option value="pendamping2" {{ request('role') === 'pendamping2' ? 'selected' : '' }}>Pendamping 2</option>
                     </select>
                 </div>
                 <div class="w-40">

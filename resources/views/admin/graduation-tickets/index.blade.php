@@ -67,10 +67,7 @@
                     @forelse($tickets as $ticket)
                         @php
                             $attendanceStatus = $ticket->getAttendanceStatus();
-                            $statusText = ($attendanceStatus['mahasiswa'] ? '1' : '0') . '/' . 
-                                          ($attendanceStatus['pendamping1'] ? '1' : '0') . '/' . 
-                                          ($attendanceStatus['pendamping2'] ? '1' : '0');
-                            $allAttended = $attendanceStatus['mahasiswa'] && $attendanceStatus['pendamping1'] && $attendanceStatus['pendamping2'];
+                            $isAttended = $attendanceStatus['mahasiswa'] ?? false;
                         @endphp
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $ticket->mahasiswa->nama ?? 'Unknown' }}</td>
@@ -84,8 +81,8 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $allAttended ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                    {{ $statusText }}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $isAttended ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                    {{ $isAttended ? 'Hadir' : 'Belum Hadir' }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-sm space-x-2">
