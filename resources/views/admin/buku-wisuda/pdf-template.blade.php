@@ -6,7 +6,7 @@
     <style>
         @page {
             size: A4 portrait;
-            margin: 18mm 14mm 25mm 14mm;
+            margin: 15mm 10mm 20mm 10mm;
         }
 
         * {
@@ -17,8 +17,8 @@
 
         body {
             font-family: Helvetica, Arial, sans-serif;
-            font-size: 8pt;
-            line-height: 1.3;
+            font-size: 7pt;
+            line-height: 1.2;
             color: #1a1a2e;
         }
 
@@ -107,7 +107,7 @@
             page-break-after: always;
             position: relative;
             min-height: 250mm;
-            padding-bottom: 15mm;
+            padding-bottom: 10mm;
         }
 
         .page:last-child {
@@ -117,8 +117,8 @@
         /* Page Header */
         .page-header {
             border-bottom: 2px solid #1e3a8a;
-            padding: 6px 0 8px 0;
-            margin-bottom: 10px;
+            padding: 4px 0 6px 0;
+            margin-bottom: 6px;
             overflow: hidden;
         }
 
@@ -132,84 +132,90 @@
         }
 
         .page-header-title {
-            font-size: 9pt;
+            font-size: 8pt;
             font-weight: bold;
             color: #1e3a8a;
             text-transform: uppercase;
         }
 
         .page-header-jurusan {
-            font-size: 8pt;
+            font-size: 7pt;
             color: #64748b;
             font-weight: 600;
         }
 
         .page-header-event {
-            font-size: 7.5pt;
+            font-size: 7pt;
             color: #94a3b8;
         }
 
-        /* Page Footer - NO position fixed */
+        /* Page Footer */
         .page-footer {
             border-top: 1px solid #e2e8f0;
-            padding: 6px 0;
-            font-size: 8pt;
+            padding: 4px 0;
+            font-size: 7pt;
             color: #94a3b8;
             text-align: center;
-            margin-top: 8px;
+            margin-top: 6px;
         }
 
-        /* ===== STUDENT CARDS LAYOUT ===== */
+        /* ===== STUDENT CARDS LAYOUT: 3 COLUMNS ===== */
         .cards-row {
             overflow: hidden;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
-        .card-left {
-            width: 48.5%;
+        .card-col1 {
+            width: 32%;
             float: left;
         }
 
-        .card-right {
-            width: 48.5%;
+        .card-col2 {
+            width: 32%;
+            float: left;
+            margin-left: 2%;
+        }
+
+        .card-col3 {
+            width: 32%;
             float: right;
         }
 
         /* Student Card */
         .student-card {
-            border: 1.5px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 6px;
             background: white;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .student-main {
             overflow: hidden;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .student-photo {
-            width: 55px;
-            height: 70px;
+            width: 42px;
+            height: 55px;
             float: left;
-            margin-right: 6px;
-            border-radius: 4px;
+            margin-right: 5px;
+            border-radius: 3px;
             border: 1px solid #e2e8f0;
             object-fit: cover;
         }
 
         .student-photo-placeholder {
-            width: 55px;
-            height: 70px;
+            width: 42px;
+            height: 55px;
             float: left;
-            margin-right: 6px;
-            border-radius: 4px;
+            margin-right: 5px;
+            border-radius: 3px;
             border: 1px solid #e2e8f0;
             background: #f8fafc;
             text-align: center;
-            line-height: 70px;
-            font-size: 7pt;
+            line-height: 55px;
+            font-size: 6pt;
             color: #94a3b8;
         }
 
@@ -218,8 +224,8 @@
         }
 
         .data-line {
-            margin-bottom: 1px;
-            font-size: 7pt;
+            margin-bottom: 0.5px;
+            font-size: 6pt;
         }
 
         .data-label {
@@ -243,13 +249,13 @@
         .thesis-box {
             background: #f0f7ff;
             border: 1px solid #dbeafe;
-            border-radius: 4px;
-            padding: 4px 6px;
+            border-radius: 3px;
+            padding: 3px 5px;
             clear: both;
         }
 
         .thesis-label {
-            font-size: 6pt;
+            font-size: 5pt;
             font-weight: bold;
             color: #1e3a8a;
             text-transform: uppercase;
@@ -257,10 +263,10 @@
         }
 
         .thesis-text {
-            font-size: 7pt;
+            font-size: 6pt;
             color: #475569;
             font-style: italic;
-            line-height: 1.3;
+            line-height: 1.2;
         }
 
         /* Clearfix */
@@ -298,7 +304,7 @@
 
     <!-- ===== CONTENT PAGES ===== -->
     @php
-        $itemsPerPage = 8;
+        $itemsPerPage = 12;
         $allMahasiswa = [];
         
         // Flatten grouped data
@@ -318,34 +324,48 @@
             @php
                 $startIdx = $page * $itemsPerPage;
                 $endIdx = min($startIdx + $itemsPerPage, $totalItems);
-                $pageItems = array_slice($allMahasiswa, $startIdx, $itemsPerPage);
-                $firstItem = $pageItems[0] ?? null;
-                $jurusanName = $firstItem ? ($firstItem->_jurusan ?? '-') : '-';
+                
+                // Get all unique jurusan in this page
+                $pageJurusans = [];
+                for($i = $startIdx; $i < $endIdx; $i++) {
+                    $jurusan = $allMahasiswa[$i]->_jurusan ?? '-';
+                    if(!in_array($jurusan, $pageJurusans)) {
+                        $pageJurusans[] = $jurusan;
+                    }
+                }
+                
+                // Format jurusan header text
+                if(count($pageJurusans) == 1) {
+                    $jurusanHeader = $pageJurusans[0];
+                } else {
+                    $jurusanHeader = implode(' - ', $pageJurusans);
+                }
             @endphp
             
             <!-- Page Header -->
             <div class="page-header clearfix">
                 <div class="page-header-left">
                     <div class="page-header-title">Buku Wisuda</div>
-                    <div class="page-header-jurusan">{{ $jurusanName }}</div>
+                    <div class="page-header-jurusan">{{ $jurusanHeader }}</div>
                 </div>
                 <div class="page-header-right">
                     <div class="page-header-event">{{ $event->name }}</div>
                 </div>
             </div>
 
-            <!-- Students Grid (4 rows x 2 columns = 8 per page) -->
+            <!-- Students Grid (4 rows x 3 columns = 12 per page) -->
             @for($row = 0; $row < 4; $row++)
                 @php
-                    $idx1 = $startIdx + ($row * 2);
+                    $idx1 = $startIdx + ($row * 3);
                     $idx2 = $idx1 + 1;
+                    $idx3 = $idx1 + 2;
                 @endphp
                 
                 @if($idx1 < $endIdx)
                     <div class="cards-row clearfix">
+                        <!-- Column 1 -->
                         @php $mhs1 = $allMahasiswa[$idx1]; @endphp
-                        
-                        <div class="card-left">
+                        <div class="card-col1">
                             <div class="student-card">
                                 <div class="student-main clearfix">
                                     @if($mhs1->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mhs1->foto_wisuda)))
@@ -399,10 +419,11 @@
                             </div>
                         </div>
                         
+                        <!-- Column 2 -->
                         @if($idx2 < $endIdx)
                             @php $mhs2 = $allMahasiswa[$idx2]; @endphp
                             
-                            <div class="card-right">
+                            <div class="card-col2">
                                 <div class="student-card">
                                     <div class="student-main clearfix">
                                         @if($mhs2->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mhs2->foto_wisuda)))
@@ -456,11 +477,70 @@
                                 </div>
                             </div>
                         @endif
+                        
+                        <!-- Column 3 -->
+                        @if($idx3 < $endIdx)
+                            @php $mhs3 = $allMahasiswa[$idx3]; @endphp
+                            
+                            <div class="card-col3">
+                                <div class="student-card">
+                                    <div class="student-main clearfix">
+                                        @if($mhs3->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mhs3->foto_wisuda)))
+                                            <img src="{{ public_path('storage/graduation-photos/' . $mhs3->foto_wisuda) }}" 
+                                                 alt="{{ $mhs3->nama }}"
+                                                 class="student-photo">
+                                        @else
+                                            <div class="student-photo-placeholder">Foto</div>
+                                        @endif
+                                        
+                                        <div class="student-data">
+                                            <div class="data-line">
+                                                <span class="data-label">NPM</span>
+                                                <span class="data-sep">:</span>
+                                                <span class="data-value">{{ $mhs3->npm }}</span>
+                                            </div>
+                                            <div class="data-line">
+                                                <span class="data-label">Nama</span>
+                                                <span class="data-sep">:</span>
+                                                <span class="data-value">{{ $mhs3->nama }}</span>
+                                            </div>
+                                            <div class="data-line">
+                                                <span class="data-label">Prodi</span>
+                                                <span class="data-sep">:</span>
+                                                <span class="data-value">{{ $mhs3->program_studi ?? '-' }}</span>
+                                            </div>
+                                            <div class="data-line">
+                                                <span class="data-label">IPK</span>
+                                                <span class="data-sep">:</span>
+                                                <span class="data-value">{{ $mhs3->ipk ?? '-' }}</span>
+                                            </div>
+                                            <div class="data-line">
+                                                <span class="data-label">Yudisium</span>
+                                                <span class="data-sep">:</span>
+                                                <span class="data-value">{{ $mhs3->yudisium ?? '-' }}</span>
+                                            </div>
+                                            <div class="data-line">
+                                                <span class="data-label">Email</span>
+                                                <span class="data-sep">:</span>
+                                                <span class="data-value">{{ $mhs3->email ?? '-' }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    @if($mhs3->judul_skripsi)
+                                        <div class="thesis-box">
+                                            <div class="thesis-label">Judul Skripsi / Tugas Akhir</div>
+                                            <div class="thesis-text">{{ $mhs3->judul_skripsi }}</div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 @endif
             @endfor
 
-            <!-- Page Footer (Normal flow, NOT fixed) -->
+            <!-- Page Footer -->
             <div class="page-footer">
                 {{ $event->name }} | Halaman {{ $page + 1 }} dari {{ $totalPages }}
             </div>
