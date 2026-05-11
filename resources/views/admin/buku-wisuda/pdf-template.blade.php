@@ -6,7 +6,7 @@
     <style>
         @page {
             size: A4 portrait;
-            margin: 12mm 10mm 15mm 10mm;
+            margin: 10mm 10mm 12mm 10mm;
         }
 
         * {
@@ -18,7 +18,7 @@
         body {
             font-family: Helvetica, Arial, sans-serif;
             font-size: 7pt;
-            line-height: 1.15;
+            line-height: 1.2;
             color: #1a1a2e;
         }
 
@@ -105,9 +105,6 @@
         .page {
             width: 100%;
             page-break-after: always;
-            position: relative;
-            min-height: 265mm;
-            padding-bottom: 8mm;
         }
 
         .page:last-child {
@@ -156,13 +153,13 @@
             font-size: 7pt;
             color: #94a3b8;
             text-align: center;
-            margin-top: 4px;
+            margin-top: 3px;
         }
 
-        /* ===== STUDENT CARDS LAYOUT: 2 COLUMNS x 6 ROWS ===== */
+        /* ===== STUDENT CARDS LAYOUT: 2 COLUMNS ===== */
         .cards-row {
             overflow: hidden;
-            margin-bottom: 3px;
+            margin-bottom: 5px;
         }
 
         .card-left {
@@ -179,36 +176,36 @@
         .student-card {
             border: 1px solid #e2e8f0;
             border-radius: 5px;
-            padding: 5px;
+            padding: 6px;
             background: white;
-            margin-bottom: 2px;
+            min-height: 72px;
         }
 
         .student-main {
             overflow: hidden;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
 
         .student-photo {
-            width: 38px;
-            height: 48px;
+            width: 42px;
+            height: 55px;
             float: left;
-            margin-right: 4px;
+            margin-right: 5px;
             border-radius: 3px;
             border: 1px solid #e2e8f0;
             object-fit: cover;
         }
 
         .student-photo-placeholder {
-            width: 38px;
-            height: 48px;
+            width: 42px;
+            height: 55px;
             float: left;
-            margin-right: 4px;
+            margin-right: 5px;
             border-radius: 3px;
             border: 1px solid #e2e8f0;
             background: #f8fafc;
             text-align: center;
-            line-height: 48px;
+            line-height: 55px;
             font-size: 6pt;
             color: #94a3b8;
         }
@@ -219,7 +216,7 @@
 
         .data-line {
             margin-bottom: 0.5px;
-            font-size: 6pt;
+            font-size: 6.5pt;
         }
 
         .data-label {
@@ -244,23 +241,23 @@
             background: #f0f7ff;
             border: 1px solid #dbeafe;
             border-radius: 3px;
-            padding: 2px 4px;
+            padding: 2px 5px;
             clear: both;
         }
 
         .thesis-label {
-            font-size: 5pt;
+            font-size: 5.5pt;
             font-weight: bold;
             color: #1e3a8a;
             text-transform: uppercase;
-            margin-bottom: 0.5px;
+            margin-bottom: 1px;
         }
 
         .thesis-text {
-            font-size: 6pt;
+            font-size: 6.5pt;
             color: #475569;
             font-style: italic;
-            line-height: 1.15;
+            line-height: 1.2;
         }
 
         /* Clearfix */
@@ -298,7 +295,7 @@
 
     <!-- ===== CONTENT PAGES ===== -->
     @php
-        $itemsPerPage = 12;
+        $itemsPerPage = 14;
         $allMahasiswa = [];
         
         // Flatten grouped data
@@ -347,8 +344,8 @@
                 </div>
             </div>
 
-            <!-- Students Grid: 6 rows x 2 columns = 12 per page -->
-            @for($row = 0; $row < 6; $row++)
+            <!-- Students Grid: 7 rows x 2 columns = 14 per page -->
+            @for($row = 0; $row < 7; $row++)
                 @php
                     $idx1 = $startIdx + ($row * 2);
                     $idx2 = $idx1 + 1;
@@ -358,6 +355,7 @@
                     <div class="cards-row clearfix">
                         <!-- Column 1 -->
                         @php $mhs1 = $allMahasiswa[$idx1]; @endphp
+                        
                         <div class="card-left">
                             <div class="student-card">
                                 <div class="student-main clearfix">
