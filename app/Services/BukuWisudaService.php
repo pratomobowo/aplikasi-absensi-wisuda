@@ -16,13 +16,10 @@ class BukuWisudaService
      */
     public function getMahasiswaForEvent(GraduationEvent $event)
     {
-        return Mahasiswa::whereHas('graduationTickets', function ($query) use ($event) {
-            $query->where('graduation_event_id', $event->id)
-                  ->whereNull('archived_at');
-        })
-        ->orderBy('program_studi', 'asc')
-        ->orderBy('nama', 'asc')
-        ->get();
+        return Mahasiswa::query()
+            ->orderBy('program_studi', 'asc')
+            ->orderBy('nama', 'asc')
+            ->get();
     }
 
     /**
