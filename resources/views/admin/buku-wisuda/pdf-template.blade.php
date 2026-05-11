@@ -152,8 +152,8 @@
         /* ===== STUDENT CARDS: 2 COL x 6 ROWS ===== */
         .cards-row {
             overflow: hidden;
-            margin-bottom: 6px;
-            height: 42mm;
+            margin-bottom: 5px;
+            height: 39mm;
         }
 
         .card-left {
@@ -240,8 +240,8 @@
             background: #f0f7ff;
             border: 1px solid #dbeafe;
             border-radius: 4px;
-            padding: 3px 6px;
-            height: 30px;
+            padding: 2px 6px;
+            height: 28px;
             overflow: hidden;
         }
 
