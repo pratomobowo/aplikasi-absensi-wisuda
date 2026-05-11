@@ -40,7 +40,7 @@ class AttendanceService
         self::ERROR_DECRYPTION_EXCEPTION => 'QR Code tidak dapat dibaca. Pastikan QR Code tidak rusak',
         self::ERROR_DECRYPTION_FAILED => 'QR Code tidak valid atau rusak',
         self::ERROR_MISSING_FIELDS => 'QR Code tidak lengkap atau rusak',
-        self::ERROR_INVALID_ROLE => 'QR Code tidak valid. Tipe peserta tidak dikenali',
+        self::ERROR_INVALID_ROLE => 'QR Code tidak valid. Hanya QR Code wisudawan yang dapat digunakan',
         self::ERROR_TICKET_NOT_FOUND => 'Data tidak ditemukan di database',
         self::ERROR_TICKET_EXPIRED => 'Tiket sudah kadaluarsa',
         self::ERROR_DUPLICATE => 'Sudah melakukan absensi sebelumnya',
@@ -133,29 +133,6 @@ class AttendanceService
                 $this->logScanAttempt($qrData, $scanner, false, self::ERROR_TICKET_NOT_FOUND, $duration);
 
                 return $this->buildErrorResponse(self::ERROR_TICKET_NOT_FOUND, $duration);
-            }
-
-            // Validate mahasiswa attendance for pendamping roles
-            if (in_array($role, ['pendamping1', 'pendamping2'])) {
-                $mahasiswaCheckResult = $this->checkMahasiswaAttendance($ticketId);
-                if (!$mahasiswaCheckResult['attended']) {
-                    $duration = round((microtime(true) - $startTime) * 1000, 2);
-                    $errorMessage = "Wisudawan ({$mahasiswaCheckResult['name']}) Belum hadir";
-                    $this->logScanAttempt($qrData, $scanner, false, self::ERROR_MAHASISWA_NOT_ATTENDED, $duration);
-
-                    Log::warning('AttendanceService: Pendamping scan blocked - Mahasiswa not attended', [
-                        'ticket_id' => $ticketId,
-                        'role' => $role,
-                        'mahasiswa_name' => $mahasiswaCheckResult['name'],
-                    ]);
-
-                    return [
-                        'success' => false,
-                        'message' => $errorMessage,
-                        'data' => null,
-                        'reason' => self::ERROR_MAHASISWA_NOT_ATTENDED,
-                    ];
-                }
             }
 
             // Record attendance with transaction
@@ -362,8 +339,8 @@ class AttendanceService
             );
         }
         
-        // Validate role value
-        $validRoles = ['mahasiswa', 'pendamping1', 'pendamping2'];
+        // Validate role value - only mahasiswa role is allowed (single QR for attendance & konsumsi)
+        $validRoles = ['mahasiswa'];
         if (!in_array($data['role'], $validRoles, true)) {
             Log::warning('AttendanceService: Validation failed at Step 3 - Invalid role', [
                 'role' => $data['role'],
@@ -631,8 +608,6 @@ class AttendanceService
         }
 
         $totalMahasiswa = (clone $query)->where('role', 'mahasiswa')->count();
-        $totalPendamping1 = (clone $query)->where('role', 'pendamping1')->count();
-        $totalPendamping2 = (clone $query)->where('role', 'pendamping2')->count();
 
         // Get total registered students for the event
         $totalRegistered = 0;
@@ -645,9 +620,7 @@ class AttendanceService
         return [
             'total_registered' => $totalRegistered,
             'total_attended' => $totalMahasiswa,
-            'total_pendamping1' => $totalPendamping1,
-            'total_pendamping2' => $totalPendamping2,
-            'total_all_attendees' => $totalMahasiswa + $totalPendamping1 + $totalPendamping2,
+            'total_all_attendees' => $totalMahasiswa,
         ];
     }
 
@@ -777,7 +750,7 @@ class AttendanceService
 
             try {
                 $recordedRoles = [];
-                $roles = ['mahasiswa', 'pendamping1', 'pendamping2'];
+                $roles = ['mahasiswa'];
 
                 foreach ($roles as $role) {
                     // Check if already recorded

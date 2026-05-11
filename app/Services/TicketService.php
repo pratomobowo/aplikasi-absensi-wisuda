@@ -34,18 +34,16 @@ class TicketService
         $ticket->magic_link_token = $this->generateUniqueToken();
         $ticket->expires_at = $event->date->copy()->addDay(); // Expire 1 day after event
         
-        // Set placeholder QR tokens (will be updated after save)
+        // Set placeholder QR token (will be updated after save)
         $ticket->qr_token_mahasiswa = '{}';
-        $ticket->qr_token_pendamping1 = '{}';
-        $ticket->qr_token_pendamping2 = '{}';
-        
+        $ticket->qr_token_pendamping1 = null;
+        $ticket->qr_token_pendamping2 = null;
+
         $ticket->save();
 
-        // Now generate real QR tokens with the actual ticket ID
+        // Now generate real QR token with the actual ticket ID
         $qrTokens = $this->generateQRTokens($ticket);
         $ticket->qr_token_mahasiswa = $qrTokens['mahasiswa'];
-        $ticket->qr_token_pendamping1 = $qrTokens['pendamping1'];
-        $ticket->qr_token_pendamping2 = $qrTokens['pendamping2'];
         $ticket->save();
 
         return $ticket;
@@ -63,27 +61,23 @@ class TicketService
     }
 
     /**
-     * Generate QR tokens for all roles
+     * Generate QR token for mahasiswa only
+     * QR code is scanned twice: morning for attendance, afternoon for consumption
      *
      * @param GraduationTicket $ticket
      * @return array
      */
     public function generateQRTokens(GraduationTicket $ticket): array
     {
-        $roles = ['mahasiswa', 'pendamping1', 'pendamping2'];
-        $tokens = [];
+        $data = [
+            'ticket_id' => $ticket->id,
+            'role' => 'mahasiswa',
+            'event_id' => $ticket->graduation_event_id,
+        ];
 
-        foreach ($roles as $role) {
-            $data = [
-                'ticket_id' => $ticket->id,
-                'role' => $role,
-                'event_id' => $ticket->graduation_event_id,
-            ];
-
-            $tokens[$role] = $this->qrCodeService->encryptQRData($data);
-        }
-
-        return $tokens;
+        return [
+            'mahasiswa' => $this->qrCodeService->encryptQRData($data),
+        ];
     }
 
     /**

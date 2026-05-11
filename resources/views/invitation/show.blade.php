@@ -239,47 +239,25 @@
         </div>
         @endif
 
-        <!-- QR Codes Section -->
+        <!-- QR Code Section -->
         <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-8 card-hover">
             <h2 class="text-2xl font-bold primary-text mb-2 flex items-center gap-3">
                 <span class="icon-circle" style="width: 56px; height: 56px;">
                     <i class="fas fa-qrcode text-xl"></i>
                 </span>
-                QR Code Absensi
+                QR Code Absensi & Konsumsi
             </h2>
-            <p class="text-gray-600 mb-8 ml-20">Tunjukkan QR Code kepada panitia untuk proses absensi</p>
+            <p class="text-gray-600 mb-8 ml-20">Tunjukkan QR Code ini kepada panitia saat absensi pagi dan pengambilan konsumsi sore</p>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Mahasiswa -->
-                <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 text-center card-hover">
-                    <div class="bg-white rounded-lg p-4 mb-4 inline-block shadow-lg">
-                        <img src="{{ $qrCodes['mahasiswa'] }}" alt="QR Code Mahasiswa" class="w-40 h-40">
+            <div class="flex justify-center">
+                <!-- QR Code Mahasiswa -->
+                <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-8 text-center card-hover max-w-sm w-full">
+                    <div class="bg-white rounded-lg p-6 mb-4 inline-block shadow-lg">
+                        <img src="{{ $qrCodes['mahasiswa'] }}" alt="QR Code Mahasiswa" class="w-48 h-48">
                     </div>
                     <div class="primary-bg text-white rounded-lg py-3 px-4">
                         <p class="font-bold">Wisudawan</p>
-                        <p class="text-xs text-red-100">Pengguna Utama</p>
-                    </div>
-                </div>
-
-                <!-- Pendamping 1 -->
-                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 text-center card-hover">
-                    <div class="bg-white rounded-lg p-4 mb-4 inline-block shadow-lg">
-                        <img src="{{ $qrCodes['pendamping1'] }}" alt="QR Code Pendamping 1" class="w-40 h-40">
-                    </div>
-                    <div class="bg-blue-600 text-white rounded-lg py-3 px-4">
-                        <p class="font-bold">Pendamping 1</p>
-                        <p class="text-xs text-blue-100">Orang Tua/Wali</p>
-                    </div>
-                </div>
-
-                <!-- Pendamping 2 -->
-                <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-6 text-center card-hover">
-                    <div class="bg-white rounded-lg p-4 mb-4 inline-block shadow-lg">
-                        <img src="{{ $qrCodes['pendamping2'] }}" alt="QR Code Pendamping 2" class="w-40 h-40">
-                    </div>
-                    <div class="bg-emerald-600 text-white rounded-lg py-3 px-4">
-                        <p class="font-bold">Pendamping 2</p>
-                        <p class="text-xs text-emerald-100">Orang Tua/Wali</p>
+                        <p class="text-xs text-red-100">Absensi & Konsumsi</p>
                     </div>
                 </div>
             </div>
@@ -304,7 +282,7 @@
                     <p class="font-bold text-amber-900 mb-2">Penting untuk Diperhatikan</p>
                     <ul class="text-amber-800 text-sm space-y-1">
                         <li>• Simpan halaman ini atau unduh PDF untuk dibawa saat acara wisuda</li>
-                        <li>• Setiap QR Code hanya dapat digunakan sekali untuk absensi</li>
+                        <li>• QR Code yang sama akan discan 2 kali: pagi untuk absensi, sore untuk konsumsi</li>
                         <li>• Pastikan membawa undangan ini saat menghadiri acara</li>
                     </ul>
                 </div>

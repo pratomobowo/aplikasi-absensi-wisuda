@@ -26,11 +26,9 @@ class PDFService
         // Load ticket with relationships
         $ticket->load(['mahasiswa', 'graduationEvent']);
 
-        // Generate QR codes as base64 images
+        // Generate QR code as base64 image (only mahasiswa - dual purpose)
         $qrCodes = [
             'mahasiswa' => $this->qrCodeService->generateQRCode($ticket->qr_token_mahasiswa),
-            'pendamping1' => $this->qrCodeService->generateQRCode($ticket->qr_token_pendamping1),
-            'pendamping2' => $this->qrCodeService->generateQRCode($ticket->qr_token_pendamping2),
         ];
 
         // Prepare data for view

@@ -63,11 +63,9 @@ class InvitationController extends Controller
         // Load relationships
         $ticket->load(['mahasiswa', 'graduationEvent']);
 
-        // Generate QR codes for display
+        // Generate QR code for display (only mahasiswa - dual purpose for attendance & konsumsi)
         $qrCodes = [
             'mahasiswa' => $this->qrCodeService->generateQRCode($ticket->qr_token_mahasiswa),
-            'pendamping1' => $this->qrCodeService->generateQRCode($ticket->qr_token_pendamping1),
-            'pendamping2' => $this->qrCodeService->generateQRCode($ticket->qr_token_pendamping2),
         ];
 
         return view('invitation.show', [

@@ -166,12 +166,7 @@ class Scanner extends Component
             $role = $result['data']['role'] ?? 'mahasiswa';
 
             // Format message with role information
-            $roleLabel = match($role) {
-                'mahasiswa' => 'Mahasiswa',
-                'pendamping1' => 'Pendamping 1',
-                'pendamping2' => 'Pendamping 2',
-                default => 'Peserta'
-            };
+            $roleLabel = 'Wisudawan';
             $successMessage = "{$mahasiswaName} ({$roleLabel}) - Absensi tercatat";
 
             Log::info('Scanner: Dispatching success notification', [

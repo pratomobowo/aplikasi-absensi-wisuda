@@ -129,8 +129,8 @@ class GraduationTicket extends Model
     }
 
     /**
-     * Generate QR tokens for mahasiswa and companions using encryption.
-     * This method should use TicketService for proper encryption.
+     * Generate QR token for mahasiswa only using encryption.
+     * Single QR code scanned twice: morning for attendance, afternoon for consumption.
      * 
      * @deprecated Use TicketService::generateQRTokens() instead
      */
@@ -138,22 +138,17 @@ class GraduationTicket extends Model
     {
         $qrCodeService = app(\App\Services\QRCodeService::class);
         
-        $roles = ['mahasiswa', 'pendamping1', 'pendamping2'];
-        $tokens = [];
+        $data = [
+            'ticket_id' => $this->id,
+            'role' => 'mahasiswa',
+            'event_id' => $this->graduation_event_id,
+        ];
 
-        foreach ($roles as $role) {
-            $data = [
-                'ticket_id' => $this->id,
-                'role' => $role,
-                'event_id' => $this->graduation_event_id,
-            ];
-
-            $tokens[$role] = $qrCodeService->encryptQRData($data);
-        }
+        $tokens = [
+            'mahasiswa' => $qrCodeService->encryptQRData($data),
+        ];
 
         $this->qr_token_mahasiswa = $tokens['mahasiswa'];
-        $this->qr_token_pendamping1 = $tokens['pendamping1'];
-        $this->qr_token_pendamping2 = $tokens['pendamping2'];
         $this->save();
 
         return $tokens;
@@ -180,8 +175,6 @@ class GraduationTicket extends Model
 
         return [
             'mahasiswa' => $attendances->where('role', 'mahasiswa')->isNotEmpty(),
-            'pendamping1' => $attendances->where('role', 'pendamping1')->isNotEmpty(),
-            'pendamping2' => $attendances->where('role', 'pendamping2')->isNotEmpty(),
         ];
     }
 }

@@ -353,16 +353,16 @@
             </div>
         </div>
 
-        <!-- QR Codes Section -->
+        <!-- QR Code Section -->
         <div class="card qr-section">
             <div class="card-header">
-                QR Code Absensi
+                QR Code Absensi & Konsumsi
             </div>
             <p style="margin-bottom: 12px; font-size: 10pt; color: var(--gray-600);">
-                Tunjukkan QR Code kepada panitia untuk proses absensi
+                Tunjukkan QR Code ini kepada panitia saat absensi pagi dan pengambilan konsumsi sore
             </p>
 
-            <div class="qr-grid">
+            <div class="qr-grid" style="justify-content: center;">
                 <!-- Mahasiswa -->
                 <div class="qr-item">
                     <div class="qr-card qr-card-mahasiswa">
@@ -370,29 +370,7 @@
                             <img src="{{ $qrCodes['mahasiswa'] }}" alt="QR Code Mahasiswa" class="qr-image">
                         </div>
                         <div class="qr-label-mahasiswa">Wisudawan</div>
-                        <div class="qr-sublabel">Pengguna Utama</div>
-                    </div>
-                </div>
-
-                <!-- Pendamping 1 -->
-                <div class="qr-item">
-                    <div class="qr-card qr-card-pendamping1">
-                        <div class="qr-image-wrapper">
-                            <img src="{{ $qrCodes['pendamping1'] }}" alt="QR Code Pendamping 1" class="qr-image">
-                        </div>
-                        <div class="qr-label-pendamping1">Pendamping 1</div>
-                        <div class="qr-sublabel">Orang Tua/Wali</div>
-                    </div>
-                </div>
-
-                <!-- Pendamping 2 -->
-                <div class="qr-item">
-                    <div class="qr-card qr-card-pendamping2">
-                        <div class="qr-image-wrapper">
-                            <img src="{{ $qrCodes['pendamping2'] }}" alt="QR Code Pendamping 2" class="qr-image">
-                        </div>
-                        <div class="qr-label-pendamping2">Pendamping 2</div>
-                        <div class="qr-sublabel">Orang Tua/Wali</div>
+                        <div class="qr-sublabel">Absensi & Konsumsi</div>
                     </div>
                 </div>
             </div>
@@ -402,7 +380,7 @@
         <div class="important-note">
             <div class="important-note-title">Penting untuk Diperhatikan</div>
             <div class="important-note-item">• Simpan halaman ini atau unduh PDF untuk dibawa saat acara wisuda</div>
-            <div class="important-note-item">• Setiap QR Code hanya dapat digunakan sekali untuk absensi</div>
+            <div class="important-note-item">• QR Code yang sama akan discan 2 kali: pagi untuk absensi, sore untuk konsumsi</div>
             <div class="important-note-item">• Pastikan membawa undangan ini saat menghadiri acara</div>
         </div>
 
