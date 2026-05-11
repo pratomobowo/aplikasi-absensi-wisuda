@@ -69,12 +69,16 @@ class SiakadSyncController extends Controller
                 return $item['attributes'] ?? [];
             }, $data), 'nim'))->count();
 
+            // Simpan ke session (bukan flash data) agar tersedia saat sync
+            session()->put('siakad_preview_data', $data);
+            session()->put('siakad_preview_periode', $periode);
+
             return view('admin.siakad-sync.preview', compact(
                 'previewData', 
                 'periode', 
                 'totalData', 
                 'existingCount'
-            ))->with('preview_data', $data);
+            ));
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal mengambil data: ' . $e->getMessage());
@@ -85,45 +89,39 @@ class SiakadSyncController extends Controller
     {
         $request->validate([
             'periode' => ['required', 'string', 'regex:/^\d{5}$/'],
-            'preview_data' => ['required', 'json'],
         ]);
 
         $periode = $request->input('periode');
-        $previewDataRaw = $request->input('preview_data');
         
-        // Log untuk debugging di production
-        \Log::info('Siakad Sync: Starting sync', [
+        // Ambil data dari session (bukan dari form input)
+        $data = session()->get('siakad_preview_data');
+        $sessionPeriode = session()->get('siakad_preview_periode');
+        
+        \Log::info('Siakad Sync: Starting sync from session', [
             'periode' => $periode,
-            'preview_data_length' => strlen($previewDataRaw),
-            'preview_data_size_kb' => round(strlen($previewDataRaw) / 1024, 2),
+            'session_periode' => $sessionPeriode,
+            'data_count' => is_array($data) ? count($data) : 0,
+            'has_session_data' => !is_null($data),
         ]);
         
-        $data = json_decode($previewDataRaw, true);
-        
-        // Validasi json_decode
-        if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
-            \Log::error('Siakad Sync: JSON decode failed', [
-                'json_error' => json_last_error_msg(),
-                'json_error_code' => json_last_error(),
-                'preview_data_length' => strlen($previewDataRaw),
-                'preview_data_sample' => substr($previewDataRaw, 0, 500),
-            ]);
-            
-            return redirect()->route('admin.siakad-sync.index')
-                ->with('error', 'Data tidak valid. Error: ' . json_last_error_msg());
-        }
-        
         if (empty($data) || !is_array($data)) {
-            \Log::error('Siakad Sync: Data kosong atau bukan array', [
+            \Log::error('Siakad Sync: Data tidak ditemukan di session', [
                 'data_type' => gettype($data),
-                'data_count' => is_array($data) ? count($data) : 0,
+                'session_periode' => $sessionPeriode,
+                'request_periode' => $periode,
             ]);
             
             return redirect()->route('admin.siakad-sync.index')
-                ->with('error', 'Data tidak valid. Data kosong atau format tidak sesuai.');
+                ->with('error', 'Data preview tidak ditemukan. Silakan lakukan preview ulang.');
         }
-
-        \Log::info('Siakad Sync: Data valid', ['count' => count($data)]);
+        
+        // Validasi periode cocok
+        if ($sessionPeriode && $sessionPeriode !== $periode) {
+            \Log::warning('Siakad Sync: Periode tidak cocok', [
+                'session_periode' => $sessionPeriode,
+                'request_periode' => $periode,
+            ]);
+        }
         
         $siakad = app(SiakadService::class);
 
@@ -176,6 +174,16 @@ class SiakadSyncController extends Controller
                 \Log::error('Gagal sync mahasiswa: ' . $e->getMessage(), ['nim' => $nim ?? 'unknown']);
             }
         }
+
+        // Hapus data dari session setelah sync selesai
+        session()->forget(['siakad_preview_data', 'siakad_preview_periode']);
+        
+        \Log::info('Siakad Sync: Completed', [
+            'created' => $created,
+            'updated' => $updated,
+            'failed' => $failed,
+            'photo_downloaded' => $photoDownloaded,
+        ]);
 
         $message = "Sync selesai! {$created} baru, {$updated} diupdate";
         if ($photoDownloaded > 0) {

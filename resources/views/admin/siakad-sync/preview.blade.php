@@ -84,7 +84,6 @@
             <form action="{{ route('admin.siakad-sync.sync') }}" method="POST">
                 @csrf
                 <input type="hidden" name="periode" value="{{ $periode }}">
-                <input type="hidden" name="preview_data" value="{{ json_encode(session('preview_data')) }}">
                 
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
