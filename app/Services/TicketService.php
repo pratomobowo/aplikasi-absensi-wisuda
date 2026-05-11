@@ -35,9 +35,10 @@ class TicketService
         $ticket->expires_at = $event->date->copy()->addDay(); // Expire 1 day after event
         
         // Set placeholder QR token (will be updated after save)
+        // qr_token_pendamping1/2 no longer used - single QR for attendance & consumption
         $ticket->qr_token_mahasiswa = '{}';
-        $ticket->qr_token_pendamping1 = null;
-        $ticket->qr_token_pendamping2 = null;
+        $ticket->qr_token_pendamping1 = '';
+        $ticket->qr_token_pendamping2 = '';
 
         $ticket->save();
 
