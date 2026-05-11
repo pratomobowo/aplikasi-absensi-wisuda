@@ -89,12 +89,43 @@ class SiakadSyncController extends Controller
         ]);
 
         $periode = $request->input('periode');
-        $data = json_decode($request->input('preview_data'), true);
-        $siakad = app(SiakadService::class);
-
-        if (empty($data)) {
-            return redirect()->route('admin.siakad-sync.index')->with('error', 'Data tidak valid.');
+        $previewDataRaw = $request->input('preview_data');
+        
+        // Log untuk debugging di production
+        \Log::info('Siakad Sync: Starting sync', [
+            'periode' => $periode,
+            'preview_data_length' => strlen($previewDataRaw),
+            'preview_data_size_kb' => round(strlen($previewDataRaw) / 1024, 2),
+        ]);
+        
+        $data = json_decode($previewDataRaw, true);
+        
+        // Validasi json_decode
+        if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+            \Log::error('Siakad Sync: JSON decode failed', [
+                'json_error' => json_last_error_msg(),
+                'json_error_code' => json_last_error(),
+                'preview_data_length' => strlen($previewDataRaw),
+                'preview_data_sample' => substr($previewDataRaw, 0, 500),
+            ]);
+            
+            return redirect()->route('admin.siakad-sync.index')
+                ->with('error', 'Data tidak valid. Error: ' . json_last_error_msg());
         }
+        
+        if (empty($data) || !is_array($data)) {
+            \Log::error('Siakad Sync: Data kosong atau bukan array', [
+                'data_type' => gettype($data),
+                'data_count' => is_array($data) ? count($data) : 0,
+            ]);
+            
+            return redirect()->route('admin.siakad-sync.index')
+                ->with('error', 'Data tidak valid. Data kosong atau format tidak sesuai.');
+        }
+
+        \Log::info('Siakad Sync: Data valid', ['count' => count($data)]);
+        
+        $siakad = app(SiakadService::class);
 
         $created = 0;
         $updated = 0;
