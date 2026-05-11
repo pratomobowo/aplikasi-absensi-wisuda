@@ -124,7 +124,7 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                @if($mahasiswa->foto_wisuda)
+                                @if($mahasiswa->foto_wisuda && \Illuminate\Support\Facades\Storage::disk('public')->exists('graduation-photos/' . $mahasiswa->foto_wisuda))
                                     <img src="{{ $mahasiswa->foto_wisuda_url }}" alt="Foto" class="w-10 h-10 rounded-full object-cover">
                                 @else
                                     <span class="text-xs text-gray-400">Belum upload</span>

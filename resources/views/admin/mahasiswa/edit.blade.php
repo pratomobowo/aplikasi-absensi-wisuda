@@ -92,8 +92,12 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Foto Wisuda</label>
-                        @if($mahasiswa->foto_wisuda)
+                        @if($mahasiswa->foto_wisuda && \Illuminate\Support\Facades\Storage::disk('public')->exists('graduation-photos/' . $mahasiswa->foto_wisuda))
                             <img src="{{ $mahasiswa->foto_wisuda_url }}" alt="Current foto" class="w-20 h-20 rounded-full object-cover mb-2">
+                        @else
+                            <div class="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mb-2">
+                                <span class="text-xs text-gray-400">Belum upload</span>
+                            </div>
                         @endif
                         <input type="file" name="foto_wisuda" accept="image/*"
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
