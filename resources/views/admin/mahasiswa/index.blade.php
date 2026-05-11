@@ -188,6 +188,12 @@
             });
 
             bulkForm.addEventListener('submit', function(e) {
+                // Hanya validasi jika submit berasal dari tombol bulk delete
+                // Hindari validasi saat nested form atau pagination diklik
+                if (e.submitter && e.submitter.id !== 'bulk-delete-btn') {
+                    return;
+                }
+                
                 const checked = document.querySelectorAll('.row-checkbox:checked');
                 if (checked.length === 0) {
                     e.preventDefault();
