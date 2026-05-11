@@ -195,4 +195,129 @@ class SiakadSyncController extends Controller
 
         return redirect()->route('admin.siakad-sync.index')->with('success', $message);
     }
+
+    /**
+     * Halaman download foto
+     */
+    public function photoIndex()
+    {
+        $stats = [
+            'total_mahasiswa' => Mahasiswa::count(),
+            'with_photo' => Mahasiswa::whereNotNull('foto_wisuda')->count(),
+            'without_photo' => Mahasiswa::whereNull('foto_wisuda')->count(),
+            'by_prodi' => Mahasiswa::selectRaw('program_studi, 
+                count(*) as total,
+                sum(case when foto_wisuda is not null then 1 else 0 end) as with_photo,
+                sum(case when foto_wisuda is null then 1 else 0 end) as without_photo')
+                ->groupBy('program_studi')
+                ->orderBy('total', 'desc')
+                ->get(),
+        ];
+
+        $programStudiList = Mahasiswa::select('program_studi')
+            ->distinct()
+            ->orderBy('program_studi')
+            ->pluck('program_studi');
+
+        return view('admin.siakad-sync.photo-index', compact('stats', 'programStudiList'));
+    }
+
+    /**
+     * Download foto dari SEVIMA
+     */
+    public function downloadPhotos(Request $request)
+    {
+        $request->validate([
+            'npm' => ['nullable', 'string'],
+            'program_studi' => ['nullable', 'string'],
+            'download_all' => ['nullable', 'boolean'],
+        ]);
+
+        $siakad = app(SiakadService::class);
+        $downloaded = 0;
+        $failed = 0;
+        $skipped = 0;
+
+        $query = Mahasiswa::query();
+
+        if ($request->filled('npm')) {
+            $query->where('npm', $request->input('npm'));
+        }
+
+        if ($request->filled('program_studi')) {
+            $query->where('program_studi', $request->input('program_studi'));
+        }
+
+        if (!$request->boolean('download_all')) {
+            $query->whereNull('foto_wisuda');
+        }
+
+        $mahasiswas = $query->get();
+
+        if ($mahasiswas->isEmpty()) {
+            return redirect()->route('admin.siakad-sync.photo')
+                ->with('error', 'Tidak ada mahasiswa yang memenuhi kriteria.');
+        }
+
+        foreach ($mahasiswas as $mahasiswa) {
+            try {
+                if (!$request->boolean('download_all') && $mahasiswa->foto_wisuda) {
+                    $skipped++;
+                    continue;
+                }
+
+                $fotoPath = $siakad->downloadFoto($mahasiswa->npm);
+                
+                if ($fotoPath) {
+                    $mahasiswa->update(['foto_wisuda' => basename($fotoPath)]);
+                    $downloaded++;
+                } else {
+                    $failed++;
+                }
+
+                usleep(200000); // 0.2 detik
+
+            } catch (\Exception $e) {
+                $failed++;
+                \Log::error('Gagal download foto: ' . $e->getMessage(), ['npm' => $mahasiswa->npm]);
+            }
+        }
+
+        $message = "Download selesai! {$downloaded} berhasil";
+        if ($skipped > 0) {
+            $message .= ", {$skipped} dilewati (sudah ada foto)";
+        }
+        if ($failed > 0) {
+            $message .= ", {$failed} gagal";
+        }
+
+        return redirect()->route('admin.siakad-sync.photo')
+            ->with('success', $message);
+    }
+
+    /**
+     * Preview foto (check apakah foto tersedia di server SEVIMA)
+     */
+    public function previewPhoto(Request $request)
+    {
+        $request->validate([
+            'npm' => ['required', 'string'],
+        ]);
+
+        $npm = $request->input('npm');
+        $url = config('services.foto.base_url') . "/{$npm}.jpg";
+
+        try {
+            $response = \Http::withoutVerifying()->head($url);
+            $exists = $response->successful();
+        } catch (\Exception $e) {
+            $exists = false;
+        }
+
+        return response()->json([
+            'npm' => $npm,
+            'url' => $url,
+            'exists' => $exists,
+        ]);
+    }
 }
