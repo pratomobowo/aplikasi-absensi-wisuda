@@ -179,7 +179,7 @@
         .student-main {
             overflow: hidden;
             margin-bottom: 4px;
-            height: calc(100% - 35px);
+            height: calc(100% - 45px);
         }
 
         .student-photo {
@@ -241,7 +241,7 @@
             border: 1px solid #dbeafe;
             border-radius: 4px;
             padding: 2px 6px;
-            height: 28px;
+            height: 38px;
             overflow: hidden;
         }
 
@@ -258,9 +258,6 @@
             color: #475569;
             font-style: italic;
             line-height: 1.2;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .thesis-empty {
@@ -400,11 +397,6 @@
                                         <span class="data-sep">:</span>
                                         <span class="data-value">{{ $mhs1->yudisium ?? '-' }}</span>
                                     </div>
-                                    <div class="data-line">
-                                        <span class="data-label">Email</span>
-                                        <span class="data-sep">:</span>
-                                        <span class="data-value">{{ $mhs1->email ?? '-' }}</span>
-                                    </div>
                                 </div>
                             </div>
                             
@@ -463,11 +455,6 @@
                                             <span class="data-sep">:</span>
                                             <span class="data-value">{{ $mhs2->yudisium ?? '-' }}</span>
                                         </div>
-                                        <div class="data-line">
-                                            <span class="data-label">Email</span>
-                                            <span class="data-sep">:</span>
-                                            <span class="data-value">{{ $mhs2->email ?? '-' }}</span>
-                                        </div>
                                     </div>
                                 </div>
                                 
@@ -496,7 +483,6 @@
                                         <div class="data-line"><span class="data-label">Prodi</span></div>
                                         <div class="data-line"><span class="data-label">IPK</span></div>
                                         <div class="data-line"><span class="data-label">Yudisium</span></div>
-                                        <div class="data-line"><span class="data-label">Email</span></div>
                                     </div>
                                 </div>
                                 <div class="thesis-box thesis-empty">
@@ -520,7 +506,6 @@
                                     <div class="data-line"><span class="data-label">Prodi</span></div>
                                     <div class="data-line"><span class="data-label">IPK</span></div>
                                     <div class="data-line"><span class="data-label">Yudisium</span></div>
-                                    <div class="data-line"><span class="data-label">Email</span></div>
                                 </div>
                             </div>
                             <div class="thesis-box thesis-empty">
@@ -539,7 +524,6 @@
                                     <div class="data-line"><span class="data-label">Prodi</span></div>
                                     <div class="data-line"><span class="data-label">IPK</span></div>
                                     <div class="data-line"><span class="data-label">Yudisium</span></div>
-                                    <div class="data-line"><span class="data-label">Email</span></div>
                                 </div>
                             </div>
                             <div class="thesis-box thesis-empty">
