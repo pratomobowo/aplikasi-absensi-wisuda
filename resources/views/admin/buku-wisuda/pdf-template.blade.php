@@ -6,7 +6,7 @@
     <style>
         @page {
             size: A4 portrait;
-            margin: 15mm 12mm 18mm 12mm;
+            margin: 18mm 14mm 25mm 14mm;
         }
 
         * {
@@ -106,7 +106,8 @@
             width: 100%;
             page-break-after: always;
             position: relative;
-            min-height: 100vh;
+            min-height: 250mm;
+            padding-bottom: 15mm;
         }
 
         .page:last-child {
@@ -148,23 +149,20 @@
             color: #94a3b8;
         }
 
-        /* Page Footer */
+        /* Page Footer - NO position fixed */
         .page-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            text-align: center;
-            padding: 6px 0;
             border-top: 1px solid #e2e8f0;
+            padding: 6px 0;
             font-size: 8pt;
             color: #94a3b8;
+            text-align: center;
+            margin-top: 8px;
         }
 
         /* ===== STUDENT CARDS LAYOUT ===== */
         .cards-row {
             overflow: hidden;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .card-left {
@@ -181,36 +179,36 @@
         .student-card {
             border: 1.5px solid #e2e8f0;
             border-radius: 8px;
-            padding: 10px;
+            padding: 8px;
             background: white;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .student-main {
             overflow: hidden;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .student-photo {
-            width: 60px;
-            height: 75px;
+            width: 55px;
+            height: 70px;
             float: left;
-            margin-right: 8px;
-            border-radius: 5px;
+            margin-right: 6px;
+            border-radius: 4px;
             border: 1px solid #e2e8f0;
             object-fit: cover;
         }
 
         .student-photo-placeholder {
-            width: 60px;
-            height: 75px;
+            width: 55px;
+            height: 70px;
             float: left;
-            margin-right: 8px;
-            border-radius: 5px;
+            margin-right: 6px;
+            border-radius: 4px;
             border: 1px solid #e2e8f0;
             background: #f8fafc;
             text-align: center;
-            line-height: 75px;
+            line-height: 70px;
             font-size: 7pt;
             color: #94a3b8;
         }
@@ -221,7 +219,7 @@
 
         .data-line {
             margin-bottom: 1px;
-            font-size: 7.5pt;
+            font-size: 7pt;
         }
 
         .data-label {
@@ -245,21 +243,21 @@
         .thesis-box {
             background: #f0f7ff;
             border: 1px solid #dbeafe;
-            border-radius: 5px;
-            padding: 5px 7px;
+            border-radius: 4px;
+            padding: 4px 6px;
             clear: both;
         }
 
         .thesis-label {
-            font-size: 6.5pt;
+            font-size: 6pt;
             font-weight: bold;
             color: #1e3a8a;
             text-transform: uppercase;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
 
         .thesis-text {
-            font-size: 7.5pt;
+            font-size: 7pt;
             color: #475569;
             font-style: italic;
             line-height: 1.3;
@@ -301,7 +299,6 @@
     <!-- ===== CONTENT PAGES ===== -->
     @php
         $itemsPerPage = 8;
-        $currentPage = 0;
         $allMahasiswa = [];
         
         // Flatten grouped data
@@ -337,7 +334,7 @@
                 </div>
             </div>
 
-            <!-- Students Grid -->
+            <!-- Students Grid (4 rows x 2 columns = 8 per page) -->
             @for($row = 0; $row < 4; $row++)
                 @php
                     $idx1 = $startIdx + ($row * 2);
@@ -347,6 +344,7 @@
                 @if($idx1 < $endIdx)
                     <div class="cards-row clearfix">
                         @php $mhs1 = $allMahasiswa[$idx1]; @endphp
+                        
                         <div class="card-left">
                             <div class="student-card">
                                 <div class="student-main clearfix">
@@ -462,7 +460,7 @@
                 @endif
             @endfor
 
-            <!-- Page Footer -->
+            <!-- Page Footer (Normal flow, NOT fixed) -->
             <div class="page-footer">
                 {{ $event->name }} | Halaman {{ $page + 1 }} dari {{ $totalPages }}
             </div>
