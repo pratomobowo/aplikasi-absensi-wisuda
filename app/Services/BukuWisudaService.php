@@ -74,6 +74,12 @@ class BukuWisudaService
         $path = 'generated/' . $filename;
         $fullPath = Storage::disk('buku_wisuda')->path($path);
         
+        // Pastikan folder generated ada
+        $directory = dirname($fullPath);
+        if (!is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+        
         // Generate PDF dengan Browsershot
         Browsershot::html($html)
             ->format('A4')
