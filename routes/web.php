@@ -23,8 +23,6 @@ Route::get('/', [PageController::class, 'welcome'])->name('welcome');
 // Public pages
 Route::get('/data-wisudawan', App\Livewire\DataWisudawan::class)->name('data-wisudawan');
 Route::get('/alur-wisuda', [PageController::class, 'alurWisuda'])->name('alur-wisuda');
-Route::get('/buku-wisuda', App\Livewire\BukuWisuda::class)->name('buku-wisuda');
-Route::get('/buku-wisuda/{slug}', App\Livewire\BukuWisudaDigital::class)->name('buku-wisuda.content');
 Route::get('/help-desk', [PageController::class, 'helpDesk'])->name('help-desk');
 
 // Invitation routes with rate limiting (10 requests per minute per IP)
@@ -40,12 +38,15 @@ Route::get('/scanner', Scanner::class)
     ->middleware(['auth', 'throttle:scanner'])
     ->name('scanner');
 
-// Buku Wisuda PDF serving routes - public (no authentication required)
+// Buku Wisuda routes - specific routes first to avoid conflicts
+Route::get('/buku-wisuda', App\Livewire\BukuWisuda::class)->name('buku-wisuda');
 Route::get('/buku-wisuda/viewer/{slug}', App\Livewire\BukuWisudaViewer::class)->name('buku-wisuda.viewer');
 Route::get('/buku-wisuda/pdf/{slug}', [PublicBukuWisudaController::class, 'getPdf'])
     ->name('buku-wisuda.get-pdf');
 Route::get('/buku-wisuda/download/{slug}', [PublicBukuWisudaController::class, 'download'])
     ->name('buku-wisuda.download');
+// Generic content route must be LAST
+Route::get('/buku-wisuda/{slug}', App\Livewire\BukuWisudaDigital::class)->name('buku-wisuda.content');
 
 // Buku Wisuda admin routes - protected with admin authentication
 Route::middleware(['auth', 'admin.only'])->group(function () {
