@@ -11,47 +11,47 @@
 
         body {
             font-family: Helvetica, Arial, sans-serif;
-            font-size: 10pt;
-            line-height: 1.4;
+            font-size: 9pt;
+            line-height: 1.3;
             color: #333;
         }
 
         .container {
             width: 100%;
-            padding: 15px;
+            padding: 10px;
         }
 
-        /* Header */
+        /* Compact Header */
         .header {
             background-color: #B43237;
             color: white;
-            padding: 20px;
+            padding: 12px;
             text-align: center;
-            margin-bottom: 20px;
-            border-radius: 8px;
+            margin-bottom: 12px;
+            border-radius: 6px;
         }
 
         .header img {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 10px;
+            width: 40px;
+            height: 40px;
+            margin-bottom: 5px;
         }
 
         .header-small {
-            font-size: 8pt;
+            font-size: 7pt;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             opacity: 0.9;
         }
 
         .header-title {
-            font-size: 14pt;
+            font-size: 12pt;
             font-weight: bold;
-            margin: 5px 0;
+            margin: 3px 0;
         }
 
         .header-date {
-            font-size: 9pt;
+            font-size: 8pt;
             opacity: 0.9;
         }
 
@@ -59,7 +59,7 @@
         .main-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
         .main-table td {
@@ -67,164 +67,161 @@
         }
 
         .left-cell {
-            width: 62%;
-            padding-right: 10px;
+            width: 60%;
+            padding-right: 8px;
         }
 
         .right-cell {
-            width: 38%;
-            padding-left: 10px;
+            width: 40%;
+            padding-left: 8px;
         }
 
-        /* Card */
+        /* Compact Card */
         .card {
             border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
+            border-radius: 6px;
+            padding: 10px;
             background: #fafafa;
         }
 
         .card-title {
-            font-size: 11pt;
+            font-size: 10pt;
             font-weight: bold;
             color: #B43237;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
             border-bottom: 2px solid #B43237;
         }
 
         /* Photo */
         .photo {
-            width: 85px;
-            height: 105px;
+            width: 70px;
+            height: 90px;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 4px;
             border: 2px solid #B43237;
         }
 
         .photo-placeholder {
-            width: 85px;
-            height: 105px;
+            width: 70px;
+            height: 90px;
             background: #f0f0f0;
             border: 2px dashed #ccc;
-            border-radius: 6px;
+            border-radius: 4px;
             text-align: center;
-            font-size: 8pt;
+            font-size: 7pt;
             color: #999;
+            padding-top: 25px;
         }
 
         /* Info */
         .info-label {
-            font-size: 7pt;
+            font-size: 6pt;
             color: #666;
             text-transform: uppercase;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
             font-weight: bold;
         }
 
         .info-value {
-            font-size: 10pt;
+            font-size: 9pt;
             font-weight: bold;
             color: #000;
         }
 
         .info-row {
-            margin-bottom: 8px;
-        }
-
-        .spacer {
-            height: 6px;
+            margin-bottom: 5px;
         }
 
         /* QR Section */
         .qr-section {
             background: #fef2f2;
             border: 2px solid #B43237;
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 8px;
+            padding: 12px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
         .qr-title {
-            font-size: 12pt;
+            font-size: 10pt;
             font-weight: bold;
             color: #B43237;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .qr-subtitle {
-            font-size: 9pt;
+            font-size: 8pt;
             color: #666;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
 
         .qr-image {
-            width: 130px;
-            height: 130px;
-            margin-bottom: 10px;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 5px;
         }
 
         .qr-badge {
             background: #B43237;
             color: white;
-            padding: 5px 20px;
-            border-radius: 15px;
-            font-size: 9pt;
+            padding: 3px 15px;
+            border-radius: 12px;
+            font-size: 8pt;
             font-weight: bold;
             display: inline-block;
-            margin-bottom: 5px;
-        }
-
-        .qr-note {
-            font-size: 8pt;
-            color: #666;
-        }
-
-        /* Notice */
-        .notice {
-            background: #fffbeb;
-            border-left: 4px solid #f59e0b;
-            padding: 12px 15px;
-            margin-bottom: 20px;
-            border-radius: 0 6px 6px 0;
-        }
-
-        .notice-title {
-            font-size: 10pt;
-            font-weight: bold;
-            color: #92400e;
-            margin-bottom: 5px;
-        }
-
-        .notice-item {
-            font-size: 9pt;
-            color: #78350f;
             margin-bottom: 3px;
         }
 
-        /* Footer */
+        .qr-note {
+            font-size: 7pt;
+            color: #666;
+        }
+
+        /* Compact Notice */
+        .notice {
+            background: #fffbeb;
+            border-left: 3px solid #f59e0b;
+            padding: 8px 10px;
+            margin-bottom: 10px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .notice-title {
+            font-size: 8pt;
+            font-weight: bold;
+            color: #92400e;
+            margin-bottom: 3px;
+        }
+
+        .notice-item {
+            font-size: 7pt;
+            color: #78350f;
+            margin-bottom: 2px;
+        }
+
+        /* Compact Footer */
         .footer {
             text-align: center;
-            padding-top: 15px;
+            padding-top: 8px;
             border-top: 1px solid #eee;
         }
 
         .footer-brand {
-            font-size: 9pt;
+            font-size: 8pt;
             font-weight: bold;
             color: #B43237;
         }
 
         .footer-text {
-            font-size: 8pt;
+            font-size: 7pt;
             color: #666;
         }
 
         .footer-date {
-            font-size: 7pt;
+            font-size: 6pt;
             color: #999;
-            margin-top: 5px;
+            margin-top: 3px;
         }
     </style>
 </head>
@@ -248,7 +245,7 @@
                         
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr>
-                                <td style="width: 95px; vertical-align: top; padding-right: 12px;">
+                                <td style="width: 80px; vertical-align: top; padding-right: 10px;">
                                     @if($mahasiswa->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mahasiswa->foto_wisuda)))
                                         <img src="{{ public_path('storage/graduation-photos/' . $mahasiswa->foto_wisuda) }}" alt="Foto" class="photo">
                                     @else
@@ -261,21 +258,15 @@
                                         <div class="info-value">{{ $mahasiswa->nama }}</div>
                                     </div>
                                     
-                                    <div class="spacer"></div>
-                                    
                                     <div class="info-row">
                                         <div class="info-label">Nomor Pokok Mahasiswa</div>
                                         <div class="info-value">{{ $mahasiswa->npm }}</div>
                                     </div>
                                     
-                                    <div class="spacer"></div>
-                                    
                                     <div class="info-row">
                                         <div class="info-label">Program Studi</div>
                                         <div class="info-value">{{ $mahasiswa->program_studi }}</div>
                                     </div>
-                                    
-                                    <div class="spacer"></div>
                                     
                                     <div class="info-row">
                                         <div class="info-label">Nomor Kursi</div>
@@ -295,22 +286,18 @@
                         <div class="info-row">
                             <div class="info-label">Tanggal</div>
                             <div class="info-value">{{ $event->date->locale('id')->isoFormat('D MMMM YYYY') }}</div>
-                            <div style="font-size: 8pt; color: #666;">{{ $event->date->locale('id')->isoFormat('dddd') }}</div>
+                            <div style="font-size: 7pt; color: #666;">{{ $event->date->locale('id')->isoFormat('dddd') }}</div>
                         </div>
-                        
-                        <div class="spacer"></div>
                         
                         <div class="info-row">
                             <div class="info-label">Waktu</div>
                             <div class="info-value">{{ \Carbon\Carbon::parse($event->time)->format('H:i') }} WIB</div>
                         </div>
                         
-                        <div class="spacer"></div>
-                        
                         <div class="info-row">
                             <div class="info-label">Lokasi</div>
-                            <div class="info-value" style="font-size: 9pt;">{{ $event->location_name }}</div>
-                            <div style="font-size: 7pt; color: #888;">{{ $event->location_address }}</div>
+                            <div class="info-value" style="font-size: 8pt;">{{ $event->location_name }}</div>
+                            <div style="font-size: 6pt; color: #888;">{{ $event->location_address }}</div>
                         </div>
                     </div>
                 </td>
