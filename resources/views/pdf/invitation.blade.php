@@ -11,47 +11,47 @@
 
         body {
             font-family: Helvetica, Arial, sans-serif;
-            font-size: 9pt;
-            line-height: 1.3;
+            font-size: 8pt;
+            line-height: 1.2;
             color: #333;
         }
 
         .container {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
         }
 
         /* Compact Header */
         .header {
             background-color: #B43237;
             color: white;
-            padding: 12px;
+            padding: 8px;
             text-align: center;
-            margin-bottom: 12px;
-            border-radius: 6px;
+            margin-bottom: 8px;
+            border-radius: 5px;
         }
 
         .header img {
-            width: 40px;
-            height: 40px;
-            margin-bottom: 5px;
+            width: 30px;
+            height: 30px;
+            margin-bottom: 3px;
         }
 
         .header-small {
-            font-size: 7pt;
+            font-size: 6pt;
             text-transform: uppercase;
             letter-spacing: 1px;
             opacity: 0.9;
         }
 
         .header-title {
-            font-size: 12pt;
+            font-size: 10pt;
             font-weight: bold;
-            margin: 3px 0;
+            margin: 2px 0;
         }
 
         .header-date {
-            font-size: 8pt;
+            font-size: 7pt;
             opacity: 0.9;
         }
 
@@ -59,7 +59,7 @@
         .main-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .main-table td {
@@ -67,51 +67,51 @@
         }
 
         .left-cell {
-            width: 60%;
-            padding-right: 8px;
+            width: 58%;
+            padding-right: 6px;
         }
 
         .right-cell {
-            width: 40%;
-            padding-left: 8px;
+            width: 42%;
+            padding-left: 6px;
         }
 
         /* Compact Card */
         .card {
             border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 10px;
+            border-radius: 5px;
+            padding: 8px;
             background: #fafafa;
         }
 
         .card-title {
-            font-size: 10pt;
+            font-size: 9pt;
             font-weight: bold;
             color: #B43237;
-            margin-bottom: 8px;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #B43237;
+            margin-bottom: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #B43237;
         }
 
         /* Photo */
         .photo {
-            width: 70px;
-            height: 90px;
+            width: 60px;
+            height: 75px;
             object-fit: cover;
-            border-radius: 4px;
-            border: 2px solid #B43237;
+            border-radius: 3px;
+            border: 1px solid #B43237;
         }
 
         .photo-placeholder {
-            width: 70px;
-            height: 90px;
+            width: 60px;
+            height: 75px;
             background: #f0f0f0;
-            border: 2px dashed #ccc;
-            border-radius: 4px;
+            border: 1px dashed #ccc;
+            border-radius: 3px;
             text-align: center;
-            font-size: 7pt;
+            font-size: 6pt;
             color: #999;
-            padding-top: 25px;
+            padding-top: 20px;
         }
 
         /* Info */
@@ -124,57 +124,57 @@
         }
 
         .info-value {
-            font-size: 9pt;
+            font-size: 8pt;
             font-weight: bold;
             color: #000;
         }
 
         .info-row {
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         /* QR Section */
         .qr-section {
             background: #fef2f2;
-            border: 2px solid #B43237;
-            border-radius: 8px;
-            padding: 12px;
+            border: 1px solid #B43237;
+            border-radius: 6px;
+            padding: 8px;
             text-align: center;
-            margin-bottom: 12px;
-        }
-
-        .qr-title {
-            font-size: 10pt;
-            font-weight: bold;
-            color: #B43237;
-            margin-bottom: 3px;
-        }
-
-        .qr-subtitle {
-            font-size: 8pt;
-            color: #666;
             margin-bottom: 8px;
         }
 
-        .qr-image {
-            width: 100px;
-            height: 100px;
+        .qr-title {
+            font-size: 9pt;
+            font-weight: bold;
+            color: #B43237;
+            margin-bottom: 2px;
+        }
+
+        .qr-subtitle {
+            font-size: 7pt;
+            color: #666;
             margin-bottom: 5px;
+        }
+
+        .qr-image {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 3px;
         }
 
         .qr-badge {
             background: #B43237;
             color: white;
-            padding: 3px 15px;
-            border-radius: 12px;
-            font-size: 8pt;
+            padding: 2px 12px;
+            border-radius: 10px;
+            font-size: 7pt;
             font-weight: bold;
             display: inline-block;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .qr-note {
-            font-size: 7pt;
+            font-size: 6pt;
             color: #666;
         }
 
@@ -182,46 +182,46 @@
         .notice {
             background: #fffbeb;
             border-left: 3px solid #f59e0b;
-            padding: 8px 10px;
-            margin-bottom: 10px;
+            padding: 6px 8px;
+            margin-bottom: 8px;
             border-radius: 0 4px 4px 0;
         }
 
         .notice-title {
-            font-size: 8pt;
+            font-size: 7pt;
             font-weight: bold;
             color: #92400e;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .notice-item {
-            font-size: 7pt;
+            font-size: 6pt;
             color: #78350f;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
 
         /* Compact Footer */
         .footer {
             text-align: center;
-            padding-top: 8px;
+            padding-top: 6px;
             border-top: 1px solid #eee;
         }
 
         .footer-brand {
-            font-size: 8pt;
+            font-size: 7pt;
             font-weight: bold;
             color: #B43237;
         }
 
         .footer-text {
-            font-size: 7pt;
+            font-size: 6pt;
             color: #666;
         }
 
         .footer-date {
-            font-size: 6pt;
+            font-size: 5pt;
             color: #999;
-            margin-top: 3px;
+            margin-top: 2px;
         }
     </style>
 </head>
@@ -245,7 +245,7 @@
                         
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr>
-                                <td style="width: 80px; vertical-align: top; padding-right: 10px;">
+                                <td style="width: 70px; vertical-align: top; padding-right: 8px;">
                                     @if($mahasiswa->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mahasiswa->foto_wisuda)))
                                         <img src="{{ public_path('storage/graduation-photos/' . $mahasiswa->foto_wisuda) }}" alt="Foto" class="photo">
                                     @else
@@ -286,7 +286,7 @@
                         <div class="info-row">
                             <div class="info-label">Tanggal</div>
                             <div class="info-value">{{ $event->date->locale('id')->isoFormat('D MMMM YYYY') }}</div>
-                            <div style="font-size: 7pt; color: #666;">{{ $event->date->locale('id')->isoFormat('dddd') }}</div>
+                            <div style="font-size: 6pt; color: #666;">{{ $event->date->locale('id')->isoFormat('dddd') }}</div>
                         </div>
                         
                         <div class="info-row">
@@ -296,8 +296,8 @@
                         
                         <div class="info-row">
                             <div class="info-label">Lokasi</div>
-                            <div class="info-value" style="font-size: 8pt;">{{ $event->location_name }}</div>
-                            <div style="font-size: 6pt; color: #888;">{{ $event->location_address }}</div>
+                            <div class="info-value" style="font-size: 7pt;">{{ $event->location_name }}</div>
+                            <div style="font-size: 5pt; color: #888;">{{ $event->location_address }}</div>
                         </div>
                     </div>
                 </td>
@@ -328,7 +328,6 @@
         <div class="footer">
             <div class="footer-brand">Universitas Sanggabuana YPKP</div>
             <div class="footer-text">&copy; {{ date('Y') }} Sistem Absensi Wisuda Digital</div>
-            <div class="footer-date">Dicetak pada: {{ now()->isoFormat('dddd, D MMMM YYYY HH:mm') }} WIB</div>
         </div>
     </div>
 </body>
