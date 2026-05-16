@@ -161,10 +161,8 @@ class TicketService
                 $ids = is_array($mahasiswaIds) ? $mahasiswaIds : $mahasiswaIds->pluck('id')->toArray();
                 $query->whereIn('id', $ids);
             } else {
-                // Get all mahasiswa without tickets for this event
-                $query->whereDoesntHave('graduationTickets', function ($q) use ($event) {
-                    $q->where('graduation_event_id', $event->id);
-                });
+                // Get all mahasiswa - will update expired tickets and create new ones
+                // Don't filter by existing tickets so we can regenerate expired ones
             }
 
             $mahasiswas = $query->get();
