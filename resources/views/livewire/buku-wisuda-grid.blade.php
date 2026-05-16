@@ -25,8 +25,7 @@
                     @if($mhs->yudisium)
                         <div class="absolute top-3 left-3">
                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border {{ $this->getYudisiumColor($mhs->yudisium) }} shadow-sm backdrop-blur-sm bg-white/90">
-                                <span class="mr-1">{{ $this->getYudisiumIcon($mhs->yudisium) }}</span>
-                                {{ $mhs->yudisium }}
+                                {{ $this->getYudisiumLabel($mhs->yudisium) }}
                             </span>
                         </div>
                     @endif
@@ -34,55 +33,43 @@
 
                 <!-- Info Section - Right Side -->
                 <div class="flex-1 p-5 flex flex-col justify-between">
-                    <div>
+                    <div class="space-y-3">
                         <!-- Name -->
-                        <h3 class="text-xl font-bold text-gray-900 mb-3 break-words" title="{{ $mhs->nama }}">
+                        <h3 class="text-lg font-bold text-gray-900 leading-tight" title="{{ $mhs->nama }}">
                             {{ $mhs->nama }}
                         </h3>
                         
                         <!-- Info Grid -->
-                        <div class="space-y-2.5">
+                        <div class="space-y-2">
                             <!-- NPM -->
-                            <div class="flex items-start">
-                                <div class="w-24 flex-shrink-0">
-                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">NPM</span>
-                                </div>
-                                <div class="flex-1">
-                                    <span class="text-sm font-medium text-gray-900">{{ $mhs->npm }}</span>
-                                </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider w-20 flex-shrink-0">NPM</span>
+                                <span class="text-sm text-gray-900">{{ $mhs->npm }}</span>
                             </div>
 
                             <!-- Program Studi -->
-                            <div class="flex items-start">
-                                <div class="w-24 flex-shrink-0">
-                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Prodi</span>
-                                </div>
-                                <div class="flex-1">
-                                    <span class="text-sm text-gray-700">{{ $mhs->program_studi }}</span>
-                                </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider w-20 flex-shrink-0">Prodi</span>
+                                <span class="text-sm text-gray-700">{{ $mhs->program_studi }}</span>
                             </div>
 
                             <!-- IPK -->
-                            <div class="flex items-start">
-                                <div class="w-24 flex-shrink-0">
-                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">IPK</span>
-                                </div>
-                                <div class="flex-1">
-                                    <span class="text-lg font-bold text-blue-600">{{ number_format($mhs->ipk, 2) }}</span>
-                                </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider w-20 flex-shrink-0">IPK</span>
+                                <span class="text-base font-bold text-blue-600">{{ number_format($mhs->ipk, 2) }}</span>
                             </div>
 
-                            <!-- Yudisium (if no badge on photo) -->
-                            @if(!$mhs->yudisium)
-                                <div class="flex items-start">
-                                    <div class="w-24 flex-shrink-0">
-                                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Yudisium</span>
-                                    </div>
-                                    <div class="flex-1">
-                                        <span class="text-sm text-gray-500">-</span>
-                                    </div>
-                                </div>
-                            @endif
+                            <!-- Yudisium -->
+                            <div class="flex items-start gap-2">
+                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider w-20 flex-shrink-0">Yudisium</span>
+                                <span class="text-sm text-gray-700">{{ $mhs->yudisium ?? '-' }}</span>
+                            </div>
+
+                            <!-- Judul Skripsi -->
+                            <div class="flex items-start gap-2">
+                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider w-20 flex-shrink-0">Skripsi</span>
+                                <span class="text-sm text-gray-700 leading-relaxed">{{ $mhs->judul_skripsi ?? '-' }}</span>
+                            </div>
                         </div>
                     </div>
 

@@ -92,11 +92,13 @@ class BukuWisudaDigital extends Component
         };
     }
 
-    public function getYudisiumIcon($yudisium)
+    public function getYudisiumLabel($yudisium)
     {
         return match(strtolower($yudisium)) {
-            'cum laude', 'dengan pujian', 'magna cum laude', 'summa cum laude' => '⭐',
-            default => '🎓',
+            'cum laude', 'dengan pujian' => 'Cum Laude',
+            'magna cum laude' => 'Magna Cum Laude',
+            'summa cum laude' => 'Summa Cum Laude',
+            default => $yudisium,
         };
     }
 
