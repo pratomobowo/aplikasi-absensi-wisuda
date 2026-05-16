@@ -82,7 +82,7 @@
                 <div class="flex flex-col md:flex-row gap-4 items-start md:items-end">
                     <div class="flex-1">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Periode Akademik *</label>
-                        <select name="periode" required class="w-full md:w-80 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                        <select name="periode" required class="w-full md:w-56 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
                             <option value="">Pilih Periode</option>
                             <option value="20251">2025 Gelombang 1 (20251)</option>
                             <option value="20252">2025 Gelombang 2 (20252)</option>
