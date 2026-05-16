@@ -146,6 +146,7 @@ class TicketService
     {
         $result = [
             'created' => 0,
+            'updated' => 0,
             'skipped' => 0,
             'failed' => 0,
             'errors' => [],
@@ -182,13 +183,25 @@ class TicketService
                         ->first();
 
                     if ($existingTicket) {
-                        if ($skipExisting) {
+                        if ($skipExisting && !$existingTicket->isExpired()) {
                             $result['skipped']++;
                             continue;
-                        } else {
-                            // Delete existing and recreate
-                            $existingTicket->delete();
                         }
+                        
+                        // Update existing ticket
+                        $existingTicket->update([
+                            'expires_at' => $event->date->copy()->addDay(),
+                            'magic_link_token' => $this->generateUniqueToken(),
+                        ]);
+                        
+                        // Regenerate QR tokens
+                        $qrTokens = $this->generateQRTokens($existingTicket);
+                        $existingTicket->update([
+                            'qr_token_mahasiswa' => $qrTokens['mahasiswa'],
+                        ]);
+                        
+                        $result['updated']++;
+                        continue;
                     }
 
                     // Create new ticket

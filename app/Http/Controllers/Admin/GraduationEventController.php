@@ -193,12 +193,13 @@ class GraduationEventController extends Controller
     public function generateTickets(GraduationEvent $graduationEvent)
     {
         $ticketService = app(TicketService::class);
-        $result = $ticketService->generateTicketsForEvent($graduationEvent, null, true);
+        // Update tiket yang sudah expired dan buat yang baru
+        $result = $ticketService->generateTicketsForEvent($graduationEvent, null, false);
 
-        $message = "Dibuat: {$result['created']} | Lewat: {$result['skipped']} | Gagal: {$result['failed']}";
+        $message = "Dibuat: {$result['created']} | Diupdate: {$result['updated']} | Gagal: {$result['failed']}";
         $type = $result['failed'] === 0 ? 'success' : 'warning';
 
-        return redirect()->route('admin.graduation-events.index')->with($type, "Tiket dibuat. {$message}");
+        return redirect()->route('admin.graduation-events.index')->with($type, "Tiket berhasil diproses. {$message}");
     }
 
     public function exportTickets(GraduationEvent $graduationEvent)
