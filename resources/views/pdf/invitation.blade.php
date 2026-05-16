@@ -55,17 +55,28 @@
             opacity: 0.9;
         }
 
-        /* Table Layout */
-        table {
+        /* Main Table */
+        .main-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
 
-        td {
+        .main-table td {
             vertical-align: top;
         }
 
+        .left-cell {
+            width: 62%;
+            padding-right: 10px;
+        }
+
+        .right-cell {
+            width: 38%;
+            padding-left: 10px;
+        }
+
+        /* Card */
         .card {
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -84,23 +95,22 @@
 
         /* Photo */
         .photo {
-            width: 90px;
-            height: 110px;
+            width: 85px;
+            height: 105px;
             object-fit: cover;
             border-radius: 6px;
             border: 2px solid #B43237;
         }
 
         .photo-placeholder {
-            width: 90px;
-            height: 110px;
+            width: 85px;
+            height: 105px;
             background: #f0f0f0;
             border: 2px dashed #ccc;
             border-radius: 6px;
             text-align: center;
             font-size: 8pt;
             color: #999;
-            padding-top: 35px;
         }
 
         /* Info */
@@ -119,17 +129,16 @@
         }
 
         .info-row {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
-        .info-divider {
-            border-top: 1px solid #eee;
-            margin: 8px 0;
+        .spacer {
+            height: 6px;
         }
 
         /* QR Section */
-        .qr-box {
-            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        .qr-section {
+            background: #fef2f2;
             border: 2px solid #B43237;
             border-radius: 10px;
             padding: 20px;
@@ -138,40 +147,33 @@
         }
 
         .qr-title {
-            font-size: 11pt;
+            font-size: 12pt;
             font-weight: bold;
             color: #B43237;
-            margin-bottom: 3px;
+            margin-bottom: 5px;
         }
 
         .qr-subtitle {
-            font-size: 8pt;
+            font-size: 9pt;
             color: #666;
             margin-bottom: 15px;
-        }
-
-        .qr-image-box {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            display: inline-block;
-            margin-bottom: 10px;
         }
 
         .qr-image {
             width: 130px;
             height: 130px;
+            margin-bottom: 10px;
         }
 
         .qr-badge {
             background: #B43237;
             color: white;
-            padding: 5px 15px;
+            padding: 5px 20px;
             border-radius: 15px;
             font-size: 9pt;
             font-weight: bold;
             display: inline-block;
-            margin-bottom: 3px;
+            margin-bottom: 5px;
         }
 
         .qr-note {
@@ -189,14 +191,14 @@
         }
 
         .notice-title {
-            font-size: 9pt;
+            font-size: 10pt;
             font-weight: bold;
             color: #92400e;
             margin-bottom: 5px;
         }
 
         .notice-item {
-            font-size: 8pt;
+            font-size: 9pt;
             color: #78350f;
             margin-bottom: 3px;
         }
@@ -236,44 +238,44 @@
             <div class="header-date">{{ $event->date->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</div>
         </div>
 
-        <!-- Content Table -->
-        <table>
+        <!-- Content -->
+        <table class="main-table">
             <tr>
                 <!-- Left: Student Info -->
-                <td style="width: 65%; padding-right: 10px;">
+                <td class="left-cell">
                     <div class="card">
                         <div class="card-title">Informasi Mahasiswa</div>
                         
-                        <table>
+                        <table style="width: 100%; border-collapse: collapse;">
                             <tr>
-                                <td style="width: 100px; padding-right: 10px;">
+                                <td style="width: 95px; vertical-align: top; padding-right: 12px;">
                                     @if($mahasiswa->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mahasiswa->foto_wisuda)))
                                         <img src="{{ public_path('storage/graduation-photos/' . $mahasiswa->foto_wisuda) }}" alt="Foto" class="photo">
                                     @else
-                                        <div class="photo-placeholder">Foto Belum Tersedia</div>
+                                        <div class="photo-placeholder"><br><br>Foto Belum<br>Tersedia</div>
                                     @endif
                                 </td>
-                                <td>
+                                <td style="vertical-align: top;">
                                     <div class="info-row">
                                         <div class="info-label">Nama Lengkap</div>
                                         <div class="info-value">{{ $mahasiswa->nama }}</div>
                                     </div>
                                     
-                                    <div class="info-divider"></div>
+                                    <div class="spacer"></div>
                                     
                                     <div class="info-row">
                                         <div class="info-label">Nomor Pokok Mahasiswa</div>
                                         <div class="info-value">{{ $mahasiswa->npm }}</div>
                                     </div>
                                     
-                                    <div class="info-divider"></div>
+                                    <div class="spacer"></div>
                                     
                                     <div class="info-row">
                                         <div class="info-label">Program Studi</div>
                                         <div class="info-value">{{ $mahasiswa->program_studi }}</div>
                                     </div>
                                     
-                                    <div class="info-divider"></div>
+                                    <div class="spacer"></div>
                                     
                                     <div class="info-row">
                                         <div class="info-label">Nomor Kursi</div>
@@ -286,7 +288,7 @@
                 </td>
 
                 <!-- Right: Event Info -->
-                <td style="width: 35%; padding-left: 10px;">
+                <td class="right-cell">
                     <div class="card">
                         <div class="card-title">Detail Acara</div>
                         
@@ -296,14 +298,14 @@
                             <div style="font-size: 8pt; color: #666;">{{ $event->date->locale('id')->isoFormat('dddd') }}</div>
                         </div>
                         
-                        <div class="info-divider"></div>
+                        <div class="spacer"></div>
                         
                         <div class="info-row">
                             <div class="info-label">Waktu</div>
                             <div class="info-value">{{ \Carbon\Carbon::parse($event->time)->format('H:i') }} WIB</div>
                         </div>
                         
-                        <div class="info-divider"></div>
+                        <div class="spacer"></div>
                         
                         <div class="info-row">
                             <div class="info-label">Lokasi</div>
@@ -316,13 +318,11 @@
         </table>
 
         <!-- QR Code -->
-        <div class="qr-box">
+        <div class="qr-section">
             <div class="qr-title">QR Code Absensi &amp; Konsumsi</div>
             <div class="qr-subtitle">Tunjukkan QR Code ini kepada panitia saat acara berlangsung</div>
             
-            <div class="qr-image-box">
-                <img src="{{ $qrCodes['mahasiswa'] }}" alt="QR Code" class="qr-image">
-            </div>
+            <img src="{{ $qrCodes['mahasiswa'] }}" alt="QR Code" class="qr-image">
             
             <div class="qr-badge">Wisudawan</div>
             <div class="qr-note">Scan pagi untuk absensi | Scan sore untuk konsumsi</div>
