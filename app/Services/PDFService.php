@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\GraduationTicket;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
+use Spatie\Browsershot\Browsershot;
 
 class PDFService
 {
@@ -16,7 +16,7 @@ class PDFService
     }
 
     /**
-     * Generate invitation PDF for a graduation ticket using DomPDF
+     * Generate invitation PDF for a graduation ticket using Browsershot
      *
      * @param GraduationTicket $ticket
      * @return string PDF file path
@@ -39,18 +39,8 @@ class PDFService
             'qrCodes' => $qrCodes,
         ];
 
-        // Generate PDF
-        $pdf = Pdf::loadView('pdf.invitation', $data);
-
-        // Set paper size to A4 Portrait
-        $pdf->setPaper('a4', 'portrait');
-
-        // Set options for Dompdf PDF rendering
-        $pdf->setOptions([
-            'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled' => true,
-            'defaultFont' => 'sans-serif',
-        ]);
+        // Render HTML
+        $html = view('pdf.invitation', $data)->render();
 
         // Generate filename
         $filename = $this->generateFilename($ticket->mahasiswa->nama, $ticket->mahasiswa->npm);
@@ -61,8 +51,12 @@ class PDFService
             mkdir(dirname($filepath), 0755, true);
         }
 
-        // Save PDF
-        $pdf->save($filepath);
+        // Generate PDF with Browsershot - minimal config to avoid timeout
+        Browsershot::html($html)
+            ->format('A4')
+            ->noSandbox()
+            ->timeout(120)
+            ->save($filepath);
 
         return $filepath;
     }
