@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undangan Wisuda - {{ $mahasiswa->nama }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,149 +13,141 @@
         }
 
         body {
-            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
             font-size: 10pt;
             line-height: 1.5;
             color: #1a1a1a;
             background: white;
+            padding: 20px;
         }
 
         .page {
-            width: 210mm;
+            max-width: 210mm;
             min-height: 297mm;
-            padding: 20mm;
             margin: 0 auto;
             background: white;
-            position: relative;
+            padding: 15mm;
         }
 
-        /* Elegant Header */
+        /* Header */
         .header {
-            text-align: center;
-            padding-bottom: 20px;
-            border-bottom: 3px double #B43237;
+            background-color: #B43237;
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
             margin-bottom: 25px;
+            text-align: center;
         }
 
         .header-logo {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             margin-bottom: 15px;
             object-fit: contain;
         }
 
-        .header-title {
-            font-size: 14pt;
-            font-weight: 700;
-            color: #B43237;
+        .header-label {
+            font-size: 9pt;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 2px;
+            opacity: 0.9;
             margin-bottom: 5px;
         }
 
-        .header-subtitle {
-            font-size: 11pt;
-            color: #666;
-            font-weight: 600;
+        .header-title {
+            font-size: 16pt;
+            font-weight: 700;
+            margin-bottom: 5px;
         }
 
         .header-date {
             font-size: 10pt;
-            color: #888;
-            margin-top: 8px;
-            font-style: italic;
+            opacity: 0.9;
         }
 
-        /* Main Content */
+        /* Content Grid */
         .content {
-            display: table;
-            width: 100%;
+            display: flex;
+            gap: 20px;
             margin-bottom: 25px;
         }
 
         .content-left {
-            display: table-cell;
-            width: 60%;
-            padding-right: 15px;
-            vertical-align: top;
+            flex: 1.8;
         }
 
         .content-right {
-            display: table-cell;
-            width: 40%;
-            padding-left: 15px;
-            vertical-align: top;
+            flex: 1;
         }
 
-        /* Card Style */
+        /* Card */
         .card {
-            background: #fafafa;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 18px;
-            margin-bottom: 15px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .card-title {
-            font-size: 11pt;
+            font-size: 12pt;
             font-weight: 700;
             color: #B43237;
             margin-bottom: 15px;
-            padding-bottom: 8px;
+            padding-bottom: 10px;
             border-bottom: 2px solid #B43237;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        /* Student Photo & Info */
+        /* Student Info */
         .student-header {
-            display: table;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-
-        .student-photo-cell {
-            display: table-cell;
-            width: 110px;
-            vertical-align: top;
-            padding-right: 15px;
+            display: flex;
+            gap: 15px;
         }
 
         .student-photo {
-            width: 110px;
-            height: 140px;
+            width: 100px;
+            height: 130px;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 2px solid #B43237;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            flex-shrink: 0;
         }
 
         .student-photo-placeholder {
-            width: 110px;
-            height: 140px;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-            border-radius: 6px;
-            border: 2px dashed #ccc;
+            width: 100px;
+            height: 130px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            border: 2px dashed #d1d5db;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 9pt;
-            color: #999;
+            font-size: 8pt;
+            color: #9ca3af;
             text-align: center;
+            flex-shrink: 0;
         }
 
-        .student-info-cell {
-            display: table-cell;
-            vertical-align: top;
+        .student-info {
+            flex: 1;
         }
 
         .info-row {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
         }
 
         .info-label {
-            font-size: 8pt;
-            color: #666;
+            font-size: 7pt;
+            color: #6b7280;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 2px;
@@ -164,32 +157,37 @@
         .info-value {
             font-size: 11pt;
             font-weight: 700;
-            color: #1a1a1a;
-        }
-
-        .info-divider {
-            border-top: 1px solid #e0e0e0;
-            margin: 8px 0;
+            color: #111827;
         }
 
         /* Event Info */
-        .event-detail {
-            margin-bottom: 10px;
+        .event-row {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f3f4f6;
         }
 
-        .event-detail:last-child {
+        .event-row:last-child {
             margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .event-day {
+            font-size: 9pt;
+            color: #6b7280;
+            font-style: italic;
+            margin-top: 2px;
         }
 
         /* QR Section */
         .qr-section {
             background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
             border: 2px solid #B43237;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 25px;
             text-align: center;
             margin-bottom: 20px;
-            page-break-inside: avoid;
         }
 
         .qr-title {
@@ -198,14 +196,12 @@
             color: #B43237;
             margin-bottom: 5px;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .qr-subtitle {
             font-size: 9pt;
-            color: #666;
+            color: #6b7280;
             margin-bottom: 20px;
-            font-style: italic;
         }
 
         .qr-container {
@@ -227,7 +223,7 @@
             display: inline-block;
             background: #B43237;
             color: white;
-            padding: 8px 20px;
+            padding: 8px 25px;
             border-radius: 20px;
             font-size: 10pt;
             font-weight: 700;
@@ -236,17 +232,16 @@
 
         .qr-note {
             font-size: 9pt;
-            color: #666;
+            color: #6b7280;
         }
 
-        /* Important Notice */
+        /* Notice */
         .notice {
             background: #fffbeb;
             border-left: 4px solid #f59e0b;
             border-radius: 0 8px 8px 0;
             padding: 15px 18px;
             margin-bottom: 20px;
-            page-break-inside: avoid;
         }
 
         .notice-title {
@@ -260,7 +255,7 @@
             font-size: 9pt;
             color: #78350f;
             margin-bottom: 4px;
-            padding-left: 15px;
+            padding-left: 12px;
             position: relative;
         }
 
@@ -276,39 +271,26 @@
         .footer {
             text-align: center;
             padding-top: 20px;
-            border-top: 1px solid #e0e0e0;
-            margin-top: 20px;
-        }
-
-        .footer-text {
-            font-size: 9pt;
-            color: #666;
-            margin-bottom: 3px;
+            border-top: 1px solid #e5e7eb;
         }
 
         .footer-brand {
             font-size: 10pt;
             font-weight: 700;
             color: #B43237;
+            margin-bottom: 3px;
+        }
+
+        .footer-text {
+            font-size: 9pt;
+            color: #6b7280;
         }
 
         .footer-date {
             font-size: 8pt;
-            color: #999;
+            color: #9ca3af;
             margin-top: 8px;
             font-style: italic;
-        }
-
-        /* Print Optimization */
-        @media print {
-            body {
-                background: white;
-            }
-            .page {
-                width: 100%;
-                padding: 15mm;
-                margin: 0;
-            }
         }
     </style>
 </head>
@@ -316,13 +298,13 @@
     <div class="page">
         <!-- Header -->
         <div class="header">
-            <img src="{{ public_path('logo-ewisuda.png') }}" alt="Logo" class="header-logo">
-            <div class="header-title">Undangan Wisuda</div>
-            <div class="header-subtitle">{{ $event->name }}</div>
+            <img src="{{ asset('logo-ewisuda.png') }}" alt="Logo" class="header-logo">
+            <div class="header-label">Undangan Wisuda</div>
+            <div class="header-title">{{ $event->name }}</div>
             <div class="header-date">{{ $event->date->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</div>
         </div>
 
-        <!-- Main Content -->
+        <!-- Content -->
         <div class="content">
             <!-- Left: Student Info -->
             <div class="content-left">
@@ -330,38 +312,30 @@
                     <div class="card-title">Informasi Mahasiswa</div>
                     
                     <div class="student-header">
-                        <div class="student-photo-cell">
-                            @if($mahasiswa->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mahasiswa->foto_wisuda)))
-                                <img src="{{ public_path('storage/graduation-photos/' . $mahasiswa->foto_wisuda) }}" alt="Foto" class="student-photo">
-                            @else
-                                <div class="student-photo-placeholder">
-                                    Foto
-                                    <br>Belum
-                                    <br>Tersedia
-                                </div>
-                            @endif
-                        </div>
-                        <div class="student-info-cell">
+                        @if($mahasiswa->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mahasiswa->foto_wisuda)))
+                            <img src="{{ public_path('storage/graduation-photos/' . $mahasiswa->foto_wisuda) }}" alt="Foto" class="student-photo">
+                        @else
+                            <div class="student-photo-placeholder">
+                                Foto Belum
+                                <br>Tersedia
+                            </div>
+                        @endif
+                        
+                        <div class="student-info">
                             <div class="info-row">
                                 <div class="info-label">Nama Lengkap</div>
                                 <div class="info-value">{{ $mahasiswa->nama }}</div>
                             </div>
-                            
-                            <div class="info-divider"></div>
                             
                             <div class="info-row">
                                 <div class="info-label">Nomor Pokok Mahasiswa</div>
                                 <div class="info-value">{{ $mahasiswa->npm }}</div>
                             </div>
                             
-                            <div class="info-divider"></div>
-                            
                             <div class="info-row">
                                 <div class="info-label">Program Studi</div>
                                 <div class="info-value">{{ $mahasiswa->program_studi }}</div>
                             </div>
-                            
-                            <div class="info-divider"></div>
                             
                             <div class="info-row">
                                 <div class="info-label">Nomor Kursi</div>
@@ -377,22 +351,18 @@
                 <div class="card">
                     <div class="card-title">Detail Acara</div>
                     
-                    <div class="event-detail">
+                    <div class="event-row">
                         <div class="info-label">Tanggal</div>
                         <div class="info-value" style="font-size: 10pt;">{{ $event->date->locale('id')->isoFormat('D MMMM YYYY') }}</div>
-                        <div style="font-size: 9pt; color: #666; font-style: italic;">{{ $event->date->locale('id')->isoFormat('dddd') }}</div>
+                        <div class="event-day">{{ $event->date->locale('id')->isoFormat('dddd') }}</div>
                     </div>
                     
-                    <div class="info-divider"></div>
-                    
-                    <div class="event-detail">
+                    <div class="event-row">
                         <div class="info-label">Waktu</div>
                         <div class="info-value" style="font-size: 10pt;">{{ \Carbon\Carbon::parse($event->time)->format('H:i') }} WIB</div>
                     </div>
                     
-                    <div class="info-divider"></div>
-                    
-                    <div class="event-detail">
+                    <div class="event-row">
                         <div class="info-label">Lokasi</div>
                         <div class="info-value" style="font-size: 10pt;">{{ $event->location_name }}</div>
                         <div style="font-size: 8pt; color: #888; margin-top: 3px;">{{ $event->location_address }}</div>
@@ -401,7 +371,7 @@
             </div>
         </div>
 
-        <!-- QR Code Section -->
+        <!-- QR Code -->
         <div class="qr-section">
             <div class="qr-title">QR Code Absensi &amp; Konsumsi</div>
             <div class="qr-subtitle">Tunjukkan QR Code ini kepada panitia saat acara berlangsung</div>
@@ -414,7 +384,7 @@
             <div class="qr-note">Scan pagi untuk absensi | Scan sore untuk konsumsi</div>
         </div>
 
-        <!-- Important Notice -->
+        <!-- Notice -->
         <div class="notice">
             <div class="notice-title">Penting untuk Diperhatikan</div>
             <div class="notice-item">Simpan undangan ini atau unduh PDF untuk dibawa saat acara wisuda</div>
@@ -425,8 +395,8 @@
 
         <!-- Footer -->
         <div class="footer">
-            <div class="footer-text">&copy; {{ date('Y') }} Sistem Absensi Wisuda Digital</div>
             <div class="footer-brand">Universitas Sanggabuana YPKP</div>
+            <div class="footer-text">&copy; {{ date('Y') }} Sistem Absensi Wisuda Digital</div>
             <div class="footer-date">Dicetak pada: {{ now()->isoFormat('dddd, D MMMM YYYY HH:mm') }} WIB</div>
         </div>
     </div>
