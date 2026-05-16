@@ -79,10 +79,10 @@
             
             <form action="{{ route('admin.siakad-sync.preview') }}" method="POST">
                 @csrf
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                    <div class="md:col-span-2">
+                <div class="flex flex-col md:flex-row gap-4 items-start md:items-end">
+                    <div class="flex-1">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Periode Akademik *</label>
-                        <select name="periode" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                        <select name="periode" required class="w-full md:w-80 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
                             <option value="">Pilih Periode</option>
                             <option value="20251">2025 Gelombang 1 (20251)</option>
                             <option value="20252">2025 Gelombang 2 (20252)</option>
@@ -92,7 +92,7 @@
                         <p class="text-xs text-gray-500 mt-1">Periode akademik sesuai format SIAKAD Sevima (e.g. 20251 = Tahun 2025, Semester/Gelombang 1)</p>
                     </div>
                     <div>
-                        <button type="submit" class="w-full px-6 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700">
+                        <button type="submit" class="w-full md:w-auto px-6 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700">
                             Preview Data
                         </button>
                     </div>
