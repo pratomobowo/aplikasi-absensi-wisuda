@@ -13,18 +13,27 @@
             <!-- Mahasiswa Info -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">Informasi Mahasiswa</h2>
-                <div class="space-y-3">
-                    <div class="flex justify-between">
-                        <span class="text-sm text-gray-600">Nama</span>
-                        <span class="text-sm font-medium text-gray-900">{{ $graduationTicket->mahasiswa->nama }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-sm text-gray-600">NPM</span>
-                        <span class="text-sm font-medium text-gray-900">{{ $graduationTicket->mahasiswa->npm }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-sm text-gray-600">Program Studi</span>
-                        <span class="text-sm font-medium text-gray-900">{{ $graduationTicket->mahasiswa->program_studi }}</span>
+                <div class="flex items-start gap-4 mb-4">
+                    @if($graduationTicket->mahasiswa->foto_wisuda && \Illuminate\Support\Facades\Storage::disk('public')->exists('graduation-photos/' . $graduationTicket->mahasiswa->foto_wisuda))
+                        <img src="{{ $graduationTicket->mahasiswa->foto_wisuda_url }}" alt="Foto {{ $graduationTicket->mahasiswa->nama }}" class="w-24 h-24 rounded-xl object-cover shadow-sm">
+                    @else
+                        <div class="w-24 h-24 rounded-xl bg-gray-200 flex items-center justify-center shadow-sm">
+                            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </div>
+                    @endif
+                    <div class="flex-1 space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Nama</span>
+                            <span class="text-sm font-medium text-gray-900">{{ $graduationTicket->mahasiswa->nama }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">NPM</span>
+                            <span class="text-sm font-medium text-gray-900">{{ $graduationTicket->mahasiswa->npm }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Program Studi</span>
+                            <span class="text-sm font-medium text-gray-900">{{ $graduationTicket->mahasiswa->program_studi }}</span>
+                        </div>
                     </div>
                 </div>
             </div>

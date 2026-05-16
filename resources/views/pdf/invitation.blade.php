@@ -309,21 +309,34 @@
                     <div class="card-header">
                         Informasi Mahasiswa
                     </div>
-                    <div class="info-item">
-                        <div class="info-label">Nama Mahasiswa</div>
-                        <div class="info-value">{{ $mahasiswa->nama }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Nomor Pokok Mahasiswa</div>
-                        <div class="info-value">{{ $mahasiswa->npm }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Program Studi</div>
-                        <div class="info-value">{{ $mahasiswa->program_studi }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Nomor Kursi</div>
-                        <div class="info-value">{{ $mahasiswa->nomor_kursi ?? 'Belum ditentukan' }}</div>
+                    <div style="display: table; width: 100%; margin-bottom: 15px;">
+                        <div style="display: table-cell; width: 100px; vertical-align: top; padding-right: 15px;">
+                            @if($mahasiswa->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mahasiswa->foto_wisuda)))
+                                <img src="{{ public_path('storage/graduation-photos/' . $mahasiswa->foto_wisuda) }}" alt="Foto" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
+                            @else
+                                <div style="width: 100px; height: 100px; background: #f3f4f6; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <span style="font-size: 8pt; color: #9ca3af;">Foto</span>
+                                </div>
+                            @endif
+                        </div>
+                        <div style="display: table-cell; vertical-align: top;">
+                            <div class="info-item">
+                                <div class="info-label">Nama Mahasiswa</div>
+                                <div class="info-value">{{ $mahasiswa->nama }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Nomor Pokok Mahasiswa</div>
+                                <div class="info-value">{{ $mahasiswa->npm }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Program Studi</div>
+                                <div class="info-value">{{ $mahasiswa->program_studi }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Nomor Kursi</div>
+                                <div class="info-value">{{ $mahasiswa->nomor_kursi ?? 'Belum ditentukan' }}</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

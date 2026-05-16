@@ -124,46 +124,37 @@
                     </h3>
                 </div>
 
-                <div class="space-y-6">
-                    <!-- Nama -->
-                    <div class="flex items-start gap-4">
-                        <div class="icon-circle">
-                            <i class="fas fa-user text-sm"></i>
+                <div class="flex items-start gap-6 mb-8">
+                    <!-- Foto Mahasiswa -->
+                    @if($mahasiswa->foto_wisuda && \Illuminate\Support\Facades\Storage::disk('public')->exists('graduation-photos/' . $mahasiswa->foto_wisuda))
+                        <img src="{{ $mahasiswa->foto_wisuda_url }}" alt="Foto {{ $mahasiswa->nama }}" class="w-28 h-28 sm:w-32 sm:h-32 rounded-xl object-cover shadow-md">
+                    @else
+                        <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-xl bg-gray-100 flex items-center justify-center shadow-md">
+                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         </div>
-                        <div class="flex-1">
+                    @endif
+
+                    <div class="flex-1 space-y-5">
+                        <!-- Nama -->
+                        <div>
                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Nama Mahasiswa</p>
                             <p class="text-lg font-bold text-gray-900 mt-1">{{ $mahasiswa->nama }}</p>
                         </div>
-                    </div>
 
-                    <!-- NPM -->
-                    <div class="flex items-start gap-4">
-                        <div class="icon-circle">
-                            <i class="fas fa-id-card text-sm"></i>
-                        </div>
-                        <div class="flex-1">
+                        <!-- NPM -->
+                        <div>
                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Nomor Pokok Mahasiswa</p>
                             <p class="text-lg font-bold text-gray-900 mt-1">{{ $mahasiswa->npm }}</p>
                         </div>
-                    </div>
 
-                    <!-- Program Studi -->
-                    <div class="flex items-start gap-4">
-                        <div class="icon-circle">
-                            <i class="fas fa-graduation-cap text-sm"></i>
-                        </div>
-                        <div class="flex-1">
+                        <!-- Program Studi -->
+                        <div>
                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Program Studi</p>
                             <p class="text-lg font-bold text-gray-900 mt-1">{{ $mahasiswa->program_studi }}</p>
                         </div>
-                    </div>
 
-                    <!-- Nomor Kursi -->
-                    <div class="flex items-start gap-4">
-                        <div class="icon-circle">
-                            <i class="fas fa-chair text-sm"></i>
-                        </div>
-                        <div class="flex-1">
+                        <!-- Nomor Kursi -->
+                        <div>
                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Nomor Kursi</p>
                             <p class="text-lg font-bold text-gray-900 mt-1">{{ $mahasiswa->nomor_kursi ?? 'Belum ditentukan' }}</p>
                         </div>
