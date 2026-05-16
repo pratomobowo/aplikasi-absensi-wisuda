@@ -1,6 +1,6 @@
 <div>
     <!-- Hero Section -->
-    <section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 pt-20 pb-12 overflow-hidden">
+    <section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 pt-32 pb-12 overflow-hidden">
         <div class="absolute inset-0 overflow-hidden">
             <div class="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
             <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
