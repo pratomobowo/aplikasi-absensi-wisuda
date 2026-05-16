@@ -11,6 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class SyncSiakadJob implements ShouldQueue
 {
@@ -70,6 +71,14 @@ class SyncSiakadJob implements ShouldQueue
                 }
 
                 if (!$this->skipPhoto) {
+                    // Hapus foto lama jika ada
+                    if ($mahasiswa->foto_wisuda) {
+                        $oldPath = 'graduation-photos/' . $mahasiswa->foto_wisuda;
+                        if (Storage::disk('public')->exists($oldPath)) {
+                            Storage::disk('public')->delete($oldPath);
+                        }
+                    }
+
                     $fotoPath = $siakad->downloadFoto($nim);
                     if ($fotoPath) {
                         $mahasiswa->update(['foto_wisuda' => basename($fotoPath)]);

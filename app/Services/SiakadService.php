@@ -84,26 +84,80 @@ class SiakadService
         return null;
     }
 
-    public function downloadFoto(string $nim): ?string
+    /**
+     * Cek apakah foto tersedia di server SEVIMA
+     */
+    public function checkFotoExists(string $nim): bool
+    {
+        $url = "{$this->fotoBaseUrl}/{$nim}.jpg";
+
+        try {
+            $response = Http::withoutVerifying()
+                ->timeout(5)
+                ->head($url);
+
+            return $response->successful() && $response->header('Content-Length') > 1024;
+        } catch (\Exception $e) {
+            Log::warning("Gagal cek foto untuk NIM {$nim}: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Download foto dari SEVIMA dengan retry logic
+     */
+    public function downloadFoto(string $nim, int $maxRetries = 3): ?string
     {
         $url  = "{$this->fotoBaseUrl}/{$nim}.jpg";
         $path = "graduation-photos/{$nim}.jpg";
 
-        if (Storage::disk('public')->exists($path)) {
-            return $path;
+        // Cek apakah foto tersedia terlebih dahulu
+        if (!$this->checkFotoExists($nim)) {
+            Log::info("Foto tidak tersedia di server untuk NIM {$nim}");
+            return null;
         }
 
-        try {
-            $response = Http::withoutVerifying()->get($url);
+        for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+            try {
+                $response = Http::withoutVerifying()
+                    ->timeout(30)
+                    ->get($url);
 
-            if ($response->successful()) {
-                Storage::disk('public')->put($path, $response->body());
-                return $path;
+                if ($response->successful()) {
+                    $content = $response->body();
+                    
+                    // Validasi ukuran file
+                    if (strlen($content) < 1024) {
+                        Log::warning("File foto terlalu kecil untuk NIM {$nim}: " . strlen($content) . " bytes");
+                        return null;
+                    }
+
+                    Storage::disk('public')->put($path, $content);
+                    Log::info("Foto berhasil didownload untuk NIM {$nim} (percobaan {$attempt})");
+                    return $path;
+                }
+
+                if ($response->status() === 404) {
+                    Log::info("Foto tidak ditemukan (404) untuk NIM {$nim}");
+                    return null;
+                }
+
+                Log::warning("Download foto gagal (status {$response->status()}) untuk NIM {$nim}, percobaan {$attempt}/{$maxRetries}");
+                
+                if ($attempt < $maxRetries) {
+                    sleep(1);
+                }
+
+            } catch (\Exception $e) {
+                Log::warning("Exception download foto NIM {$nim}: " . $e->getMessage() . " (percobaan {$attempt}/{$maxRetries})");
+                
+                if ($attempt < $maxRetries) {
+                    sleep(1);
+                }
             }
-        } catch (\Exception $e) {
-            Log::warning("Foto tidak ditemukan untuk NIM {$nim}: " . $e->getMessage());
         }
 
+        Log::error("Gagal download foto untuk NIM {$nim} setelah {$maxRetries} percobaan");
         return null;
     }
 }

@@ -165,7 +165,7 @@ class SiakadSyncController extends Controller
     }
 
     /**
-     * Download foto dari SEVIMA
+     * Download foto dari SEVIMA (menggunakan queue)
      */
     public function downloadPhotos(Request $request)
     {
@@ -175,66 +175,44 @@ class SiakadSyncController extends Controller
             'download_all' => ['nullable', 'boolean'],
         ]);
 
-        $siakad = app(SiakadService::class);
-        $downloaded = 0;
-        $failed = 0;
-        $skipped = 0;
+        $filters = [
+            'npm' => $request->input('npm'),
+            'program_studi' => $request->input('program_studi'),
+        ];
 
-        $query = Mahasiswa::query();
+        $downloadAll = $request->boolean('download_all', false);
 
-        if ($request->filled('npm')) {
-            $query->where('npm', $request->input('npm'));
+        $jobId = Str::uuid()->toString();
+        
+        \Log::info('Photo Download: Dispatching job', [
+            'job_id' => $jobId,
+            'filters' => $filters,
+            'download_all' => $downloadAll,
+        ]);
+        
+        // Dispatch ke queue (background)
+        \App\Jobs\DownloadPhotosJob::dispatch($jobId, $filters, $downloadAll);
+        
+        return redirect()->route('admin.siakad-sync.photo-progress', ['job_id' => $jobId]);
+    }
+
+    /**
+     * Progress download foto
+     */
+    public function photoProgress(Request $request, string $jobId)
+    {
+        $progress = Cache::get("photo_download_{$jobId}");
+        
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json($progress ?? [
+                'current' => 0,
+                'total' => 0,
+                'percentage' => 0,
+                'status' => 'Starting...',
+            ]);
         }
-
-        if ($request->filled('program_studi')) {
-            $query->where('program_studi', $request->input('program_studi'));
-        }
-
-        if (!$request->boolean('download_all')) {
-            $query->whereNull('foto_wisuda');
-        }
-
-        $mahasiswas = $query->get();
-
-        if ($mahasiswas->isEmpty()) {
-            return redirect()->route('admin.siakad-sync.photo')
-                ->with('error', 'Tidak ada mahasiswa yang memenuhi kriteria.');
-        }
-
-        foreach ($mahasiswas as $mahasiswa) {
-            try {
-                if (!$request->boolean('download_all') && $mahasiswa->foto_wisuda) {
-                    $skipped++;
-                    continue;
-                }
-
-                $fotoPath = $siakad->downloadFoto($mahasiswa->npm);
-                
-                if ($fotoPath) {
-                    $mahasiswa->update(['foto_wisuda' => basename($fotoPath)]);
-                    $downloaded++;
-                } else {
-                    $failed++;
-                }
-
-                usleep(200000); // 0.2 detik
-
-            } catch (\Exception $e) {
-                $failed++;
-                \Log::error('Gagal download foto: ' . $e->getMessage(), ['npm' => $mahasiswa->npm]);
-            }
-        }
-
-        $message = "Download selesai! {$downloaded} berhasil";
-        if ($skipped > 0) {
-            $message .= ", {$skipped} dilewati (sudah ada foto)";
-        }
-        if ($failed > 0) {
-            $message .= ", {$failed} gagal";
-        }
-
-        return redirect()->route('admin.siakad-sync.photo')
-            ->with('success', $message);
+        
+        return view('admin.siakad-sync.photo-progress', compact('jobId', 'progress'));
     }
 
     /**
