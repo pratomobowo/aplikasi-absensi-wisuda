@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\BukuWisuda;
 use App\Models\Mahasiswa;
 use App\Models\GraduationEvent;
 use Livewire\Component;
@@ -11,17 +12,30 @@ class BukuWisudaDigital extends Component
 {
     use WithPagination;
 
+    public $slug;
+    public $bukuWisuda;
+    public $event;
+    
     public $search = '';
-    public $selectedEvent = '';
+    public $selectedProdi = '';
     public $viewMode = 'flipbook'; // 'flipbook' or 'grid'
     public $currentPage = 1;
     public $totalPages = 1;
 
     protected $queryString = [
         'search' => ['except' => ''],
-        'selectedEvent' => ['except' => ''],
+        'selectedProdi' => ['except' => ''],
         'viewMode' => ['except' => 'flipbook'],
     ];
+
+    public function mount($slug)
+    {
+        $this->slug = $slug;
+        $this->bukuWisuda = BukuWisuda::where('slug', $slug)
+            ->where('status', 'published')
+            ->firstOrFail();
+        $this->event = $this->bukuWisuda->graduationEvent;
+    }
 
     public function updatingSearch()
     {
@@ -29,7 +43,7 @@ class BukuWisudaDigital extends Component
         $this->currentPage = 1;
     }
 
-    public function updatingSelectedEvent()
+    public function updatingSelectedProdi()
     {
         $this->resetPage();
         $this->currentPage = 1;
@@ -66,14 +80,19 @@ class BukuWisudaDigital extends Component
     {
         $query = Mahasiswa::query();
 
-        if ($this->selectedEvent) {
+        // Filter by graduation event
+        if ($this->event) {
             $query->whereHas('graduationTickets', function ($q) {
-                $q->whereHas('graduationEvent', function ($eq) {
-                    $eq->where('id', $this->selectedEvent);
-                });
+                $q->where('graduation_event_id', $this->event->id);
             });
         }
 
+        // Filter by program studi
+        if ($this->selectedProdi) {
+            $query->where('program_studi', $this->selectedProdi);
+        }
+
+        // Search
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('nama', 'like', '%' . $this->search . '%')
@@ -82,15 +101,18 @@ class BukuWisudaDigital extends Component
             });
         }
 
-        return $query->orderBy('nama')->get();
+        return $query->orderBy('program_studi')->orderBy('nama')->get();
     }
 
-    public function getEventsProperty()
+    public function getProgramStudiListProperty()
     {
-        return GraduationEvent::where('status', 'completed')
-            ->orWhere('status', 'active')
-            ->orderBy('date', 'desc')
-            ->get();
+        return Mahasiswa::whereHas('graduationTickets', function ($q) {
+                $q->where('graduation_event_id', $this->event->id);
+            })
+            ->select('program_studi')
+            ->distinct()
+            ->orderBy('program_studi')
+            ->pluck('program_studi');
     }
 
     public function getYudisiumColor($yudisium)
@@ -114,10 +136,10 @@ class BukuWisudaDigital extends Component
     public function render()
     {
         $mahasiswas = $this->mahasiswas;
-        $events = $this->events;
+        $prodiList = $this->programStudiList;
         
         // Calculate total pages for flipbook (2 items per page for desktop, 1 for mobile)
-        $itemsPerPage = 2; // Desktop shows 2 per spread
+        $itemsPerPage = 2;
         $this->totalPages = max(1, ceil($mahasiswas->count() / $itemsPerPage));
         
         // Ensure current page is valid
@@ -127,8 +149,10 @@ class BukuWisudaDigital extends Component
 
         return view('livewire.buku-wisuda-digital', [
             'mahasiswas' => $mahasiswas,
-            'events' => $events,
+            'prodiList' => $prodiList,
+            'bukuWisuda' => $this->bukuWisuda,
+            'event' => $this->event,
             'totalPages' => $this->totalPages,
-        ])->layout('layouts.public')->title('Buku Wisuda Digital');
+        ])->layout('layouts.public')->title('Buku Wisuda - ' . ($this->event->name ?? 'Digital'));
     }
 }
