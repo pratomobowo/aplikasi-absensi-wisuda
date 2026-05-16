@@ -21,6 +21,9 @@ class DownloadPhotosJob implements ShouldQueue
     public array $filters;
     public bool $downloadAll;
 
+    public int $timeout = 3600; // 1 jam timeout
+    public int $tries = 1;
+
     public function __construct(string $jobId, array $filters, bool $downloadAll = false)
     {
         $this->jobId = $jobId;
