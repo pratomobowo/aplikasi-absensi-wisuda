@@ -22,53 +22,53 @@
         .page {
             width: 210mm;
             min-height: 297mm;
-            padding: 15mm;
+            padding: 12mm;
             margin: 0 auto;
             background: white;
+            page-break-inside: avoid;
         }
 
         /* Header */
         .header {
-            background: linear-gradient(135deg, #B43237 0%, #8B251D 100%);
+            background: #B43237;
             color: white;
-            padding: 25px;
-            border-radius: 12px;
+            padding: 15px;
+            border-radius: 10px;
             text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
         }
 
         .header img {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 10px;
-            filter: brightness(0) invert(1);
+            max-width: 50%;
+            height: auto;
+            margin-bottom: 8px;
         }
 
         .header-label {
             font-size: 9pt;
             text-transform: uppercase;
             letter-spacing: 2px;
-            opacity: 0.9;
+            color: #000000;
             margin-bottom: 5px;
         }
 
         .header-title {
-            font-size: 16pt;
+            font-size: 14pt;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
+            color: #000000;
         }
 
         .header-date {
-            font-size: 10pt;
-            opacity: 0.9;
+            font-size: 9pt;
+            color: #000000;
         }
 
         /* Main Content */
         .content {
             display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
 
         .content-left {
@@ -83,46 +83,44 @@
         .card {
             background: white;
             border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            padding: 12px;
             height: 100%;
         }
 
         .card-title {
-            font-size: 12pt;
+            font-size: 11pt;
             font-weight: 700;
             color: #B43237;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
             border-bottom: 2px solid #B43237;
         }
 
         /* Student Header */
         .student-header {
             display: flex;
-            gap: 15px;
+            gap: 10px;
         }
 
         .student-photo {
-            width: 100px;
-            height: 130px;
+            width: 80px;
+            height: 100px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 6px;
             border: 2px solid #B43237;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .student-photo-placeholder {
-            width: 100px;
-            height: 130px;
+            width: 80px;
+            height: 100px;
             background: #f3f4f6;
             border: 2px dashed #d1d5db;
-            border-radius: 8px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 9pt;
+            font-size: 8pt;
             color: #9ca3af;
             text-align: center;
         }
@@ -132,8 +130,8 @@
         }
 
         .info-row {
-            margin-bottom: 12px;
-            padding-bottom: 12px;
+            margin-bottom: 6px;
+            padding-bottom: 6px;
             border-bottom: 1px solid #f3f4f6;
         }
 
@@ -144,24 +142,24 @@
         }
 
         .info-label {
-            font-size: 8pt;
+            font-size: 7pt;
             color: #6b7280;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             font-weight: 600;
         }
 
         .info-value {
-            font-size: 11pt;
+            font-size: 10pt;
             font-weight: 700;
             color: #111827;
         }
 
         /* Event Info */
         .event-row {
-            margin-bottom: 12px;
-            padding-bottom: 12px;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
             border-bottom: 1px solid #f3f4f6;
         }
 
@@ -172,7 +170,7 @@
         }
 
         .event-day {
-            font-size: 9pt;
+            font-size: 8pt;
             color: #6b7280;
             font-style: italic;
             margin-top: 2px;
@@ -180,39 +178,38 @@
 
         /* QR Section */
         .qr-section {
-            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            background: #fef2f2;
             border: 2px solid #B43237;
-            border-radius: 12px;
-            padding: 25px;
+            border-radius: 10px;
+            padding: 15px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
         .qr-title {
-            font-size: 13pt;
+            font-size: 12pt;
             font-weight: 700;
             color: #B43237;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .qr-subtitle {
-            font-size: 9pt;
+            font-size: 8pt;
             color: #6b7280;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .qr-container {
             background: white;
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 8px;
+            padding: 12px;
             display: inline-block;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
 
         .qr-image {
-            width: 150px;
-            height: 150px;
+            width: 120px;
+            height: 120px;
             display: block;
         }
 
@@ -220,39 +217,39 @@
             display: inline-block;
             background: #B43237;
             color: white;
-            padding: 8px 25px;
-            border-radius: 20px;
-            font-size: 10pt;
+            padding: 5px 20px;
+            border-radius: 15px;
+            font-size: 9pt;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .qr-note {
-            font-size: 9pt;
+            font-size: 8pt;
             color: #6b7280;
         }
 
         /* Notice */
         .notice {
             background: #fffbeb;
-            border-left: 4px solid #f59e0b;
-            border-radius: 0 8px 8px 0;
-            padding: 15px 18px;
-            margin-bottom: 20px;
+            border-left: 3px solid #f59e0b;
+            border-radius: 0 6px 6px 0;
+            padding: 10px 12px;
+            margin-bottom: 12px;
         }
 
         .notice-title {
-            font-size: 10pt;
+            font-size: 9pt;
             font-weight: 700;
             color: #92400e;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
         .notice-item {
-            font-size: 9pt;
+            font-size: 8pt;
             color: #78350f;
-            margin-bottom: 4px;
-            padding-left: 12px;
+            margin-bottom: 2px;
+            padding-left: 10px;
             position: relative;
         }
 
@@ -267,19 +264,19 @@
         /* Footer */
         .footer {
             text-align: center;
-            padding-top: 20px;
+            padding-top: 10px;
             border-top: 1px solid #e5e7eb;
         }
 
         .footer-brand {
-            font-size: 10pt;
+            font-size: 9pt;
             font-weight: 700;
             color: #B43237;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .footer-text {
-            font-size: 9pt;
+            font-size: 8pt;
             color: #6b7280;
         }
     </style>
@@ -370,7 +367,6 @@
                 <img src="{{ $qrCodes['mahasiswa'] }}" alt="QR Code" class="qr-image">
             </div>
             
-            <div class="qr-label">Wisudawan</div>
             <div class="qr-note">Scan pagi untuk absensi | Scan sore untuk konsumsi</div>
         </div>
 
