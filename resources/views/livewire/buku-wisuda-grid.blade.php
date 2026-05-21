@@ -1,12 +1,12 @@
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     @foreach($mahasiswas as $mhs)
         <div class="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200">
-            <!-- Card Grid Layout -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-0">
+            <!-- Card Layout: Foto Kiri, Data Kanan -->
+            <div class="flex flex-col sm:flex-row">
                 
-                <!-- Kolom 1: Foto (Kiri) -->
-                <div class="relative bg-gradient-to-br from-blue-50 to-indigo-50 h-[300px]">
-                    <div class="w-full h-full flex items-center justify-center overflow-hidden">
+                <!-- Kolom 1: Foto (Kiri) - Fixed Size -->
+                <div class="relative w-full sm:w-[200px] flex-shrink-0 bg-gradient-to-br from-blue-50 to-indigo-50">
+                    <div class="w-full h-[300px] flex items-center justify-center overflow-hidden">
                         @if($mhs->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mhs->foto_wisuda)))
                             <img
                                 src="{{ asset('storage/graduation-photos/' . $mhs->foto_wisuda) }}"
@@ -35,7 +35,7 @@
                 </div>
 
                 <!-- Kolom 2: Data Mahasiswa (Kanan) -->
-                <div class="p-6 flex flex-col justify-center bg-white">
+                <div class="flex-1 p-6 flex flex-col justify-center bg-white min-h-[300px]">
                     <!-- Nama -->
                     <h3 class="text-xl font-bold text-gray-900 mb-5 leading-snug border-b border-gray-100 pb-3">
                         {{ $mhs->nama }}
