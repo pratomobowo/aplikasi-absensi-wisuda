@@ -5,17 +5,17 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-0">
                 
                 <!-- Kolom 1: Foto (Kiri) -->
-                <div class="relative bg-gradient-to-br from-blue-50 to-indigo-50">
-                    <div class="aspect-[3/4] sm:aspect-auto sm:h-full flex items-center justify-center">
+                <div class="relative bg-gradient-to-br from-blue-50 to-indigo-50 h-[300px]">
+                    <div class="w-full h-full flex items-center justify-center overflow-hidden">
                         @if($mhs->foto_wisuda && file_exists(public_path('storage/graduation-photos/' . $mhs->foto_wisuda)))
                             <img
                                 src="{{ asset('storage/graduation-photos/' . $mhs->foto_wisuda) }}"
                                 alt="{{ $mhs->nama }}"
-                                class="w-full h-full object-cover"
+                                class="w-full h-full object-cover object-top"
                                 loading="lazy"
                             >
                         @else
-                            <div class="w-full h-full min-h-[250px] flex flex-col items-center justify-center text-gray-400">
+                            <div class="w-full h-full flex flex-col items-center justify-center text-gray-400 bg-gray-100">
                                 <svg class="w-20 h-20 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                 </svg>
