@@ -59,12 +59,14 @@ class BukuWisudaDigital extends Component
             $query->where('program_studi', $this->selectedProdi);
         }
 
-        // Search
-        if ($this->search) {
-            $query->where(function ($q) {
-                $q->where('nama', 'like', '%' . $this->search . '%')
-                    ->orWhere('npm', 'like', '%' . $this->search . '%')
-                    ->orWhere('program_studi', 'like', '%' . $this->search . '%');
+        // Search - trim whitespace and make case-insensitive
+        $searchTerm = trim($this->search);
+        if ($searchTerm) {
+            $searchLike = '%' . strtolower($searchTerm) . '%';
+            $query->where(function ($q) use ($searchLike) {
+                $q->whereRaw('LOWER(nama) LIKE ?', [$searchLike])
+                    ->orWhereRaw('LOWER(npm) LIKE ?', [$searchLike])
+                    ->orWhereRaw('LOWER(program_studi) LIKE ?', [$searchLike]);
             });
         }
 
