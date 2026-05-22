@@ -22,6 +22,12 @@ class SyncSiakadJob implements ShouldQueue
     public array $data;
     public bool $skipPhoto;
 
+    // Retry configuration - auto retry on failure/timeout
+    public int $tries = 3;
+    public int $timeout = 3600;
+    public array $backoff = [60, 180, 300]; // Retry after 1min, 3min, 5min
+    public bool $failOnTimeout = true;
+
     public function __construct(string $jobId, string $periode, array $data, bool $skipPhoto = false)
     {
         $this->jobId = $jobId;

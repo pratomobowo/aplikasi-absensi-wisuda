@@ -14,7 +14,6 @@ class SiakadSyncController extends Controller
 {
     public function index()
     {
-        // Statistik data yang sudah ada
         $stats = [
             'total_mahasiswa' => Mahasiswa::count(),
             'with_photo' => Mahasiswa::whereNotNull('foto_wisuda')->count(),
@@ -44,7 +43,6 @@ class SiakadSyncController extends Controller
                 return redirect()->back()->with('error', 'Tidak ada data ditemukan untuk periode ' . $periode);
             }
 
-            // Transform data untuk preview
             $previewData = [];
             foreach (array_slice($data, 0, 20) as $item) {
                 $attr = $item['attributes'] ?? [];
@@ -52,7 +50,6 @@ class SiakadSyncController extends Controller
                 
                 if (!$nim) continue;
 
-                // Cek apakah sudah ada di database
                 $existing = Mahasiswa::where('npm', $nim)->first();
 
                 $previewData[] = [
@@ -66,13 +63,11 @@ class SiakadSyncController extends Controller
                 ];
             }
 
-            // Hitung ringkasan
             $totalData = count($data);
             $existingCount = Mahasiswa::whereIn('npm', array_column(array_map(function($item) {
                 return $item['attributes'] ?? [];
             }, $data), 'nim'))->count();
 
-            // Simpan ke session (bukan flash data) agar tersedia saat sync
             session()->put('siakad_preview_data', $data);
             session()->put('siakad_preview_periode', $periode);
 
@@ -95,10 +90,9 @@ class SiakadSyncController extends Controller
         ]);
 
         $periode = $request->input('periode');
-        $skipPhoto = $request->boolean('skip_foto', false);
+        $skipPhoto = !$request->boolean('download_photo', false); // Default: download photo
         
         $data = session()->get('siakad_preview_data');
-        $sessionPeriode = session()->get('siakad_preview_periode');
         
         if (empty($data) || !is_array($data)) {
             return redirect()->route('admin.siakad-sync.index')
@@ -111,12 +105,12 @@ class SiakadSyncController extends Controller
             'job_id' => $jobId,
             'periode' => $periode,
             'data_count' => count($data),
+            'download_photo' => !$skipPhoto,
         ]);
         
-        // Dispatch ke queue (background)
+        // Dispatch ke queue (background) dengan auto-retry
         SyncSiakadJob::dispatch($jobId, $periode, $data, $skipPhoto);
         
-        // Hapus session data
         session()->forget(['siakad_preview_data', 'siakad_preview_periode']);
         
         return redirect()->route('admin.siakad-sync.progress', ['job_id' => $jobId]);
@@ -136,108 +130,5 @@ class SiakadSyncController extends Controller
         }
         
         return view('admin.siakad-sync.progress', compact('jobId', 'progress'));
-    }
-
-    /**
-     * Halaman download foto
-     */
-    public function photoIndex()
-    {
-        $stats = [
-            'total_mahasiswa' => Mahasiswa::count(),
-            'with_photo' => Mahasiswa::whereNotNull('foto_wisuda')->count(),
-            'without_photo' => Mahasiswa::whereNull('foto_wisuda')->count(),
-            'by_prodi' => Mahasiswa::selectRaw('program_studi, 
-                count(*) as total,
-                sum(case when foto_wisuda is not null then 1 else 0 end) as with_photo,
-                sum(case when foto_wisuda is null then 1 else 0 end) as without_photo')
-                ->groupBy('program_studi')
-                ->orderBy('total', 'desc')
-                ->get(),
-        ];
-
-        $programStudiList = Mahasiswa::select('program_studi')
-            ->distinct()
-            ->orderBy('program_studi')
-            ->pluck('program_studi');
-
-        return view('admin.siakad-sync.photo-index', compact('stats', 'programStudiList'));
-    }
-
-    /**
-     * Download foto dari SEVIMA (menggunakan queue)
-     */
-    public function downloadPhotos(Request $request)
-    {
-        $request->validate([
-            'npm' => ['nullable', 'string'],
-            'program_studi' => ['nullable', 'string'],
-            'download_all' => ['nullable', 'boolean'],
-        ]);
-
-        $filters = [
-            'npm' => $request->input('npm'),
-            'program_studi' => $request->input('program_studi'),
-        ];
-
-        $downloadAll = $request->boolean('download_all', false);
-
-        $jobId = Str::uuid()->toString();
-        
-        \Log::info('Photo Download: Dispatching job', [
-            'job_id' => $jobId,
-            'filters' => $filters,
-            'download_all' => $downloadAll,
-        ]);
-        
-        // Dispatch ke queue (background)
-        \App\Jobs\DownloadPhotosJob::dispatch($jobId, $filters, $downloadAll);
-        
-        return redirect()->route('admin.siakad-sync.photo-progress', ['job_id' => $jobId]);
-    }
-
-    /**
-     * Progress download foto
-     */
-    public function photoProgress(Request $request, string $jobId)
-    {
-        $progress = Cache::get("photo_download_{$jobId}");
-        
-        if ($request->wantsJson() || $request->ajax()) {
-            return response()->json($progress ?? [
-                'current' => 0,
-                'total' => 0,
-                'percentage' => 0,
-                'status' => 'Starting...',
-            ]);
-        }
-        
-        return view('admin.siakad-sync.photo-progress', compact('jobId', 'progress'));
-    }
-
-    /**
-     * Preview foto (check apakah foto tersedia di server SEVIMA)
-     */
-    public function previewPhoto(Request $request)
-    {
-        $request->validate([
-            'npm' => ['required', 'string'],
-        ]);
-
-        $npm = $request->input('npm');
-        $url = config('services.foto.base_url') . "/{$npm}.jpg";
-
-        try {
-            $response = \Http::withoutVerifying()->head($url);
-            $exists = $response->successful();
-        } catch (\Exception $e) {
-            $exists = false;
-        }
-
-        return response()->json([
-            'npm' => $npm,
-            'url' => $url,
-            'exists' => $exists,
-        ]);
     }
 }

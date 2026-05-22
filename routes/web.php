@@ -140,11 +140,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/siakad-sync/preview', [SiakadSyncController::class, 'preview'])->name('siakad-sync.preview');
         Route::post('/siakad-sync/sync', [SiakadSyncController::class, 'sync'])->name('siakad-sync.sync');
         Route::get('/siakad-sync/progress/{job_id}', [SiakadSyncController::class, 'progress'])->name('siakad-sync.progress');
-        
-        // Download Foto
-        Route::get('/siakad-sync/foto', [SiakadSyncController::class, 'photoIndex'])->name('siakad-sync.photo');
-        Route::post('/siakad-sync/foto/download', [SiakadSyncController::class, 'downloadPhotos'])->name('siakad-sync.photo.download');
-        Route::get('/siakad-sync/foto/progress/{job_id}', [SiakadSyncController::class, 'photoProgress'])->name('siakad-sync.photo-progress');
-        Route::post('/siakad-sync/foto/preview', [SiakadSyncController::class, 'previewPhoto'])->name('siakad-sync.photo.preview');
     });
 });

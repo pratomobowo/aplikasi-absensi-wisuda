@@ -85,17 +85,20 @@
                 @csrf
                 <input type="hidden" name="periode" value="{{ $periode }}">
                 
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
+                <div class="flex flex-col gap-4">
+                    <!-- Options -->
+                    <div class="flex items-center gap-6">
                         <label class="flex items-center">
-                            <input type="checkbox" name="skip_foto" value="1" class="h-4 w-4 text-primary-600 border-gray-300 rounded">
-                            <span class="ml-2 text-sm text-gray-700">Lewati download foto (lebih cepat)</span>
+                            <input type="checkbox" name="download_photo" value="1" checked class="h-4 w-4 text-primary-600 border-gray-300 rounded">
+                            <span class="ml-2 text-sm text-gray-700">Download foto dari SEVIMA</span>
                         </label>
+                        <span class="text-xs text-gray-500">(Jika tidak dicentang, hanya data yang di-sync tanpa foto)</span>
                     </div>
                     
-                    <div class="flex items-center space-x-3">
+                    <!-- Buttons -->
+                    <div class="flex items-center justify-between pt-2 border-t border-gray-100">
                         <a href="{{ route('admin.siakad-sync.index') }}" class="px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50">Batal</a>
-                        <button type="submit" class="px-6 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700" onclick="return confirm('Yakin menyimpan {{ $totalData }} data ke database?')">
+                        <button type="submit" class="px-6 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700" onclick="return confirm('Yakin menyimpan {{ $totalData }} data ke database? Proses ini akan berjalan di background.')">
                             Simpan ke Database ({{ $totalData }} data)
                         </button>
                     </div>
