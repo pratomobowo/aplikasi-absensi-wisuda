@@ -78,6 +78,18 @@ Test scanning massal:
 php artisan simulate:attendance bulk 10
 ```
 
+#### 7. **konsumsi**
+Test scanning konsumsi (makan siang/malam):
+- Konsumsi tanpa attendance (harus gagal - belum hadir)
+- Konsumsi setelah attendance (harus berhasil)
+- Duplicate konsumsi (harus dicegah)
+- Verifikasi status konsumsi di database
+
+**Perintah:**
+```bash
+php artisan simulate:attendance konsumsi
+```
+
 ## Cara Penggunaan di Server
 
 ### Langkah 1: Pull Update
@@ -131,10 +143,15 @@ Output akan menampilkan:
 | Tiket expired harus ditolak      | PASS   | Failed   | Failed  | Tiket sudah..  |
 +----------------------------------+--------+----------+---------+----------------+
 
-Total Test: 6
-Pass: 6 ✅
+Total Test: 9
+Pass: 9 ✅
 Fail: 0 ❌
 Persentase: 100%
+
+📊 STATISTIK:
+   Total Attendance: 5
+   Total Konsumsi: 5
+   Event: SIMULASI WISUDA 2026-05-16...
 ```
 
 ## Keamanan
