@@ -14,10 +14,23 @@ class SiakadSyncController extends Controller
 {
     public function index()
     {
+        $mahasiswas = Mahasiswa::all(['id', 'npm', 'nama', 'program_studi', 'foto_wisuda']);
+        
+        $withPhoto = 0;
+        $withoutPhoto = 0;
+        
+        foreach ($mahasiswas as $mhs) {
+            if ($mhs->hasFotoWisuda()) {
+                $withPhoto++;
+            } else {
+                $withoutPhoto++;
+            }
+        }
+        
         $stats = [
-            'total_mahasiswa' => Mahasiswa::count(),
-            'with_photo' => Mahasiswa::whereNotNull('foto_wisuda')->count(),
-            'without_photo' => Mahasiswa::whereNull('foto_wisuda')->count(),
+            'total_mahasiswa' => $mahasiswas->count(),
+            'with_photo' => $withPhoto,
+            'without_photo' => $withoutPhoto,
             'by_prodi' => Mahasiswa::selectRaw('program_studi, count(*) as total')
                 ->groupBy('program_studi')
                 ->orderBy('total', 'desc')

@@ -108,18 +108,21 @@ class Mahasiswa extends Authenticatable
      */
     public function getFotoWisudaUrlAttribute(): ?string
     {
-        if ($this->foto_wisuda) {
+        if ($this->hasFotoWisuda()) {
             return asset('storage/graduation-photos/' . $this->foto_wisuda);
         }
         return null;
     }
 
     /**
-     * Check if mahasiswa has uploaded foto wisuda.
+     * Check if mahasiswa has uploaded foto wisuda (file exists in storage).
      */
     public function hasFotoWisuda(): bool
     {
-        return !empty($this->foto_wisuda);
+        if (empty($this->foto_wisuda)) {
+            return false;
+        }
+        return \Illuminate\Support\Facades\Storage::disk('public')->exists('graduation-photos/' . $this->foto_wisuda);
     }
 
     /**
