@@ -74,7 +74,7 @@
                     </div>
                     <div>
                         <p class="text-xs font-bold text-gray-500 uppercase mb-0.5">Judul Skripsi</p>
-                        <p class="text-sm text-gray-800">{{ $mhs->judul_skripsi ?? 'Belum diisi' }}</p>
+                        <p class="text-sm text-gray-800">{{ strip_tags($mhs->judul_skripsi) ?? 'Belum diisi' }}</p>
                     </div>
                 </div>
             </div>

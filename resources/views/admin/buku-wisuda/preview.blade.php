@@ -131,7 +131,7 @@
                                 </td>
                                 <td class="px-6 py-3 text-sm font-medium text-gray-900">{{ $mhs->nama }}</td>
                                 <td class="px-6 py-3 text-sm text-gray-600">{{ $mhs->npm }}</td>
-                                <td class="px-6 py-3 text-sm text-gray-600 max-w-md truncate">{{ $mhs->judul_skripsi ?? '-' }}</td>
+                                <td class="px-6 py-3 text-sm text-gray-600 max-w-md truncate">{{ strip_tags($mhs->judul_skripsi) ?? '-' }}</td>
                             </tr>
                         @endforeach
                     </tbody>

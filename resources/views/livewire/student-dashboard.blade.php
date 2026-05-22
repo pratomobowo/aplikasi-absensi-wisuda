@@ -168,7 +168,7 @@
                                     @if($mahasiswa->judul_skripsi)
                                         <div>
                                             <p class="text-sm text-gray-600 mb-1">Judul Skripsi/Tugas Akhir</p>
-                                            <p class="text-sm font-medium text-gray-900 leading-relaxed">{{ $mahasiswa->judul_skripsi }}</p>
+                                            <p class="text-sm font-medium text-gray-900 leading-relaxed">{{ strip_tags($mahasiswa->judul_skripsi) }}</p>
                                         </div>
                                     @endif
                                 </div>

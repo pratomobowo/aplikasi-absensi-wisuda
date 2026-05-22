@@ -67,6 +67,7 @@ class SyncSiakadJob implements ShouldQueue
                         'ipk' => $attr['ipk_lulusan'] ?? 0,
                         'yudisium' => ($attr['nama_predikat'] ?? '') !== '' ? $attr['nama_predikat'] : null,
                         'password' => $password,
+                        'judul_skripsi' => !empty($attr['judul_skripsi']) ? strip_tags($attr['judul_skripsi']) : null,
                     ]
                 );
 

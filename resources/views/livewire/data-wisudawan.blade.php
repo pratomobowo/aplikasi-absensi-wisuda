@@ -195,8 +195,8 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-500 max-w-md">
-                                            <div class="line-clamp-2" title="{{ $mhs->judul_skripsi }}">
-                                                {{ $mhs->judul_skripsi ?? '-' }}
+                                            <div class="line-clamp-2" title="{{ strip_tags($mhs->judul_skripsi) }}">
+                                                {{ strip_tags($mhs->judul_skripsi) ?? '-' }}
                                             </div>
                                         </td>
                                     </tr>

@@ -403,7 +403,7 @@
                             @if($mhs1->judul_skripsi)
                                 <div class="thesis-box">
                                     <div class="thesis-label">Judul Skripsi / Tugas Akhir</div>
-                                    <div class="thesis-text">{{ $mhs1->judul_skripsi }}</div>
+                                    <div class="thesis-text">{{ strip_tags($mhs1->judul_skripsi) }}</div>
                                 </div>
                             @else
                                 <div class="thesis-box thesis-empty">
@@ -461,7 +461,7 @@
                                 @if($mhs2->judul_skripsi)
                                     <div class="thesis-box">
                                         <div class="thesis-label">Judul Skripsi / Tugas Akhir</div>
-                                        <div class="thesis-text">{{ $mhs2->judul_skripsi }}</div>
+                                        <div class="thesis-text">{{ strip_tags($mhs2->judul_skripsi) }}</div>
                                     </div>
                                 @else
                                     <div class="thesis-box thesis-empty">
