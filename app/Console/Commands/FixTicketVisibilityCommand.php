@@ -10,7 +10,8 @@ class FixTicketVisibilityCommand extends Command
 {
     protected $signature = 'fix:ticket-visibility 
                             {--show-all : Tampilkan semua tiket termasuk yang diarsip}
-                            {--unarchive : Kembalikan tiket dari arsip}';
+                            {--unarchive : Kembalikan tiket dari arsip untuk event active}
+                            {--event-id= : ID event tertentu untuk di-unarchive}';
     
     protected $description = 'Diagnose dan perbaiki masalah tiket tidak muncul di menu';
 
@@ -46,6 +47,7 @@ class FixTicketVisibilityCommand extends Command
             $active = GraduationTicket::where('graduation_event_id', $event->id)->whereNull('archived_at')->count();
             
             $eventData[] = [
+                'ID' => $event->id,
                 'Event' => $event->name,
                 'Status' => $event->status,
                 'Total' => $total,
@@ -54,39 +56,60 @@ class FixTicketVisibilityCommand extends Command
             ];
         }
         
-        $this->table(['Event', 'Status', 'Total', 'Aktif', 'Diarsip'], $eventData);
+        $this->table(['ID', 'Event', 'Status', 'Total', 'Aktif', 'Diarsip'], $eventData);
         
-        // 3. Sample tiket yang diarsipkan
-        if ($archived > 0) {
-            $this->newLine();
-            $this->info('Sample Tiket yang Diarsipkan:');
-            
-            $archivedTickets = GraduationTicket::archived()
-                ->with(['mahasiswa', 'graduationEvent'])
-                ->take(5)
-                ->get();
-            
-            $sampleData = [];
-            foreach ($archivedTickets as $ticket) {
-                $sampleData[] = [
-                    'Nama' => $ticket->mahasiswa->nama ?? 'N/A',
-                    'NPM' => $ticket->mahasiswa->npm ?? 'N/A',
-                    'Event' => $ticket->graduationEvent->name ?? 'N/A',
-                    'Diarsip' => $ticket->archived_at?->format('Y-m-d H:i:s') ?? '-',
-                ];
-            }
-            
-            $this->table(['Nama', 'NPM', 'Event', 'Diarsip'], $sampleData);
-        }
-        
-        // 4. Unarchive option
+        // 3. Unarchive option - HANYA untuk event active
         if ($this->option('unarchive') && $archived > 0) {
             $this->newLine();
-            $count = GraduationTicket::archived()->update(['archived_at' => null]);
-            $this->info("✓ {$count} tiket berhasil dikembalikan dari arsip!");
+            
+            // Jika event-id di-specify, gunakan itu
+            if ($this->option('event-id')) {
+                $eventId = (int) $this->option('event-id');
+                $event = GraduationEvent::find($eventId);
+                
+                if (!$event) {
+                    $this->error("Event ID {$eventId} tidak ditemukan!");
+                    return 1;
+                }
+                
+                $this->info("Unarchive tiket untuk event: {$event->name} (ID: {$eventId})");
+                
+                $count = GraduationTicket::where('graduation_event_id', $eventId)
+                    ->whereNotNull('archived_at')
+                    ->update(['archived_at' => null]);
+                
+                $this->info("✓ {$count} tiket untuk event '{$event->name}' berhasil dikembalikan dari arsip!");
+            } else {
+                // Default: hanya unarchive event yang active
+                $activeEvents = GraduationEvent::where('status', 'active')->get();
+                
+                if ($activeEvents->isEmpty()) {
+                    $this->warn('Tidak ada event dengan status active.');
+                    $this->info('Gunakan --event-id={id} untuk unarchive event tertentu.');
+                    return 0;
+                }
+                
+                $totalUnarchived = 0;
+                foreach ($activeEvents as $event) {
+                    $count = GraduationTicket::where('graduation_event_id', $event->id)
+                        ->whereNotNull('archived_at')
+                        ->update(['archived_at' => null]);
+                    
+                    if ($count > 0) {
+                        $this->info("✓ {$count} tiket untuk event '{$event->name}' berhasil dikembalikan dari arsip!");
+                        $totalUnarchived += $count;
+                    }
+                }
+                
+                if ($totalUnarchived === 0) {
+                    $this->info('Tidak ada tiket yang perlu di-unarchive untuk event active.');
+                } else {
+                    $this->info("\nTotal: {$totalUnarchived} tiket di-unarchive");
+                }
+            }
         }
         
-        // 5. Show all option
+        // 4. Show all option
         if ($this->option('show-all')) {
             $this->newLine();
             $this->info('Semua Tiket (termasuk yang diarsip):');
@@ -109,9 +132,11 @@ class FixTicketVisibilityCommand extends Command
         }
         
         $this->newLine();
-        $this->info('=== SOLUSI ===');
-        $this->info('Jika tiket diarsipkan, jalankan:');
+        $this->info('=== CARA PENGGUNAAN ===');
+        $this->info('Unarchive semua event active:');
         $this->info('  php artisan fix:ticket-visibility --unarchive');
+        $this->info('Unarchive event tertentu (ganti 2 dengan ID event):');
+        $this->info('  php artisan fix:ticket-visibility --unarchive --event-id=2');
         
         return 0;
     }
