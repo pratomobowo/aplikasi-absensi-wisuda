@@ -8,6 +8,7 @@ use App\Models\GraduationTicket;
 use App\Models\Mahasiswa;
 use App\Models\User;
 use App\Services\AttendanceService;
+use App\Services\KonsumsiService;
 use App\Services\TicketService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -15,27 +16,29 @@ use Illuminate\Support\Facades\DB;
 class SimulateAttendanceCommand extends Command
 {
     protected $signature = 'simulate:attendance 
-                            {scenario=full : Scenario: full, validation, duplicate, expired, manual, bulk}
+                            {scenario=full : Scenario: full, validation, duplicate, expired, manual, bulk, konsumsi}
                             {count=5 : Jumlah mahasiswa untuk scenario bulk}
                             {--skip-scan : Hanya generate data, tidak scan}';
     
-    protected $description = 'Simulasi komprehensif scanning kehadiran wisudawan oleh tim admin';
+    protected $description = 'Simulasi komprehensif scanning kehadiran & konsumsi wisudawan oleh tim admin';
     
     private $attendanceService;
+    private $konsumsiService;
     private $ticketService;
     private $admin;
     private $event;
     private $results = [];
 
-    public function handle(TicketService $ticketService, AttendanceService $attendanceService): int
+    public function handle(TicketService $ticketService, AttendanceService $attendanceService, KonsumsiService $konsumsiService): int
     {
         $this->ticketService = $ticketService;
         $this->attendanceService = $attendanceService;
+        $this->konsumsiService = $konsumsiService;
         $scenario = $this->argument('scenario');
         
         $this->newLine();
         $this->info('╔════════════════════════════════════════════════════════════╗');
-        $this->info('║       SIMULASI KOMPREHENSIF SCANNING KEHADIRAN            ║');
+        $this->info('║       SIMULASI SCANNING KEHADIRAN & KONSUMSI              ║');
         $this->info('╚════════════════════════════════════════════════════════════╝');
         $this->newLine();
         $this->warn("Environment: " . app()->environment());
@@ -91,6 +94,9 @@ class SimulateAttendanceCommand extends Command
                     break;
                 case 'manual':
                     $this->runManualAttendanceTest();
+                    break;
+                case 'konsumsi':
+                    $this->runKonsumsiTest();
                     break;
                 case 'bulk':
                     $this->runBulkScan((int)$this->argument('count'));
@@ -160,6 +166,11 @@ class SimulateAttendanceCommand extends Command
         $this->info('SCENARIO 5: Bulk Scanning');
         $this->info('═══════════════════════════════════════════════════════════');
         $this->runBulkScan(5);
+        
+        $this->info('═══════════════════════════════════════════════════════════');
+        $this->info('SCENARIO 6: Scan Konsumsi');
+        $this->info('═══════════════════════════════════════════════════════════');
+        $this->runKonsumsiTest();
     }
     
     /**
@@ -336,6 +347,61 @@ class SimulateAttendanceCommand extends Command
     /**
      * Create single mahasiswa
      */
+    /**
+     * Test: Scan Konsumsi (Makan Siang/Malam)
+     */
+    private function runKonsumsiTest(): void
+    {
+        $this->info("\n📝 TEST SCAN KONSUMSI\n");
+        
+        // Test 1: Konsumsi tanpa attendance (harus gagal - belum hadir)
+        $this->info('Test 1: Konsumsi tanpa Attendance');
+        $mhs1 = $this->createMahasiswa('KON001', 'Mahasiswa Konsumsi Test 1');
+        $ticket1 = $this->ticketService->generateTicket($mhs1, $this->event);
+        
+        // Langsung scan konsumsi tanpa attendance
+        $result1 = $this->konsumsiService->recordKonsumsi($ticket1->qr_token_mahasiswa, $this->admin);
+        $this->validateResult($result1, false, 'Konsumsi tanpa attendance harus ditolak');
+        
+        if (!$result1['success']) {
+            $this->info("     Alasan: {$result1['message']}");
+        }
+        
+        // Test 2: Konsumsi setelah attendance (harus berhasil)
+        $this->info('Test 2: Konsumsi setelah Attendance');
+        $mhs2 = $this->createMahasiswa('KON002', 'Mahasiswa Konsumsi Test 2');
+        $ticket2 = $this->ticketService->generateTicket($mhs2, $this->event);
+        
+        // Scan attendance dulu
+        $attResult = $this->attendanceService->recordAttendance($ticket2->qr_token_mahasiswa, $this->admin);
+        if ($attResult['success']) {
+            $this->info("     ✓ Attendance berhasil");
+            
+            // Lalu scan konsumsi
+            $result2 = $this->konsumsiService->recordKonsumsi($ticket2->qr_token_mahasiswa, $this->admin);
+            $this->validateResult($result2, true, 'Konsumsi setelah attendance harus berhasil');
+            
+            if ($result2['success']) {
+                $this->info("     Nama: {$result2['data']['nama']}");
+                $this->info("     Status: {$result2['data']['status']}");
+            }
+        }
+        
+        // Test 3: Duplicate konsumsi (harus gagal)
+        $this->info('Test 3: Duplicate Konsumsi');
+        $result3 = $this->konsumsiService->recordKonsumsi($ticket2->qr_token_mahasiswa, $this->admin);
+        $this->validateResult($result3, false, 'Duplicate konsumsi harus ditolak');
+        
+        if (!$result3['success']) {
+            $this->info("     Alasan: {$result3['message']}");
+        }
+        
+        // Verifikasi status di database
+        $ticket2->refresh();
+        $this->info("     Status konsumsi di DB: " . ($ticket2->konsumsi_diterima ? 'Sudah' : 'Belum'));
+        $this->info("     Waktu konsumsi: " . ($ticket2->konsumsi_at ? $ticket2->konsumsi_at->format('H:i:s') : '-'));
+    }
+    
     private function createMahasiswa(string $npm, string $nama): Mahasiswa
     {
         return Mahasiswa::create([
@@ -408,8 +474,16 @@ class SimulateAttendanceCommand extends Command
         })->count();
         
         $this->newLine();
-        $this->info("Total Attendance Record: {$totalAttendance}");
-        $this->info("Event: {$this->event->name}");
+        
+        // Statistik Konsumsi
+        $totalKonsumsi = \App\Models\GraduationTicket::where('graduation_event_id', $this->event->id)
+            ->where('konsumsi_diterima', true)
+            ->count();
+        
+        $this->info("📊 STATISTIK:");
+        $this->info("   Total Attendance: {$totalAttendance}");
+        $this->info("   Total Konsumsi: {$totalKonsumsi}");
+        $this->info("   Event: {$this->event->name}");
     }
     
     private function getRandomProdi(): string
