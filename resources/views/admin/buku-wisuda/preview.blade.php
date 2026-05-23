@@ -82,13 +82,24 @@
                     <p class="text-sm text-primary-600 font-medium">Total Wisudawan</p>
                     <p class="text-2xl font-bold text-primary-900">{{ $total }}</p>
                 </div>
+                @php
+                    $withPhotoCount = 0;
+                    $withoutPhotoCount = 0;
+                    foreach ($mahasiswa as $mhs) {
+                        if ($mhs->hasFotoWisuda()) {
+                            $withPhotoCount++;
+                        } else {
+                            $withoutPhotoCount++;
+                        }
+                    }
+                @endphp
                 <div class="bg-green-50 p-4 rounded-lg">
                     <p class="text-sm text-green-600 font-medium">Dengan Foto</p>
-                    <p class="text-2xl font-bold text-green-900">{{ $mahasiswa->whereNotNull('foto_wisuda')->count() }}</p>
+                    <p class="text-2xl font-bold text-green-900">{{ $withPhotoCount }}</p>
                 </div>
                 <div class="bg-yellow-50 p-4 rounded-lg">
                     <p class="text-sm text-yellow-600 font-medium">Tanpa Foto</p>
-                    <p class="text-2xl font-bold text-yellow-900">{{ $mahasiswa->whereNull('foto_wisuda')->count() }}</p>
+                    <p class="text-2xl font-bold text-yellow-900">{{ $withoutPhotoCount }}</p>
                 </div>
                 <div class="bg-blue-50 p-4 rounded-lg">
                     <p class="text-sm text-blue-600 font-medium">Dengan Judul</p>
