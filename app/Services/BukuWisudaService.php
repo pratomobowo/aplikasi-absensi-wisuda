@@ -63,11 +63,15 @@ class BukuWisudaService
         // Generate filename
         $filename = 'Buku_Wisuda_' . Str::slug($event->name) . '_' . now()->format('Y-m-d') . '.pdf';
         
+        // Get existing BukuWisuda record to pass uploaded images
+        $bukuWisuda = BukuWisuda::where('graduation_event_id', $event->id)->first();
+
         // Generate HTML content
         $html = view('admin.buku-wisuda.pdf-template', [
             'event' => $event,
             'mahasiswa' => $mahasiswa,
             'grouped' => $grouped,
+            'bukuWisuda' => $bukuWisuda,
         ])->render();
         
         // Path untuk menyimpan PDF

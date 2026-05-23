@@ -96,6 +96,78 @@ class BukuWisudaController extends Controller
         ]));
     }
 
+    public function uploadCoverAndSpeeches(Request $request, BukuWisuda $bukuWisuda)
+    {
+        $validated = $request->validate([
+            'cover_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:10240'],
+            'sambutan_rektor' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:10240'],
+            'sambutan_wakil_rektor_1' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:10240'],
+            'sambutan_wakil_rektor_2' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:10240'],
+            'sambutan_wakil_rektor_3' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:10240'],
+        ]);
+
+        $disk = Storage::disk('public');
+        $updateData = [];
+
+        $fields = [
+            'cover_image',
+            'sambutan_rektor',
+            'sambutan_wakil_rektor_1',
+            'sambutan_wakil_rektor_2',
+            'sambutan_wakil_rektor_3',
+        ];
+
+        foreach ($fields as $field) {
+            if ($request->hasFile($field)) {
+                // Delete old file if exists
+                if ($bukuWisuda->$field && $disk->exists('buku-wisuda/' . $bukuWisuda->$field)) {
+                    $disk->delete('buku-wisuda/' . $bukuWisuda->$field);
+                }
+
+                $file = $request->file($field);
+                $filename = $field . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('buku-wisuda', $filename, 'public');
+                $updateData[$field] = basename($path);
+            }
+        }
+
+        if (!empty($updateData)) {
+            $bukuWisuda->update($updateData);
+        }
+
+        return redirect()
+            ->route('admin.buku-wisuda.preview', $bukuWisuda->graduation_event_id)
+            ->with('success', 'Cover dan sambutan berhasil diupload.');
+    }
+
+    public function deleteCoverOrSpeech(Request $request, BukuWisuda $bukuWisuda)
+    {
+        $field = $request->input('field');
+        $allowedFields = [
+            'cover_image',
+            'sambutan_rektor',
+            'sambutan_wakil_rektor_1',
+            'sambutan_wakil_rektor_2',
+            'sambutan_wakil_rektor_3',
+        ];
+
+        if (!in_array($field, $allowedFields)) {
+            return redirect()->back()->with('error', 'Field tidak valid.');
+        }
+
+        if ($bukuWisuda->$field) {
+            $disk = Storage::disk('public');
+            if ($disk->exists('buku-wisuda/' . $bukuWisuda->$field)) {
+                $disk->delete('buku-wisuda/' . $bukuWisuda->$field);
+            }
+            $bukuWisuda->update([$field => null]);
+        }
+
+        return redirect()
+            ->route('admin.buku-wisuda.preview', $bukuWisuda->graduation_event_id)
+            ->with('success', 'File berhasil dihapus.');
+    }
+
     public function generate(Request $request, GraduationEvent $event)
     {
         try {

@@ -282,21 +282,65 @@
 </head>
 <body>
     <!-- ===== COVER PAGE ===== -->
-    <div class="cover">
-        <div class="cover-border">
-            <div class="cover-icon">&#127891;</div>
-            <div class="cover-title">Buku Wisuda</div>
-            <div class="cover-subtitle">Universitas Sangga Buana YPKP</div>
-            <div class="cover-line"></div>
-            <div class="cover-event">{{ $event->name }}</div>
-            <div class="cover-info">{{ $event->date->format('l, d F Y') }}</div>
-            <div class="cover-info">{{ $event->location_name }}</div>
-            <div class="cover-stats">Total Wisudawan: {{ $mahasiswa->count() }} Orang</div>
+    @if(isset($bukuWisuda) && $bukuWisuda->cover_image)
+        <div style="page-break-after: always;">
+            <img src="{{ public_path('storage/buku-wisuda/' . $bukuWisuda->cover_image) }}" 
+                 style="width: 100%; height: 100vh; object-fit: contain;"
+                 alt="Cover">
         </div>
-        <div class="cover-footer">
-            Dokumen Resmi Wisuda - Universitas Sangga Buana YPKP
+    @else
+        <div class="cover">
+            <div class="cover-border">
+                <div class="cover-icon">&#127891;</div>
+                <div class="cover-title">Buku Wisuda</div>
+                <div class="cover-subtitle">Universitas Sangga Buana YPKP</div>
+                <div class="cover-line"></div>
+                <div class="cover-event">{{ $event->name }}</div>
+                <div class="cover-info">{{ $event->date->format('l, d F Y') }}</div>
+                <div class="cover-info">{{ $event->location_name }}</div>
+                <div class="cover-stats">Total Wisudawan: {{ $mahasiswa->count() }} Orang</div>
+            </div>
+            <div class="cover-footer">
+                Dokumen Resmi Wisuda - Universitas Sangga Buana YPKP
+            </div>
         </div>
-    </div>
+    @endif
+
+    <!-- ===== SAMBUTAN REKTOR ===== -->
+    @if(isset($bukuWisuda) && $bukuWisuda->sambutan_rektor)
+        <div style="page-break-after: always;">
+            <img src="{{ public_path('storage/buku-wisuda/' . $bukuWisuda->sambutan_rektor) }}" 
+                 style="width: 100%; height: 100vh; object-fit: contain;"
+                 alt="Sambutan Rektor">
+        </div>
+    @endif
+
+    <!-- ===== SAMBUTAN WAKIL REKTOR 1 ===== -->
+    @if(isset($bukuWisuda) && $bukuWisuda->sambutan_wakil_rektor_1)
+        <div style="page-break-after: always;">
+            <img src="{{ public_path('storage/buku-wisuda/' . $bukuWisuda->sambutan_wakil_rektor_1) }}" 
+                 style="width: 100%; height: 100vh; object-fit: contain;"
+                 alt="Sambutan Wakil Rektor 1">
+        </div>
+    @endif
+
+    <!-- ===== SAMBUTAN WAKIL REKTOR 2 ===== -->
+    @if(isset($bukuWisuda) && $bukuWisuda->sambutan_wakil_rektor_2)
+        <div style="page-break-after: always;">
+            <img src="{{ public_path('storage/buku-wisuda/' . $bukuWisuda->sambutan_wakil_rektor_2) }}" 
+                 style="width: 100%; height: 100vh; object-fit: contain;"
+                 alt="Sambutan Wakil Rektor 2">
+        </div>
+    @endif
+
+    <!-- ===== SAMBUTAN WAKIL REKTOR 3 ===== -->
+    @if(isset($bukuWisuda) && $bukuWisuda->sambutan_wakil_rektor_3)
+        <div style="page-break-after: always;">
+            <img src="{{ public_path('storage/buku-wisuda/' . $bukuWisuda->sambutan_wakil_rektor_3) }}" 
+                 style="width: 100%; height: 100vh; object-fit: contain;"
+                 alt="Sambutan Wakil Rektor 3">
+        </div>
+    @endif
 
     <!-- ===== CONTENT PAGES ===== -->
     @php

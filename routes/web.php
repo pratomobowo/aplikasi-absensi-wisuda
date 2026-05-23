@@ -117,6 +117,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/buku-wisuda/preview/{event}', [BukuWisudaController::class, 'preview'])->name('buku-wisuda.preview');
         Route::post('/buku-wisuda/generate/{event}', [BukuWisudaController::class, 'generate'])->name('buku-wisuda.generate');
         Route::patch('/buku-wisuda/{bukuWisuda}/publish', [BukuWisudaController::class, 'publish'])->name('buku-wisuda.publish');
+        Route::post('/buku-wisuda/{bukuWisuda}/upload-cover-speeches', [BukuWisudaController::class, 'uploadCoverAndSpeeches'])->name('buku-wisuda.upload-cover-speeches');
+        Route::delete('/buku-wisuda/{bukuWisuda}/delete-cover-speech', [BukuWisudaController::class, 'deleteCoverOrSpeech'])->name('buku-wisuda.delete-cover-speech');
         Route::resource('buku-wisuda', BukuWisudaController::class);
 
         // Attendance

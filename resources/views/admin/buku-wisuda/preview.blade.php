@@ -97,6 +97,75 @@
             </div>
         </div>
 
+        <!-- Upload Cover & Sambutan -->
+        @if($bukuWisuda)
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Cover & Sambutan</h3>
+                        <p class="text-sm text-gray-600 mt-1">Upload gambar A4 untuk cover dan sambutan (format: JPG/PNG, max 10MB per file)</p>
+                    </div>
+                </div>
+                
+                <form action="{{ route('admin.buku-wisuda.upload-cover-speeches', $bukuWisuda) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    @csrf
+                    
+                    @php
+                        $fields = [
+                            'cover_image' => 'Cover Buku Wisuda',
+                            'sambutan_rektor' => 'Sambutan Rektor',
+                            'sambutan_wakil_rektor_1' => 'Sambutan Wakil Rektor 1',
+                            'sambutan_wakil_rektor_2' => 'Sambutan Wakil Rektor 2',
+                            'sambutan_wakil_rektor_3' => 'Sambutan Wakil Rektor 3',
+                        ];
+                    @endphp
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @foreach($fields as $field => $label)
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ $label }}</label>
+                                
+                                @if($bukuWisuda->$field)
+                                    <div class="mb-2">
+                                        <img src="{{ asset('storage/buku-wisuda/' . $bukuWisuda->$field) }}" 
+                                             alt="{{ $label }}" 
+                                             class="w-full h-32 object-contain border rounded bg-gray-50">
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs text-green-600 font-medium">✓ Sudah diupload</span>
+                                        <form action="{{ route('admin.buku-wisuda.delete-cover-speech', $bukuWisuda) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <input type="hidden" name="field" value="{{ $field }}">
+                                            <button type="submit" class="text-xs text-red-600 hover:text-red-800 underline"
+                                                    onclick="return confirm('Hapus {{ $label }}?')">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                @else
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-primary-400 transition-colors">
+                                        <input type="file" 
+                                               name="{{ $field }}" 
+                                               id="{{ $field }}"
+                                               accept="image/jpeg,image/png,image/jpg"
+                                               class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
+                                        <p class="text-xs text-gray-400 mt-2">JPG/PNG, max 10MB</p>
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                    
+                    <div class="flex justify-end pt-4 border-t border-gray-200">
+                        <button type="submit" class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+                            Simpan Cover & Sambutan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        @endif
+
         <!-- Preview List Grouped by Jurusan -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200">
