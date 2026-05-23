@@ -24,13 +24,9 @@
                 @endif
                 <form action="{{ route('admin.buku-wisuda.generate', $event) }}" method="POST" class="inline" id="generateForm">
                     @csrf
-                    @php
-                        $isPublished = $bukuWisuda && $bukuWisuda->status === 'published';
-                    @endphp
                     <button type="submit" 
-                            class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-primary-600 transition-all"
-                            @if($isPublished) disabled title="Buku sudah dipublish. Unpublish terlebih dahulu untuk regenerate." @endif
-                            onclick="if(!this.disabled && !confirm('{{ $bukuWisuda ? 'Regenerate PDF akan menimpa PDF yang sudah ada. Lanjutkan?' : 'Generate PDF untuk event ini?' }}')) { event.preventDefault(); return false; }"
+                            class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-all"
+                            onclick="if(!confirm('{{ $bukuWisuda ? 'Regenerate PDF akan menimpa PDF yang sudah ada. Lanjutkan?' : 'Generate PDF untuk event ini?' }}')) { event.preventDefault(); return false; }"
                             id="generateBtn">
                         <span id="btnText">{{ $bukuWisuda ? 'Regenerate PDF' : 'Generate PDF' }}</span>
                         <span id="btnLoading" class="hidden">
@@ -42,16 +38,6 @@
                         </span>
                     </button>
                 </form>
-                
-                @if($isPublished)
-                    <form action="{{ route('admin.buku-wisuda.generate', $event) }}" method="POST" class="inline">
-                        @csrf
-                        <button type="submit" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 text-sm"
-                                onclick="return confirm('Unpublish dan regenerate PDF? Status akan kembali ke generated.')">
-                            Unpublish & Regenerate
-                        </button>
-                    </form>
-                @endif
             </div>
         </div>
 
