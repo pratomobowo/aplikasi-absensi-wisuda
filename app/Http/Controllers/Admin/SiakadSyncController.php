@@ -129,6 +129,93 @@ class SiakadSyncController extends Controller
         return redirect()->route('admin.siakad-sync.progress', ['job_id' => $jobId]);
     }
     
+    public function syncSingle(Request $request)
+    {
+        $request->validate([
+            'nim' => ['required', 'string'],
+        ]);
+
+        $nim = $request->input('nim');
+        $skipPhoto = !$request->boolean('download_photo', false);
+        $siakad = app(SiakadService::class);
+
+        try {
+            // Fetch data dari SIAKAD untuk NIM ini
+            $data = $siakad->fetchKelulusan();
+            
+            // Cari data untuk NIM tertentu
+            $targetData = null;
+            foreach ($data as $item) {
+                $attr = $item['attributes'] ?? [];
+                if (($attr['nim'] ?? '') === $nim) {
+                    $targetData = $item;
+                    break;
+                }
+            }
+
+            if (!$targetData) {
+                return redirect()->route('admin.siakad-sync.index')
+                    ->with('sync_single_result', [
+                        'success' => false,
+                        'nim' => $nim,
+                        'message' => 'Data tidak ditemukan di SIAKAD',
+                    ]);
+            }
+
+            $attr = $targetData['attributes'];
+            
+            // Update atau create mahasiswa
+            $mahasiswa = Mahasiswa::updateOrCreate(
+                ['npm' => $nim],
+                [
+                    'nama' => $attr['nama'] ?? '-',
+                    'program_studi' => $attr['program_studi'] ?? '-',
+                    'ipk' => $attr['ipk_lulusan'] ?? 0,
+                    'yudisium' => ($attr['nama_predikat'] ?? '') !== '' ? $attr['nama_predikat'] : null,
+                    'password' => bcrypt($nim),
+                    'judul_skripsi' => !empty($attr['judul_skripsi']) ? strip_tags($attr['judul_skripsi']) : null,
+                ]
+            );
+
+            $photoDownloaded = false;
+            
+            // Download foto jika diminta
+            if (!$skipPhoto) {
+                // Hapus foto lama jika ada
+                if ($mahasiswa->foto_wisuda) {
+                    $oldPath = 'graduation-photos/' . $mahasiswa->foto_wisuda;
+                    if (Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
+                }
+
+                $fotoPath = $siakad->downloadFoto($nim);
+                if ($fotoPath) {
+                    $mahasiswa->update(['foto_wisuda' => basename($fotoPath)]);
+                    $photoDownloaded = true;
+                }
+            }
+
+            return redirect()->route('admin.siakad-sync.index')
+                ->with('sync_single_result', [
+                    'success' => true,
+                    'nim' => $nim,
+                    'nama' => $mahasiswa->nama,
+                    'message' => $mahasiswa->wasRecentlyCreated ? 'Data baru ditambahkan' : 'Data diperbarui',
+                    'photo_downloaded' => $photoDownloaded,
+                ]);
+
+        } catch (\Exception $e) {
+            return redirect()->route('admin.siakad-sync.index')
+                ->with('sync_single_result', [
+                    'success' => false,
+                    'nim' => $nim,
+                    'message' => 'Gagal sync',
+                    'error' => $e->getMessage(),
+                ]);
+        }
+    }
+
     public function progress(Request $request, string $jobId)
     {
         $progress = Cache::get("siakad_sync_{$jobId}");

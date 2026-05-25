@@ -53,9 +53,22 @@
             </div>
         </div>
 
-        <!-- Sync Form -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Ambil Data dari SIAKAD</h2>
+        <!-- Tabs -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="border-b border-gray-200">
+                <nav class="flex -mb-px">
+                    <button onclick="switchTab('bulk')" id="tab-bulk" class="tab-btn px-6 py-4 text-sm font-medium border-b-2 border-primary-500 text-primary-600">
+                        Sync Massal
+                    </button>
+                    <button onclick="switchTab('single')" id="tab-single" class="tab-btn px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                        Sync per NIM
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab: Sync Massal -->
+            <div id="content-bulk" class="p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Ambil Data dari SIAKAD</h2>
             
             <form action="{{ route('admin.siakad-sync.preview') }}" method="POST">
                 @csrf
@@ -80,6 +93,60 @@
                     </div>
                 </div>
             </form>
+            </div>
+
+            <!-- Tab: Sync per NIM -->
+            <div id="content-single" class="p-6 hidden">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Sync Data per NIM</h2>
+                <p class="text-sm text-gray-600 mb-4">Cocok untuk test download foto atau update data satu mahasiswa saja.</p>
+
+                <form action="{{ route('admin.siakad-sync.sync-single') }}" method="POST" class="space-y-4">
+                    @csrf
+                    <div class="flex flex-col md:flex-row gap-4 items-start md:items-end">
+                        <div class="w-full md:w-80">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">NPM / NIM *</label>
+                            <input type="text" name="nim" required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                                   placeholder="Contoh: 2112217019">
+                            <p class="text-xs text-gray-500 mt-1">Masukkan NPM mahasiswa yang ingin di-sync</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="download_photo" value="1" checked 
+                                       class="h-4 w-4 text-primary-600 border-gray-300 rounded">
+                                <span class="ml-2 text-sm text-gray-700">Download foto</span>
+                            </label>
+                        </div>
+                        <div>
+                            <button type="submit" 
+                                    class="w-full md:w-auto px-6 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700"
+                                    onclick="this.disabled=true; this.innerHTML='Memproses...'; this.form.submit();">
+                                Sync Sekarang
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                @if(session('sync_single_result'))
+                    @php $result = session('sync_single_result'); @endphp
+                    <div class="mt-6 p-4 rounded-lg {{ $result['success'] ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200' }}">
+                        <h3 class="font-semibold {{ $result['success'] ? 'text-green-800' : 'text-red-800' }} mb-2">
+                            {{ $result['success'] ? '✅ Sync Berhasil' : '❌ Sync Gagal' }}
+                        </h3>
+                        <div class="text-sm space-y-1 {{ $result['success'] ? 'text-green-700' : 'text-red-700' }}">
+                            <p><strong>NIM:</strong> {{ $result['nim'] }}</p>
+                            <p><strong>Nama:</strong> {{ $result['nama'] ?? '-' }}</p>
+                            <p><strong>Status:</strong> {{ $result['message'] }}</p>
+                            @if(isset($result['photo_downloaded']))
+                                <p><strong>Foto:</strong> {{ $result['photo_downloaded'] ? '✅ Berhasil didownload' : '❌ Gagal didownload' }}</p>
+                            @endif
+                            @if(isset($result['error']))
+                                <p><strong>Error:</strong> {{ $result['error'] }}</p>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+            </div>
         </div>
 
         <!-- Program Studi Stats -->
@@ -134,4 +201,26 @@
             </div>
         </div>
     </div>
+
+@push('scripts')
+<script>
+    function switchTab(tab) {
+        // Hide all contents
+        document.getElementById('content-bulk').classList.add('hidden');
+        document.getElementById('content-single').classList.add('hidden');
+        
+        // Reset all tabs
+        document.getElementById('tab-bulk').classList.remove('border-primary-500', 'text-primary-600');
+        document.getElementById('tab-bulk').classList.add('border-transparent', 'text-gray-500');
+        document.getElementById('tab-single').classList.remove('border-primary-500', 'text-primary-600');
+        document.getElementById('tab-single').classList.add('border-transparent', 'text-gray-500');
+        
+        // Show selected
+        document.getElementById('content-' + tab).classList.remove('hidden');
+        document.getElementById('tab-' + tab).classList.remove('border-transparent', 'text-gray-500');
+        document.getElementById('tab-' + tab).classList.add('border-primary-500', 'text-primary-600');
+    }
+</script>
+@endpush
+
 @endsection
