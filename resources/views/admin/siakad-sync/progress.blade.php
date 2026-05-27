@@ -72,6 +72,22 @@
                     <span id="error-text">Terjadi kesalahan</span>
                 </div>
             </div>
+
+            <!-- Real-time Logs (Terminal Style) -->
+            <div class="mt-6">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-sm font-semibold text-gray-700">Log Sinkronisasi</h3>
+                    <button onclick="document.getElementById('log-container').classList.toggle('max-h-96'); document.getElementById('log-container').classList.toggle('max-h-[600px]');" class="text-xs text-primary-600 hover:text-primary-800">
+                        Toggle Height
+                    </button>
+                </div>
+                <div id="log-container" class="bg-gray-900 rounded-lg p-4 font-mono text-xs max-h-96 overflow-y-auto scroll-smooth">
+                    <div id="logs-content" class="space-y-0.5">
+                        <span class="text-gray-500">[INFO] Menunggu proses dimulai...</span>
+                    </div>
+                    <div id="log-cursor" class="inline-block w-2 h-4 bg-green-400 animate-pulse ml-1"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -79,6 +95,34 @@
     <script>
         const jobId = '{{ $jobId }}';
         let isCompleted = false;
+
+        let lastLogCount = 0;
+
+        function formatLogMessage(message) {
+            // Color code based on message type
+            if (message.includes('[ERROR]') || message.includes('✗')) {
+                return `<span class="text-red-400">${escapeHtml(message)}</span>`;
+            } else if (message.includes('[WARN]')) {
+                return `<span class="text-yellow-400">${escapeHtml(message)}</span>`;
+            } else if (message.includes('[CREATE]') || message.includes('[DONE]') || message.includes('✓')) {
+                return `<span class="text-green-400">${escapeHtml(message)}</span>`;
+            } else if (message.includes('[PHOTO]')) {
+                return `<span class="text-blue-400">${escapeHtml(message)}</span>`;
+            } else if (message.includes('[INFO]') || message.includes('[SUMMARY]')) {
+                return `<span class="text-cyan-400">${escapeHtml(message)}</span>`;
+            } else if (message.includes('[PROCESS]')) {
+                return `<span class="text-gray-300">${escapeHtml(message)}</span>`;
+            } else if (message.includes('[FATAL]')) {
+                return `<span class="text-red-500 font-bold">${escapeHtml(message)}</span>`;
+            }
+            return `<span class="text-gray-400">${escapeHtml(message)}</span>`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
         function updateProgress() {
             if (isCompleted) return;
@@ -107,14 +151,35 @@
                     document.getElementById('stat-failed').textContent = data.stats.failed || 0;
                 }
 
+                // Update logs - only append new ones
+                if (data.logs && data.logs.length > lastLogCount) {
+                    const logsContainer = document.getElementById('logs-content');
+                    const newLogs = data.logs.slice(lastLogCount);
+                    
+                    newLogs.forEach(log => {
+                        const logLine = document.createElement('div');
+                        logLine.className = 'whitespace-pre-wrap break-all';
+                        logLine.innerHTML = formatLogMessage(log);
+                        logsContainer.appendChild(logLine);
+                    });
+                    
+                    lastLogCount = data.logs.length;
+                    
+                    // Auto-scroll to bottom
+                    const logContainer = document.getElementById('log-container');
+                    logContainer.scrollTop = logContainer.scrollHeight;
+                }
+
                 // Check if completed
                 if (data.status === 'Completed') {
                     isCompleted = true;
                     document.getElementById('completed-message').classList.remove('hidden');
+                    document.getElementById('log-cursor').classList.add('hidden');
                 } else if (data.status === 'Failed') {
                     isCompleted = true;
                     document.getElementById('error-message').classList.remove('hidden');
                     document.getElementById('error-text').textContent = data.error || 'Terjadi kesalahan';
+                    document.getElementById('log-cursor').classList.add('hidden');
                 }
 
                 // Continue polling

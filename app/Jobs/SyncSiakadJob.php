@@ -43,8 +43,13 @@ class SyncSiakadJob implements ShouldQueue
         $updated = 0;
         $failed = 0;
         $photoDownloaded = 0;
+        $logs = [];
 
-        $this->updateProgress(0, $total, 'Processing...', compact('created', 'updated', 'failed', 'photoDownloaded'));
+        $logs[] = "[INFO] Memulai sinkronisasi {$total} data mahasiswa...";
+        $logs[] = "[INFO] Periode: {$this->periode}";
+        $logs[] = "[INFO] Download foto: " . ($this->skipPhoto ? 'Tidak' : 'Ya');
+        
+        $this->updateProgress(0, $total, 'Processing...', compact('created', 'updated', 'failed', 'photoDownloaded'), $logs);
 
         foreach ($this->data as $index => $item) {
             try {
@@ -53,9 +58,13 @@ class SyncSiakadJob implements ShouldQueue
 
                 if (!$nim) {
                     $failed++;
-                    $this->updateProgress($index + 1, $total, "Processing...", compact('created', 'updated', 'failed', 'photoDownloaded'));
+                    $logs[] = "[WARN] Data ke-" . ($index + 1) . " tidak memiliki NIM, dilewati";
+                    $this->updateProgress($index + 1, $total, "Processing...", compact('created', 'updated', 'failed', 'photoDownloaded'), $logs);
                     continue;
                 }
+
+                $nama = $attr['nama'] ?? '-';
+                $logs[] = "[PROCESS] " . ($index + 1) . "/{$total} - {$nim} - {$nama}";
 
                 $password = bcrypt($nim);
 
@@ -73,8 +82,10 @@ class SyncSiakadJob implements ShouldQueue
 
                 if ($mahasiswa->wasRecentlyCreated) {
                     $created++;
+                    $logs[] = "[CREATE] ✓ Data baru ditambahkan: {$nama}";
                 } else {
                     $updated++;
+                    $logs[] = "[UPDATE] ✓ Data diperbarui: {$nama}";
                 }
 
                 if (!$this->skipPhoto) {
@@ -83,46 +94,72 @@ class SyncSiakadJob implements ShouldQueue
                         $oldPath = 'graduation-photos/' . $mahasiswa->foto_wisuda;
                         if (Storage::disk('public')->exists($oldPath)) {
                             Storage::disk('public')->delete($oldPath);
+                            $logs[] = "[PHOTO] Foto lama dihapus: {$mahasiswa->foto_wisuda}";
                         }
                     }
 
+                    $logs[] = "[PHOTO] Mencoba download foto untuk {$nim}...";
                     $fotoPath = $siakad->downloadFoto($nim);
                     if ($fotoPath) {
                         $mahasiswa->update(['foto_wisuda' => basename($fotoPath)]);
                         $photoDownloaded++;
+                        $logs[] = "[PHOTO] ✓ Foto berhasil didownload: {$nim}.jpg";
+                    } else {
+                        $logs[] = "[PHOTO] ✗ Foto tidak tersedia/gagal download untuk {$nim}";
                     }
                 }
             } catch (\Exception $e) {
                 $failed++;
+                $errorMsg = $e->getMessage();
+                $logs[] = "[ERROR] ✗ Gagal memproses {$nim}: {$errorMsg}";
                 Log::error('Gagal sync mahasiswa: ' . $e->getMessage(), ['nim' => $nim ?? 'unknown']);
             }
 
-            $this->updateProgress($index + 1, $total, "Processing...", compact('created', 'updated', 'failed', 'photoDownloaded'));
+            $this->updateProgress($index + 1, $total, "Processing...", compact('created', 'updated', 'failed', 'photoDownloaded'), $logs);
         }
 
-        $this->updateProgress($total, $total, 'Completed', compact('created', 'updated', 'failed', 'photoDownloaded'));
+        $logs[] = "[DONE] Sinkronisasi selesai!";
+        $logs[] = "[SUMMARY] Baru: {$created} | Update: {$updated} | Foto: {$photoDownloaded} | Gagal: {$failed}";
+        
+        $this->updateProgress($total, $total, 'Completed', compact('created', 'updated', 'failed', 'photoDownloaded'), $logs);
     }
 
-    private function updateProgress(int $current, int $total, string $status, array $stats): void
+    private function updateProgress(int $current, int $total, string $status, array $stats, array $logs = []): void
     {
+        $existing = Cache::get("siakad_sync_{$this->jobId}");
+        $allLogs = $existing['logs'] ?? [];
+        $allLogs = array_merge($allLogs, $logs);
+        
+        // Keep only last 200 logs to prevent memory issues
+        if (count($allLogs) > 200) {
+            $allLogs = array_slice($allLogs, -200);
+        }
+
         Cache::put("siakad_sync_{$this->jobId}", [
             'current' => $current,
             'total' => $total,
             'percentage' => $total > 0 ? round(($current / $total) * 100, 1) : 0,
             'status' => $status,
             'stats' => $stats,
+            'logs' => $allLogs,
             'updated_at' => now()->toIso8601String(),
         ], now()->addMinutes(30));
     }
 
     public function failed(\Throwable $exception): void
     {
+        $existing = Cache::get("siakad_sync_{$this->jobId}");
+        $logs = $existing['logs'] ?? [];
+        $logs[] = "[FATAL] ✗✗✗ Job gagal: " . $exception->getMessage();
+        $logs[] = "[FATAL] Stack trace tersedia di log file";
+
         Cache::put("siakad_sync_{$this->jobId}", [
-            'current' => 0,
+            'current' => $existing['current'] ?? 0,
             'total' => count($this->data),
             'percentage' => 0,
             'status' => 'Failed',
             'error' => $exception->getMessage(),
+            'logs' => $logs,
             'updated_at' => now()->toIso8601String(),
         ], now()->addMinutes(30));
 
