@@ -101,9 +101,19 @@ class SyncSiakadJob implements ShouldQueue
                     $logs[] = "[PHOTO] Mencoba download foto untuk {$nim}...";
                     $fotoPath = $siakad->downloadFoto($nim);
                     if ($fotoPath) {
-                        $mahasiswa->update(['foto_wisuda' => basename($fotoPath)]);
-                        $photoDownloaded++;
-                        $logs[] = "[PHOTO] ✓ Foto berhasil didownload: {$nim}.jpg";
+                        $filename = basename($fotoPath);
+                        $mahasiswa->update(['foto_wisuda' => $filename]);
+                        
+                        // Verifikasi foto benar-benar tersedia setelah update
+                        $mahasiswa->refresh();
+                        if ($mahasiswa->hasFotoWisuda()) {
+                            $photoDownloaded++;
+                            $logs[] = "[PHOTO] ✓ Foto OK: {$filename} (tersimpan & terverifikasi)";
+                        } else {
+                            $logs[] = "[PHOTO] ⚠ Foto tersimpan tapi tidak terverifikasi: {$filename}";
+                            $logs[] = "[PHOTO]   Path: storage/graduation-photos/{$filename}";
+                            $logs[] = "[PHOTO]   Cek storage:link dan permission folder";
+                        }
                     } else {
                         $logs[] = "[PHOTO] ✗ Foto tidak tersedia/gagal download untuk {$nim}";
                     }

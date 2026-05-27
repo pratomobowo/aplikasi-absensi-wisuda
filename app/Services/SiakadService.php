@@ -111,6 +111,7 @@ class SiakadService
     {
         $url  = "{$this->fotoBaseUrl}/{$nim}.jpg";
         $path = "graduation-photos/{$nim}.jpg";
+        $disk = Storage::disk('public');
 
         for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
             try {
@@ -120,24 +121,54 @@ class SiakadService
 
                 if ($response->successful()) {
                     $content = $response->body();
+                    $contentLength = strlen($content);
                     
                     // Validasi ukuran file
-                    if (strlen($content) < 1024) {
-                        Log::warning("File foto terlalu kecil untuk NIM {$nim}: " . strlen($content) . " bytes");
+                    if ($contentLength < 1024) {
+                        Log::warning("[downloadFoto] File terlalu kecil untuk NIM {$nim}: {$contentLength} bytes");
+                        return null;
+                    }
+                    
+                    // Validasi MIME type - pastikan ini gambar, bukan HTML error page
+                    $finfo = new \finfo(FILEINFO_MIME_TYPE);
+                    $mimeType = $finfo->buffer($content);
+                    
+                    if (!str_starts_with($mimeType, 'image/')) {
+                        Log::error("[downloadFoto] Response bukan gambar untuk NIM {$nim}! MIME: {$mimeType}, Size: {$contentLength} bytes");
+                        // Simpan untuk debug
+                        $debugPath = "debug-foto/{$nim}_" . time() . '.txt';
+                        $disk->put($debugPath, $content);
+                        Log::info("[downloadFoto] Content disimpan ke {$debugPath} untuk debug");
                         return null;
                     }
 
-                    Storage::disk('public')->put($path, $content);
-                    Log::info("Foto berhasil didownload untuk NIM {$nim} (percobaan {$attempt})");
+                    // Hapus file lama jika ada
+                    if ($disk->exists($path)) {
+                        $disk->delete($path);
+                        Log::info("[downloadFoto] File lama dihapus: {$path}");
+                    }
+
+                    // Simpan file baru
+                    $disk->put($path, $content);
+                    
+                    // Verifikasi file benar-benar tersimpan
+                    if (!$disk->exists($path)) {
+                        Log::error("[downloadFoto] File tidak tersimpan setelah put() untuk NIM {$nim}");
+                        return null;
+                    }
+                    
+                    $savedSize = $disk->size($path);
+                    Log::info("[downloadFoto] ✓ Foto tersimpan untuk NIM {$nim}: {$path} ({$savedSize} bytes, {$mimeType})");
+                    
                     return $path;
                 }
 
                 if ($response->status() === 404) {
-                    Log::info("Foto tidak ditemukan (404) untuk NIM {$nim}");
+                    Log::info("[downloadFoto] Foto tidak ditemukan (404) untuk NIM {$nim}");
                     return null;
                 }
 
-                Log::warning("Download foto gagal (status {$response->status()}) untuk NIM {$nim}, percobaan {$attempt}/{$maxRetries}");
+                Log::warning("[downloadFoto] HTTP {$response->status()} untuk NIM {$nim}, percobaan {$attempt}/{$maxRetries}");
                 
                 if ($attempt < $maxRetries) {
                     sleep(2);
@@ -145,11 +176,10 @@ class SiakadService
 
             } catch (\Exception $e) {
                 $errorMsg = $e->getMessage();
-                Log::warning("Exception download foto NIM {$nim}: {$errorMsg} (percobaan {$attempt}/{$maxRetries})");
+                Log::warning("[downloadFoto] Exception NIM {$nim}: {$errorMsg} (percobaan {$attempt}/{$maxRetries})");
                 
-                // Kalau error DNS/timeout, tunggu lebih lama
                 if (strpos($errorMsg, 'Resolving timed out') !== false || strpos($errorMsg, 'Could not resolve') !== false) {
-                    Log::warning("DNS timeout detected untuk NIM {$nim}, menunggu 5 detik...");
+                    Log::warning("[downloadFoto] DNS timeout untuk NIM {$nim}, menunggu 5 detik...");
                     sleep(5);
                 } elseif ($attempt < $maxRetries) {
                     sleep(2);
@@ -157,7 +187,7 @@ class SiakadService
             }
         }
 
-        Log::error("Gagal download foto untuk NIM {$nim} setelah {$maxRetries} percobaan");
+        Log::error("[downloadFoto] Gagal untuk NIM {$nim} setelah {$maxRetries} percobaan");
         return null;
     }
 }
