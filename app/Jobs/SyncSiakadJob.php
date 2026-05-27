@@ -68,16 +68,27 @@ class SyncSiakadJob implements ShouldQueue
 
                 $password = bcrypt($nim);
 
+                // Siapkan data update
+                $updateData = [
+                    'nama' => $attr['nama'] ?? '-',
+                    'program_studi' => $attr['program_studi'] ?? '-',
+                    'ipk' => $attr['ipk_lulusan'] ?? 0,
+                    'yudisium' => ($attr['nama_predikat'] ?? '') !== '' ? $attr['nama_predikat'] : null,
+                    'password' => $password,
+                ];
+                
+                // Hanya update judul_skripsi kalau ada datanya dari SIAKAD
+                // Jangan timpa dengan null kalau data lokal sudah terisi
+                if (!empty($attr['judul_skripsi'])) {
+                    $updateData['judul_skripsi'] = strip_tags($attr['judul_skripsi']);
+                    $logs[] = "[INFO] Judul skripsi ditemukan: " . substr(strip_tags($attr['judul_skripsi']), 0, 50) . "...";
+                } else {
+                    $logs[] = "[WARN] Judul skripsi kosong dari SIAKAD untuk NIM {$nim}";
+                }
+                
                 $mahasiswa = Mahasiswa::updateOrCreate(
                     ['npm' => $nim],
-                    [
-                        'nama' => $attr['nama'] ?? '-',
-                        'program_studi' => $attr['program_studi'] ?? '-',
-                        'ipk' => $attr['ipk_lulusan'] ?? 0,
-                        'yudisium' => ($attr['nama_predikat'] ?? '') !== '' ? $attr['nama_predikat'] : null,
-                        'password' => $password,
-                        'judul_skripsi' => !empty($attr['judul_skripsi']) ? strip_tags($attr['judul_skripsi']) : null,
-                    ]
+                    $updateData
                 );
 
                 if ($mahasiswa->wasRecentlyCreated) {
