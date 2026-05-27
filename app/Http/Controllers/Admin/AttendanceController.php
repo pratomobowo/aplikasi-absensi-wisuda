@@ -57,10 +57,11 @@ class AttendanceController extends Controller
     {
         $request->validate([
             'nim' => ['required', 'string'],
-            'role' => ['required', 'string', 'in:mahasiswa,pendamping1,pendamping2'],
         ]);
 
         $service = app(AttendanceService::class);
+        
+        // Hardcode role as mahasiswa
         $result = $service->recordManualAttendance(
             $request->input('nim'),
             null,

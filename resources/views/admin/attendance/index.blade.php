@@ -18,14 +18,6 @@
                     <input type="text" name="nim" required placeholder="Contoh: 1112197004"
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
                 </div>
-                <div class="w-48">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Role *</label>
-                    <select name="role" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
-                        <option value="mahasiswa">Mahasiswa</option>
-                        <option value="pendamping1">Pendamping 1</option>
-                        <option value="pendamping2">Pendamping 2</option>
-                    </select>
-                </div>
                 <button type="submit" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">Tambah Kehadiran</button>
             </form>
         </div>
