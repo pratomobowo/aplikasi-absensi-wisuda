@@ -72,6 +72,7 @@ class SiakadSyncController extends Controller
                     'program_studi' => $attr['program_studi'] ?? '-',
                     'ipk' => $attr['ipk_lulusan'] ?? 0,
                     'yudisium' => $attr['nama_predikat'] ?? '-',
+                    'judul_skripsi' => !empty($attr['judul_skripsi']) ? strip_tags($attr['judul_skripsi']) : null,
                     'exists' => $existing ? true : false,
                     'has_photo' => $existing ? ($existing->foto_wisuda ? true : false) : false,
                 ];

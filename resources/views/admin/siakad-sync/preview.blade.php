@@ -47,6 +47,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Program Studi</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">IPK</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Yudisium</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase max-w-xs">Judul Skripsi</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                     </tr>
                 </thead>
@@ -56,9 +57,10 @@
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $item['nim'] }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $item['nama'] }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $item['program_studi'] }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">{{ number_format($item['ipk'], 2) }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $item['yudisium'] ?? '-' }}</td>
-                            <td class="px-6 py-4">
+                        <td class="px-6 py-4 text-sm text-gray-900">{{ number_format($item['ipk'], 2) }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">{{ $item['yudisium'] ?? '-' }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="{{ $item['judul_skripsi'] ?? '' }}">{{ $item['judul_skripsi'] ?? '-' }}</td>
+                        <td class="px-6 py-4">
                                 @if($item['exists'])
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                                         Update {{ $item['has_photo'] ? '+Foto' : '' }}
