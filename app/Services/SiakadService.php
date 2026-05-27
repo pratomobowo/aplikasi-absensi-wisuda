@@ -30,19 +30,64 @@ class SiakadService
 
     public function fetchKelulusan(?string $periode = null): array
     {
+        // Fetch data kelulusan
+        $kelulusanData = $this->fetchData('/kelulusan', $periode, 'f-id_periode_akademik');
+        
+        // Fetch data tugas akhir
+        $tugasAkhirData = $this->fetchData('/tugas-akhir', $periode, 'f-id_periode_selesai');
+        
+        // Merge data tugas akhir ke kelulusan berdasarkan NIM
+        $tugasAkhirByNim = [];
+        foreach ($tugasAkhirData as $item) {
+            $attr = $item['attributes'] ?? [];
+            $nim = $attr['nim'] ?? null;
+            if ($nim) {
+                $tugasAkhirByNim[$nim] = $attr;
+            }
+        }
+        
+        // Merge ke data kelulusan
+        foreach ($kelulusanData as &$item) {
+            $attr = $item['attributes'] ?? [];
+            $nim = $attr['nim'] ?? null;
+            if ($nim && isset($tugasAkhirByNim[$nim])) {
+                $ta = $tugasAkhirByNim[$nim];
+                $item['attributes']['judul_skripsi'] = $ta['judul'] ?? null;
+                $item['attributes']['dosen_pembimbing'] = $ta['dosen_pembimbing'] ?? null;
+            }
+        }
+        
+        Log::info("[fetchKelulusan] Total kelulusan: " . count($kelulusanData) . ", tugas akhir: " . count($tugasAkhirData));
+        
+        return $kelulusanData;
+    }
+    
+    protected function fetchData(string $endpoint, ?string $periode, string $periodeField): array
+    {
         $allData = [];
         $params  = ['page' => 1];
 
         if ($periode) {
-            $params['f-id_periode_akademik'] = $periode;
+            $params[$periodeField] = $periode;
         }
 
         // Halaman pertama
-        $first    = Http::withoutVerifying()->withHeaders($this->headers)->get("{$this->baseUrl}/kelulusan", $params);
+        $first    = Http::withoutVerifying()->withHeaders($this->headers)->get("{$this->baseUrl}{$endpoint}", $params);
+        
+        if ($first->status() === 403) {
+            sleep(3);
+            $first = Http::withoutVerifying()->withHeaders($this->headers)->get("{$this->baseUrl}{$endpoint}", $params);
+        }
+        
+        if ($first->failed()) {
+            Log::error("Gagal fetch {$endpoint}: HTTP {$first->status()}");
+            return [];
+        }
+        
         $lastPage = $first->json('meta.last_page') ?? 1;
         $allData  = array_merge($allData, $first->json('data') ?? []);
 
-        Log::info("Fetch kelulusan halaman 1/{$lastPage} (" . count($first->json('data') ?? []) . " data)");
+        Log::info("Fetch {$endpoint} halaman 1/{$lastPage} (" . count($first->json('data') ?? []) . " data)");
 
         // Halaman berikutnya
         for ($page = 2; $page <= $lastPage; $page++) {
@@ -50,17 +95,17 @@ class SiakadService
 
             sleep(1); // jeda 1 detik antar request
 
-            $response = $this->getWithRetry("{$this->baseUrl}/kelulusan", $params);
+            $response = $this->getWithRetry("{$this->baseUrl}{$endpoint}", $params);
 
             if (!$response || $response->failed()) {
-                Log::error('Gagal fetch halaman ' . $page);
+                Log::error("Gagal fetch {$endpoint} halaman " . $page);
                 break;
             }
 
             $data    = $response->json('data') ?? [];
             $allData = array_merge($allData, $data);
 
-            Log::info("Fetch kelulusan halaman {$page}/{$lastPage} (" . count($data) . " data)");
+            Log::info("Fetch {$endpoint} halaman {$page}/{$lastPage} (" . count($data) . " data)");
         }
 
         return $allData;
