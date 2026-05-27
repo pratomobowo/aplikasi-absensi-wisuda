@@ -93,7 +93,7 @@ class SiakadService
 
         try {
             $response = Http::withoutVerifying()
-                ->timeout(5)
+                ->timeout(30)
                 ->head($url);
 
             return $response->successful() && $response->header('Content-Length') > 1024;
@@ -105,17 +105,12 @@ class SiakadService
 
     /**
      * Download foto dari SEVIMA dengan retry logic
+     * Skip checkFotoExists karena sering timeout DNS - langsung coba download saja
      */
     public function downloadFoto(string $nim, int $maxRetries = 3): ?string
     {
         $url  = "{$this->fotoBaseUrl}/{$nim}.jpg";
         $path = "graduation-photos/{$nim}.jpg";
-
-        // Cek apakah foto tersedia terlebih dahulu
-        if (!$this->checkFotoExists($nim)) {
-            Log::info("Foto tidak tersedia di server untuk NIM {$nim}");
-            return null;
-        }
 
         for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
             try {
@@ -145,14 +140,19 @@ class SiakadService
                 Log::warning("Download foto gagal (status {$response->status()}) untuk NIM {$nim}, percobaan {$attempt}/{$maxRetries}");
                 
                 if ($attempt < $maxRetries) {
-                    sleep(1);
+                    sleep(2);
                 }
 
             } catch (\Exception $e) {
-                Log::warning("Exception download foto NIM {$nim}: " . $e->getMessage() . " (percobaan {$attempt}/{$maxRetries})");
+                $errorMsg = $e->getMessage();
+                Log::warning("Exception download foto NIM {$nim}: {$errorMsg} (percobaan {$attempt}/{$maxRetries})");
                 
-                if ($attempt < $maxRetries) {
-                    sleep(1);
+                // Kalau error DNS/timeout, tunggu lebih lama
+                if (strpos($errorMsg, 'Resolving timed out') !== false || strpos($errorMsg, 'Could not resolve') !== false) {
+                    Log::warning("DNS timeout detected untuk NIM {$nim}, menunggu 5 detik...");
+                    sleep(5);
+                } elseif ($attempt < $maxRetries) {
+                    sleep(2);
                 }
             }
         }
