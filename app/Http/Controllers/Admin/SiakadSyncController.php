@@ -140,17 +140,16 @@ class SiakadSyncController extends Controller
         $siakad = app(SiakadService::class);
 
         try {
-            // Fetch data dari SIAKAD untuk NIM ini
-            $data = $siakad->fetchKelulusan();
+            // Fetch data mahasiswa berdasarkan NIM (lebih cepat, tidak fetch semua)
+            $targetData = $siakad->fetchMahasiswaByNim($nim);
             
-            // Cari data untuk NIM tertentu
-            $targetData = null;
-            foreach ($data as $item) {
-                $attr = $item['attributes'] ?? [];
-                if (($attr['nim'] ?? '') === $nim) {
-                    $targetData = $item;
-                    break;
-                }
+            if (!$targetData) {
+                return redirect()->route('admin.siakad-sync.index')
+                    ->with('sync_single_result', [
+                        'success' => false,
+                        'nim' => $nim,
+                        'message' => 'Data tidak ditemukan di SIAKAD',
+                    ]);
             }
 
             if (!$targetData) {

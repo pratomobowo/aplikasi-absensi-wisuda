@@ -66,6 +66,38 @@ class SiakadService
         return $allData;
     }
 
+    /**
+     * Fetch satu mahasiswa berdasarkan NIM (lebih cepat, tidak perlu fetch semua)
+     */
+    public function fetchMahasiswaByNim(string $nim): ?array
+    {
+        $params = [
+            'page' => 1,
+            'f-nim' => $nim, // Filter berdasarkan NIM
+        ];
+
+        Log::info("[fetchMahasiswaByNim] Mencari mahasiswa dengan NIM: {$nim}");
+
+        $response = Http::withoutVerifying()
+            ->withHeaders($this->headers)
+            ->get("{$this->baseUrl}/kelulusan", $params);
+
+        if (!$response->successful()) {
+            Log::error("[fetchMahasiswaByNim] Gagal fetch: HTTP {$response->status()}");
+            return null;
+        }
+
+        $data = $response->json('data') ?? [];
+        
+        if (empty($data)) {
+            Log::warning("[fetchMahasiswaByNim] Mahasiswa tidak ditemukan: {$nim}");
+            return null;
+        }
+
+        Log::info("[fetchMahasiswaByNim] ✓ Mahasiswa ditemukan: {$nim}");
+        return $data[0]; // Ambil data pertama (seharusnya hanya 1)
+    }
+
     protected function getWithRetry(string $url, array $params, int $maxRetry = 3): ?\Illuminate\Http\Client\Response
     {
         for ($attempt = 1; $attempt <= $maxRetry; $attempt++) {
