@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\GraduationEvent;
+use App\Services\AttendanceService;
 use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
@@ -50,5 +51,37 @@ class AttendanceController extends Controller
         $events = GraduationEvent::where('status', '!=', 'completed')->pluck('name', 'id');
 
         return view('admin.attendance.index', compact('attendances', 'events'));
+    }
+
+    public function manual(Request $request)
+    {
+        $request->validate([
+            'nim' => ['required', 'string'],
+            'role' => ['required', 'string', 'in:mahasiswa,pendamping1,pendamping2'],
+        ]);
+
+        $service = app(AttendanceService::class);
+        $result = $service->recordManualAttendance(
+            $request->input('nim'),
+            null,
+            $request->user()
+        );
+
+        if ($result['success']) {
+            return redirect()->route('admin.attendance.index')
+                ->with('success', $result['message']);
+        }
+
+        return redirect()->route('admin.attendance.index')
+            ->with('error', $result['message']);
+    }
+
+    public function destroy(Attendance $attendance)
+    {
+        $nama = $attendance->graduationTicket->mahasiswa->nama ?? 'Unknown';
+        $attendance->delete();
+
+        return redirect()->route('admin.attendance.index')
+            ->with('success', "Kehadiran {$nama} berhasil dihapus.");
     }
 }

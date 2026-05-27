@@ -8,6 +8,28 @@
             <h1 class="text-2xl font-bold text-gray-900">Kehadiran</h1>
         </div>
 
+        <!-- Manual Attendance -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Tambah Kehadiran Manual</h2>
+            <form action="{{ route('admin.attendance.manual') }}" method="POST" class="flex items-end space-x-4">
+                @csrf
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">NPM/NIM Mahasiswa *</label>
+                    <input type="text" name="nim" required placeholder="Contoh: 1112197004"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                </div>
+                <div class="w-48">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Role *</label>
+                    <select name="role" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                        <option value="mahasiswa">Mahasiswa</option>
+                        <option value="pendamping1">Pendamping 1</option>
+                        <option value="pendamping2">Pendamping 2</option>
+                    </select>
+                </div>
+                <button type="submit" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">Tambah Kehadiran</button>
+            </form>
+        </div>
+
         <!-- Filters -->
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <form method="GET" class="flex items-end space-x-4">
@@ -57,6 +79,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acara</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Waktu Scan</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Scanner</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
@@ -83,6 +106,13 @@
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $attendance->graduationTicket->graduationEvent->name ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $attendance->scanned_at->format('d M Y H:i:s') }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $attendance->scannedBy->name ?? 'System' }}</td>
+                            <td class="px-6 py-4 text-sm">
+                                <form action="{{ route('admin.attendance.destroy', $attendance) }}" method="POST" class="inline" onsubmit="return confirm('Hapus kehadiran ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-800">Hapus</button>
+                                </form>
+                            </td>
                         </tr>
                     @empty
                         <tr>

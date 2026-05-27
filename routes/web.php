@@ -123,6 +123,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Attendance
         Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+        Route::post('/attendance/manual', [AttendanceController::class, 'manual'])->name('attendance.manual');
+        Route::delete('/attendance/{attendance}', [AttendanceController::class, 'destroy'])->name('attendance.destroy');
 
         // Konsumsi
         Route::post('/konsumsi/{ticket}/toggle', [KonsumsiController::class, 'toggle'])->name('konsumsi.toggle');
