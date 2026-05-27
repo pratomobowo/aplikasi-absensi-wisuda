@@ -90,11 +90,14 @@ class SyncSiakadJob implements ShouldQueue
 
                 if (!$this->skipPhoto) {
                     // Hapus foto lama jika ada
-                    if ($mahasiswa->foto_wisuda) {
-                        $oldPath = 'graduation-photos/' . $mahasiswa->foto_wisuda;
+                    $oldFoto = $mahasiswa->foto_wisuda;
+                    if ($oldFoto) {
+                        $oldPath = 'graduation-photos/' . $oldFoto;
                         if (Storage::disk('public')->exists($oldPath)) {
                             Storage::disk('public')->delete($oldPath);
-                            $logs[] = "[PHOTO] Foto lama dihapus: {$mahasiswa->foto_wisuda}";
+                            $logs[] = "[PHOTO] Foto lama dihapus: {$oldFoto}";
+                        } else {
+                            $logs[] = "[PHOTO] ⚠ Foto lama tidak ditemukan di storage: {$oldFoto}";
                         }
                     }
 
@@ -110,9 +113,11 @@ class SyncSiakadJob implements ShouldQueue
                             $photoDownloaded++;
                             $logs[] = "[PHOTO] ✓ Foto OK: {$filename} (tersimpan & terverifikasi)";
                         } else {
-                            $logs[] = "[PHOTO] ⚠ Foto tersimpan tapi tidak terverifikasi: {$filename}";
-                            $logs[] = "[PHOTO]   Path: storage/graduation-photos/{$filename}";
-                            $logs[] = "[PHOTO]   Cek storage:link dan permission folder";
+                            $logs[] = "[PHOTO] ⚠ CRITICAL: Foto disimpan tapi tidak terverifikasi!";
+                            $logs[] = "[PHOTO]   Filename: {$filename}";
+                            $logs[] = "[PHOTO]   DB Value: {$mahasiswa->foto_wisuda}";
+                            $logs[] = "[PHOTO]   Full Path: " . Storage::disk('public')->path('graduation-photos/' . $filename);
+                            $logs[] = "[PHOTO]   Storage exists: " . (Storage::disk('public')->exists('graduation-photos/' . $filename) ? 'Ya' : 'Tidak');
                         }
                     } else {
                         $logs[] = "[PHOTO] ✗ Foto tidak tersedia/gagal download untuk {$nim}";

@@ -148,12 +148,28 @@ class SiakadService
                         Log::info("[downloadFoto] File lama dihapus: {$path}");
                     }
 
-                    // Simpan file baru
-                    $disk->put($path, $content);
+                    // Pastikan folder graduation-photos ada
+                    if (!$disk->exists('graduation-photos')) {
+                        $disk->makeDirectory('graduation-photos');
+                        Log::info("[downloadFoto] Folder graduation-photos dibuat");
+                    }
+                    
+                    // Simpan file baru - periksa return value
+                    $saved = $disk->put($path, $content);
+                    
+                    if (!$saved) {
+                        Log::error("[downloadFoto] Storage::put() mengembalikan FALSE untuk NIM {$nim}");
+                        Log::error("[downloadFoto] Path: {$path}, Size: " . strlen($content) . " bytes");
+                        Log::error("[downloadFoto] Disk path: " . $disk->path(''));
+                        Log::error("[downloadFoto] Writable: " . (is_writable($disk->path('')) ? 'Ya' : 'Tidak'));
+                        return null;
+                    }
                     
                     // Verifikasi file benar-benar tersimpan
+                    clearstatcache();
                     if (!$disk->exists($path)) {
                         Log::error("[downloadFoto] File tidak tersimpan setelah put() untuk NIM {$nim}");
+                        Log::error("[downloadFoto] Full path: " . $disk->path($path));
                         return null;
                     }
                     
