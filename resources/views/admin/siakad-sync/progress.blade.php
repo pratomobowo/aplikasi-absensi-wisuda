@@ -81,11 +81,13 @@
                         Toggle Height
                     </button>
                 </div>
-                <div id="log-container" class="bg-gray-900 rounded-lg p-4 font-mono text-xs max-h-96 overflow-y-auto scroll-smooth">
-                    <div id="logs-content" class="space-y-0.5">
-                        <span class="text-gray-500">[INFO] Menunggu proses dimulai...</span>
+                <div id="log-container" class="bg-black rounded-lg p-4 font-mono text-xs max-h-96 overflow-y-auto border border-gray-700 shadow-inner"
+                     style="scroll-behavior: auto;">
+                    <div id="logs-content" class="space-y-0 leading-tight">
+                        <div class="text-white font-bold">=== LOG SINKRONISASI ===</div>
+                        <div class="text-gray-400">Menunggu proses dimulai...</div>
                     </div>
-                    <div id="log-cursor" class="inline-block w-2 h-4 bg-green-400 animate-pulse ml-1"></div>
+                    <span id="log-cursor" class="inline-block w-2 h-4 bg-green-500 animate-pulse ml-1 align-middle"></span>
                 </div>
             </div>
         </div>
@@ -97,25 +99,26 @@
         let isCompleted = false;
 
         let lastLogCount = 0;
+        let processedLogs = new Set(); // Track processed logs to avoid duplicates
 
         function formatLogMessage(message) {
-            // Color code based on message type
+            // Color code based on message type - using bright colors for dark background
             if (message.includes('[ERROR]') || message.includes('✗')) {
-                return `<span class="text-red-400">${escapeHtml(message)}</span>`;
+                return `<span style="color: #ff6b6b; font-weight: bold;">${escapeHtml(message)}</span>`;
             } else if (message.includes('[WARN]')) {
-                return `<span class="text-yellow-400">${escapeHtml(message)}</span>`;
+                return `<span style="color: #ffd93d;">${escapeHtml(message)}</span>`;
             } else if (message.includes('[CREATE]') || message.includes('[DONE]') || message.includes('✓')) {
-                return `<span class="text-green-400">${escapeHtml(message)}</span>`;
+                return `<span style="color: #6bcb77; font-weight: bold;">${escapeHtml(message)}</span>`;
             } else if (message.includes('[PHOTO]')) {
-                return `<span class="text-blue-400">${escapeHtml(message)}</span>`;
+                return `<span style="color: #4d96ff;">${escapeHtml(message)}</span>`;
             } else if (message.includes('[INFO]') || message.includes('[SUMMARY]')) {
-                return `<span class="text-cyan-400">${escapeHtml(message)}</span>`;
+                return `<span style="color: #00d9ff; font-weight: bold;">${escapeHtml(message)}</span>`;
             } else if (message.includes('[PROCESS]')) {
-                return `<span class="text-gray-300">${escapeHtml(message)}</span>`;
+                return `<span style="color: #e0e0e0;">${escapeHtml(message)}</span>`;
             } else if (message.includes('[FATAL]')) {
-                return `<span class="text-red-500 font-bold">${escapeHtml(message)}</span>`;
+                return `<span style="color: #ff0000; font-weight: bold;">${escapeHtml(message)}</span>`;
             }
-            return `<span class="text-gray-400">${escapeHtml(message)}</span>`;
+            return `<span style="color: #cccccc;">${escapeHtml(message)}</span>`;
         }
 
         function escapeHtml(text) {
@@ -151,23 +154,34 @@
                     document.getElementById('stat-failed').textContent = data.stats.failed || 0;
                 }
 
-                // Update logs - only append new ones
-                if (data.logs && data.logs.length > lastLogCount) {
+                // Update logs - append new ones continuously
+                if (data.logs && data.logs.length > 0) {
                     const logsContainer = document.getElementById('logs-content');
-                    const newLogs = data.logs.slice(lastLogCount);
+                    const logContainer = document.getElementById('log-container');
+                    let hasNewLogs = false;
                     
-                    newLogs.forEach(log => {
-                        const logLine = document.createElement('div');
-                        logLine.className = 'whitespace-pre-wrap break-all';
-                        logLine.innerHTML = formatLogMessage(log);
-                        logsContainer.appendChild(logLine);
+                    // Get only new logs that haven't been processed
+                    data.logs.forEach((log, index) => {
+                        const logKey = index + '_' + log; // Unique key for each log
+                        if (!processedLogs.has(logKey) && index >= lastLogCount) {
+                            const logLine = document.createElement('div');
+                            logLine.className = 'whitespace-pre-wrap break-all py-0.5';
+                            logLine.innerHTML = formatLogMessage(log);
+                            logsContainer.appendChild(logLine);
+                            processedLogs.add(logKey);
+                            hasNewLogs = true;
+                        }
                     });
                     
-                    lastLogCount = data.logs.length;
+                    // Update lastLogCount to current length
+                    if (data.logs.length > lastLogCount) {
+                        lastLogCount = data.logs.length;
+                    }
                     
-                    // Auto-scroll to bottom
-                    const logContainer = document.getElementById('log-container');
-                    logContainer.scrollTop = logContainer.scrollHeight;
+                    // Auto-scroll to bottom if new logs added
+                    if (hasNewLogs) {
+                        logContainer.scrollTop = logContainer.scrollHeight;
+                    }
                 }
 
                 // Check if completed
