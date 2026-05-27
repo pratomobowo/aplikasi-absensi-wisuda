@@ -17,13 +17,9 @@ class MahasiswaController extends Controller
 {
     public function index(Request $request)
     {
-        // Base query: only show mahasiswa with tickets for active (non-completed) events
-        // If event_id filter is provided, show only for that specific event
-        $query = Mahasiswa::whereHas('graduationTickets', function ($q) {
-            $q->whereHas('graduationEvent', function ($q2) {
-                $q2->where('status', '!=', 'completed');
-            });
-        })->with(['graduationTickets' => function ($q) {
+        // Base query: show all mahasiswa
+        // Eager load graduation tickets for active events
+        $query = Mahasiswa::query()->with(['graduationTickets' => function ($q) {
             $q->whereHas('graduationEvent', function ($q2) {
                 $q2->where('status', '!=', 'completed');
             })->with('graduationEvent');
