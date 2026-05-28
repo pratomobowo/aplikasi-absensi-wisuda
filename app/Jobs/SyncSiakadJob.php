@@ -75,8 +75,14 @@ class SyncSiakadJob implements ShouldQueue
                     'program_studi' => $attr['program_studi'] ?? '-',
                     'ipk' => $attr['ipk_lulusan'] ?? 0,
                     'yudisium' => ($attr['nama_predikat'] ?? '') !== '' ? $attr['nama_predikat'] : null,
-                    'password' => $password,
                 ];
+                
+                // Jangan timpa password kalau mahasiswa sudah pernah mengganti password
+                // mahasiswa yang password_changed_at = null berarti belum pernah rubah password
+                $existingMahasiswa = Mahasiswa::where('npm', $nim)->first();
+                if (!$existingMahasiswa || !$existingMahasiswa->password_changed_at) {
+                    $updateData['password'] = bcrypt($defaultPassword);
+                }
                 
                 // Hanya update judul_skripsi kalau ada datanya dari SIAKAD
                 // Jangan timpa dengan null kalau data lokal sudah terisi

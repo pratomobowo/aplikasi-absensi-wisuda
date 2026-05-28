@@ -167,17 +167,23 @@ class SiakadSyncController extends Controller
             
             // Update atau create mahasiswa
             $defaultPassword = 'ypkp@#1234';
-            $mahasiswa = Mahasiswa::updateOrCreate(
-                ['npm' => $nim],
-                [
-                    'nama' => $attr['nama'] ?? '-',
-                    'program_studi' => $attr['program_studi'] ?? '-',
-                    'ipk' => $attr['ipk_lulusan'] ?? 0,
-                    'yudisium' => ($attr['nama_predikat'] ?? '') !== '' ? $attr['nama_predikat'] : null,
-                    'password' => bcrypt($defaultPassword),
-                    'judul_skripsi' => !empty($attr['judul_skripsi']) ? strip_tags($attr['judul_skripsi']) : null,
-                ]
-            );
+            
+            // Cek apakah mahasiswa sudah pernah mengganti password
+            $existingMahasiswa = Mahasiswa::where('npm', $nim)->first();
+            $updateData = [
+                'nama' => $attr['nama'] ?? '-',
+                'program_studi' => $attr['program_studi'] ?? '-',
+                'ipk' => $attr['ipk_lulusan'] ?? 0,
+                'yudisium' => ($attr['nama_predikat'] ?? '') !== '' ? $attr['nama_predikat'] : null,
+                'judul_skripsi' => !empty($attr['judul_skripsi']) ? strip_tags($attr['judul_skripsi']) : null,
+            ];
+            
+            // Jangan timpa password kalau sudah pernah diubah
+            if (!$existingMahasiswa || !$existingMahasiswa->password_changed_at) {
+                $updateData['password'] = bcrypt($defaultPassword);
+            }
+            
+            $mahasiswa = Mahasiswa::updateOrCreate(['npm' => $nim], $updateData);
 
             $photoDownloaded = false;
             
