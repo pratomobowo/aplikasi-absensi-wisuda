@@ -76,7 +76,7 @@
                     <!-- Download PDF Button -->
                     @if($bukuWisuda)
                         <a
-                            href="{{ route('buku-wisuda.download', $bukuWisuda->slug) }}"
+                            href="{{ route('buku-wisuda.download', ['slug' => $bukuWisuda->slug]) }}"
                             class="px-4 py-2.5 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors inline-flex items-center"
                         >
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
