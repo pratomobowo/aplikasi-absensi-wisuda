@@ -66,9 +66,6 @@ class SyncSiakadJob implements ShouldQueue
                 $nama = $attr['nama'] ?? '-';
                 $logs[] = "[PROCESS] " . ($index + 1) . "/{$total} - {$nim} - {$nama}";
 
-                $defaultPassword = 'ypkp@#1234';
-                $password = bcrypt($defaultPassword);
-
                 // Siapkan data update
                 $updateData = [
                     'nama' => $attr['nama'] ?? '-',
@@ -81,7 +78,7 @@ class SyncSiakadJob implements ShouldQueue
                 // mahasiswa yang password_changed_at = null berarti belum pernah rubah password
                 $existingMahasiswa = Mahasiswa::where('npm', $nim)->first();
                 if (!$existingMahasiswa || !$existingMahasiswa->password_changed_at) {
-                    $updateData['password'] = bcrypt($defaultPassword);
+                    $updateData['password'] = bcrypt($nim);
                 }
                 
                 // Hanya update judul_skripsi kalau ada datanya dari SIAKAD

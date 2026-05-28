@@ -65,8 +65,8 @@ class MahasiswaController extends Controller
     public function store(StoreMahasiswaRequest $request)
     {
         $data = $request->validated();
-        $defaultPassword = 'ypkp@#1234';
-        $data['password'] = bcrypt($data['password'] ?? $defaultPassword);
+        // Default password = NPM
+        $data['password'] = bcrypt($data['password'] ?? $data['npm']);
 
         if ($request->hasFile('foto_wisuda')) {
             $path = $request->file('foto_wisuda')->store('graduation-photos', 'public');

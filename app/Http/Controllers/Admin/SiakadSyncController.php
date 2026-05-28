@@ -166,8 +166,6 @@ class SiakadSyncController extends Controller
             $attr = $targetData['attributes'];
             
             // Update atau create mahasiswa
-            $defaultPassword = 'ypkp@#1234';
-            
             // Cek apakah mahasiswa sudah pernah mengganti password
             $existingMahasiswa = Mahasiswa::where('npm', $nim)->first();
             $updateData = [
@@ -180,7 +178,7 @@ class SiakadSyncController extends Controller
             
             // Jangan timpa password kalau sudah pernah diubah
             if (!$existingMahasiswa || !$existingMahasiswa->password_changed_at) {
-                $updateData['password'] = bcrypt($defaultPassword);
+                $updateData['password'] = bcrypt($nim);
             }
             
             $mahasiswa = Mahasiswa::updateOrCreate(['npm' => $nim], $updateData);
