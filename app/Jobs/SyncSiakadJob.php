@@ -66,7 +66,8 @@ class SyncSiakadJob implements ShouldQueue
                 $nama = $attr['nama'] ?? '-';
                 $logs[] = "[PROCESS] " . ($index + 1) . "/{$total} - {$nim} - {$nama}";
 
-                $password = bcrypt($nim);
+                $defaultPassword = 'ypkp@#1234';
+                $password = bcrypt($defaultPassword);
 
                 // Siapkan data update
                 $updateData = [

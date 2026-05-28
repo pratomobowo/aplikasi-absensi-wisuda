@@ -166,6 +166,7 @@ class SiakadSyncController extends Controller
             $attr = $targetData['attributes'];
             
             // Update atau create mahasiswa
+            $defaultPassword = 'ypkp@#1234';
             $mahasiswa = Mahasiswa::updateOrCreate(
                 ['npm' => $nim],
                 [
@@ -173,7 +174,7 @@ class SiakadSyncController extends Controller
                     'program_studi' => $attr['program_studi'] ?? '-',
                     'ipk' => $attr['ipk_lulusan'] ?? 0,
                     'yudisium' => ($attr['nama_predikat'] ?? '') !== '' ? $attr['nama_predikat'] : null,
-                    'password' => bcrypt($nim),
+                    'password' => bcrypt($defaultPassword),
                     'judul_skripsi' => !empty($attr['judul_skripsi']) ? strip_tags($attr['judul_skripsi']) : null,
                 ]
             );
