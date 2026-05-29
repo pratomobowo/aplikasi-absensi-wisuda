@@ -87,44 +87,41 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
-            const pdfUrl = "{{ $pdfUrl }}";
-            const container = document.getElementById('flipbook-container');
-            const $ = jQuery;
-
-            if (typeof DFLIP !== 'undefined' && container) {
-                container.innerHTML = '';
-
-                const flipbook = new DFLIP.createFlipbook(pdfUrl, {
-                    container: container,
-                    height: '100%',
-                    backgroundColor: '#f5f5f5',
-                    autoPlay: false,
-                    autoEnableOutline: false,
-                    autoEnableThumbnailList: false,
-                    autoEnableZoom: true,
-                    zoomRatio: 1.5,
-                    shadowType: 2,
-                    outlineDropShadow: true,
-                    transparentPages: false,
-                    hard: 'both',
-                    pagePadding: 0,
-                    text: {
-                        toolcolor: '#ffffff',
-                        iconcolor: '#ffffff',
-                        tagcolor: '#ffffff',
-                        print: 'Cetak',
-                        download: 'Download',
-                        zoomIn: 'Perbesar',
-                        zoomOut: 'Perkecil',
-                        fullscreen: 'Layar Penuh',
-                        exitFullscreen: 'Keluar Layar Penuh'
-                    }
-                });
-            } else {
-                console.log('DFLIP not loaded yet, retrying...');
-                setTimeout(arguments.callee, 500);
-            }
-        }, 300);
+            initializeFlipbook();
+        }, 1500);
     });
+
+    function initializeFlipbook() {
+        const pdfUrl = "{{ $pdfUrl }}";
+        const container = document.getElementById('flipbook-container');
+        
+        if (!container) {
+            console.error('Container not found');
+            return;
+        }
+
+        if (typeof $ === 'undefined' || !$.fn.flipBook) {
+            console.error('jQuery or flipBook plugin not loaded');
+            container.innerHTML = '<p class="text-red-500 p-6 text-center">Error: Required libraries not loaded. Please refresh the page.</p>';
+            return;
+        }
+
+        container.innerHTML = '';
+
+        try {
+            $(container).flipBook(pdfUrl, {
+                height: '100%',
+                width: '100%',
+                duration: 800,
+                mode: 'html5',
+                shading: 0.5,
+                pageMode: 'double',
+                controlsPosition: 'bottom'
+            });
+        } catch (error) {
+            console.error('Error initializing flipbook:', error);
+            container.innerHTML = '<p class="text-red-500 p-6 text-center">Error initializing flipbook: ' + error.message + '</p>';
+        }
+    }
 </script>
 @endpush

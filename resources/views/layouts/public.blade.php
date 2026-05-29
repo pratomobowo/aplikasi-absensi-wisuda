@@ -65,7 +65,7 @@
                         Buku Wisuda
                     </x-nav-link>
                     <x-nav-link href="{{ url('/help-desk') }}" :active="request()->is('help-desk')">
-                        QnA
+                        Layout Wisuda
                     </x-nav-link>
                 </div>
                 
@@ -123,7 +123,7 @@
             <a href="{{ url('/data-wisudawan') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors duration-200 {{ request()->is('data-wisudawan') ? 'bg-blue-50 text-blue-600' : '' }}">Data Wisudawan</a>
             <a href="{{ url('/alur-wisuda') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors duration-200 {{ request()->is('alur-wisuda') ? 'bg-blue-50 text-blue-600' : '' }}">Alur Wisuda</a>
             <a href="{{ url('/buku-wisuda') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors duration-200 {{ request()->is('buku-wisuda') ? 'bg-blue-50 text-blue-600' : '' }}">Buku Wisuda</a>
-            <a href="{{ url('/help-desk') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors duration-200 {{ request()->is('help-desk') ? 'bg-blue-50 text-blue-600' : '' }}">QnA</a>
+            <a href="{{ url('/help-desk') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors duration-200 {{ request()->is('help-desk') ? 'bg-blue-50 text-blue-600' : '' }}">Layout Wisuda</a>
             <div class="pt-4 border-t border-gray-200">
                 @auth('mahasiswa')
                     <a href="{{ route('student.dashboard') }}" class="block w-full px-4 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 text-center">Dashboard Mahasiswa</a>
@@ -195,7 +195,7 @@
                             <svg class="w-4 h-4 mr-2 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
-                            QnA
+                            Layout Wisuda
                         </a></li>
                     </ul>
                 </div>
