@@ -125,30 +125,28 @@
 
                 <!-- Current Pages -->
                 @if($bukuWisuda && $bukuWisuda->initial_pages && count($bukuWisuda->initial_pages) > 0)
-                    <div class="mb-6">
-                        <h4 class="text-sm font-medium text-gray-700 mb-3">Halaman yang sudah diupload:</h4>
-                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="text-sm font-medium text-gray-700">{{ count($bukuWisuda->initial_pages) }} Halaman</h4>
+                        </div>
+                        <div class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-10 gap-2">
                             @foreach($bukuWisuda->initial_pages as $index => $page)
-                                <div class="relative group border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
+                                <div class="relative group border border-gray-200 rounded overflow-hidden bg-gray-50">
                                     <img src="{{ asset('storage/buku-wisuda/' . $page) }}"
-                                         alt="Halaman {{ $index + 1 }}"
+                                         alt="Hal. {{ $index + 1 }}"
                                          class="w-full aspect-[3/4] object-contain">
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
-                                        <p class="text-xs text-white font-medium">Hal. {{ $index + 1 }}</p>
-                                    </div>
-                                    <form action="{{ route('admin.buku-wisuda.delete-initial-page', $bukuWisuda->id) }}" method="POST" class="absolute top-1 right-1">
+                                    <form action="{{ route('admin.buku-wisuda.delete-initial-page', $bukuWisuda->id) }}" method="POST" class="absolute top-0 right-0 m-0.5">
                                         @csrf
                                         @method('DELETE')
                                         <input type="hidden" name="filename" value="{{ $page }}">
-                                        <button type="submit" class="w-6 h-6 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs"
-                                                onclick="return confirm('Hapus halaman ini?')">
+                                        <button type="submit" class="w-4 h-4 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs leading-none"
+                                                onclick="return confirm('Hapus?')">
                                             ×
                                         </button>
                                     </form>
                                 </div>
                             @endforeach
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">Klik × untuk menghapus halaman. Urutan sesuai dengan nomor.</p>
                     </div>
                 @endif
 
