@@ -19,11 +19,7 @@ class PageController extends Controller
      */
     public function alurWisuda(): View
     {
-        return view('coming-soon', [
-            'title' => 'Alur Wisuda',
-            'description' => 'Halaman Alur Wisuda sedang dalam pengembangan. Kami akan menampilkan panduan lengkap proses wisuda dengan detail tahapan demi tahapan.',
-            'message' => 'Fitur ini akan segera tersedia. Terima kasih atas kesabaran Anda.'
-        ]);
+        return view('alur-wisuda');
     }
 
     /**

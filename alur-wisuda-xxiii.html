@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alur Wisuda XXIII – Universitas Sangga Buana YPKP</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #C0392B;
+    --red-dark: #8B1A0E;
+    --red-light: #FDECEA;
+    --gold: #C9A84C;
+    --gold-light: #FEF9C3;
+    --navy: #1A2B6D;
+    --blue: #3B5BDB;
+    --blue-light: #EEF2FF;
+    --gray: #64748B;
+    --border: #E2E8F0;
+    --bg: #F8F9FF;
+    --white: #ffffff;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+    color: #1E293B;
+  }
+
+  .page {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .header-logo-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .logo-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  .logo-text {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--navy);
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--navy);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .header h1 span {
+    color: var(--red);
+  }
+
+  .header-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--gray);
+    font-weight: 500;
+  }
+
+  .meta-pill svg {
+    width: 13px; height: 13px;
+    color: var(--blue);
+    flex-shrink: 0;
+  }
+
+  /* ── DECORATIVE DIVIDER ── */
+  .ornament {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 18px;
+  }
+
+  .ornament-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+  }
+
+  .ornament-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .ornament-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── TIMELINE ITEMS ── */
+  .items { display: flex; flex-direction: column; gap: 8px; }
+
+  .item {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: box-shadow .2s, transform .15s;
+  }
+
+  .item:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    transform: translateY(-1px);
+  }
+
+  .item-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    min-height: 60px;
+    flex-shrink: 0;
+    letter-spacing: -.01em;
+  }
+
+  .item-body {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-left: 1px solid var(--border);
+  }
+
+  .item-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1E293B;
+    line-height: 1.4;
+  }
+
+  .item-sub {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 2px;
+    line-height: 1.5;
+  }
+
+  /* colour themes per section */
+  .c-navy  .item-num { background: var(--navy); }
+  .c-red   .item-num { background: var(--navy); }
+  .c-purple .item-num { background: var(--navy); }
+  .c-teal  .item-num { background: var(--navy); }
+  .c-blue  .item-num { background: var(--navy); }
+  .c-close .item-num { background: var(--navy); }
+
+  /* ── HIGHLIGHT (pelantikan) ── */
+  .hl-gold {
+    border: 1.5px solid var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-light);
+  }
+
+  .hl-gold .item-num {
+    background: var(--navy);
+    position: relative;
+  }
+
+  .hl-gold .item-num::after {
+    content: '★';
+    position: absolute;
+    bottom: 6px;
+    font-size: 9px;
+    color: var(--gold);
+  }
+
+  /* prosesi gelar */
+  .hl-prosesi .item-num {
+    background: var(--navy);
+  }
+
+  /* ── FOOTER BANNER ── */
+  .footer-banner {
+    margin-top: 32px;
+    background: linear-gradient(135deg, #1A2B6D 0%, #2D44A8 60%, #1A2B6D 100%);
+    border-radius: 18px;
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .footer-banner::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+
+  .footer-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -20px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.04);
+  }
+
+  .footer-icon {
+    width: 48px; height: 48px;
+    background: rgba(255,255,255,.15);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-text {
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-text h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 3px;
+  }
+
+  .footer-text p {
+    font-size: 12px;
+    color: rgba(255,255,255,.7);
+    line-height: 1.5;
+  }
+
+  .footer-dots {
+    display: flex;
+    gap: 5px;
+    margin-top: 8px;
+  }
+
+  .fdot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.25);
+  }
+
+  .fdot.active { background: var(--gold); }
+
+  /* ── WATERMARK ── */
+  .watermark {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 11px;
+    color: #94A3B8;
+  }
+
+  @media (max-width: 480px) {
+    body { padding: 20px 12px 40px; }
+    .header h1 { font-size: 22px; }
+    .item-num { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-logo-row">
+      <div class="logo-dot"></div>
+      <div class="logo-text">Universitas Sangga Buana YPKP</div>
+      <div class="logo-dot"></div>
+    </div>
+    <div class="header-badge">Alur Acara Resmi</div>
+    <h1>Wisuda <span>XXIII</span></h1>
+    <div class="header-meta">
+      <span class="meta-pill">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        30 Mei 2026 · Bandung
+      </span>
+      <span class="meta-pill">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422A12.08 12.08 0 0118.5 19.5H5.5a12.08 12.08 0 01.34-8.922L12 14z"/></svg>
+        Magister · Sarjana · Ahli Madya
+      </span>
+      <span class="meta-pill">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-4a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        Gelombang I TA 2025/2026
+      </span>
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="ornament">
+    <div class="ornament-line"></div>
+    <div class="ornament-badge"><span class="ornament-dot" style="background:#1A2B6D"></span>Persiapan &amp; Pembukaan</div>
+    <div class="ornament-line"></div>
+  </div>
+  <div class="items">
+    <div class="item c-navy">
+      <div class="item-num">1</div>
+      <div class="item-body">
+        <div class="item-title">Persiapan</div>
+        <div class="item-sub">Wisudawan dan tamu memasuki area acara</div>
+      </div>
+    </div>
+    <div class="item c-navy">
+      <div class="item-num">2</div>
+      <div class="item-body">
+        <div class="item-title">Pembukaan MC &amp; Pembacaan Tata Tertib</div>
+        <div class="item-sub">MC membuka rangkaian upacara wisuda</div>
+      </div>
+    </div>
+    <div class="item c-navy">
+      <div class="item-num">3</div>
+      <div class="item-body">
+        <div class="item-title">Senat Memasuki Ruang Upacara</div>
+        <div class="item-sub">Prosesi masuk senat akademik</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="ornament">
+    <div class="ornament-line"></div>
+    <div class="ornament-badge"><span class="ornament-dot" style="background:#C0392B"></span>Upacara Nasional &amp; Keagamaan</div>
+    <div class="ornament-line"></div>
+  </div>
+  <div class="items">
+    <div class="item c-red">
+      <div class="item-num">4</div>
+      <div class="item-body">
+        <div class="item-title">Menyanyikan Lagu Indonesia Raya &amp; Mengheningkan Cipta</div>
+        <div class="item-sub">Penghormatan kepada negara</div>
+      </div>
+    </div>
+    <div class="item c-red">
+      <div class="item-num">5</div>
+      <div class="item-body">
+        <div class="item-title">Pembacaan Ayat Suci Al-Qur'an</div>
+        <div class="item-sub">Pembukaan secara spiritual</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="ornament">
+    <div class="ornament-line"></div>
+    <div class="ornament-badge"><span class="ornament-dot" style="background:#6B3FA0"></span>Sidang Wisuda &amp; Sambutan</div>
+    <div class="ornament-line"></div>
+  </div>
+  <div class="items">
+    <div class="item c-purple">
+      <div class="item-num">6</div>
+      <div class="item-body">
+        <div class="item-title">Pembukaan Sidang Wisuda</div>
+        <div class="item-sub">Resmi dimulainya sidang wisuda</div>
+      </div>
+    </div>
+    <div class="item c-purple">
+      <div class="item-num">7</div>
+      <div class="item-body">
+        <div class="item-title">Pidato Rektor</div>
+        <div class="item-sub">Sambutan dan pesan dari pimpinan universitas</div>
+      </div>
+    </div>
+    <div class="item c-purple">
+      <div class="item-num">8</div>
+      <div class="item-body">
+        <div class="item-title">Sambutan Kepala LLDikti Wilayah IV</div>
+        <div class="item-sub">Pesan dari otoritas pendidikan tinggi</div>
+      </div>
+    </div>
+    <div class="item c-purple">
+      <div class="item-num">9</div>
+      <div class="item-body">
+        <div class="item-title">Pembacaan SK Wisudawan</div>
+        <div class="item-sub">Surat keputusan wisudawan dibacakan</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="ornament">
+    <div class="ornament-line"></div>
+    <div class="ornament-badge"><span class="ornament-dot" style="background:#C9A84C"></span>Prosesi Pelantikan &amp; Penganugerahan ★</div>
+    <div class="ornament-line"></div>
+  </div>
+  <div class="items">
+    <div class="item hl-gold">
+      <div class="item-num">10</div>
+      <div class="item-body">
+        <div class="item-title">Pelantikan Wisudawan Terbaik</div>
+        <div class="item-sub">Penghargaan bagi wisudawan dengan prestasi terbaik</div>
+      </div>
+    </div>
+    <div class="item hl-gold">
+      <div class="item-num">11</div>
+      <div class="item-body">
+        <div class="item-title">Prosesi Pelantikan Wisudawan Serentak</div>
+        <div class="item-sub">Seluruh wisudawan dilantik bersama-sama</div>
+      </div>
+    </div>
+    <div class="item hl-prosesi" style="border:1px solid #D4A017">
+      <div class="item-num">12</div>
+      <div class="item-body">
+        <div class="item-title">Prosesi Penganugerahan Gelar</div>
+        <div class="item-sub">Penyerahan ijazah dan pemindahan tali toga</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="ornament">
+    <div class="ornament-line"></div>
+    <div class="ornament-badge"><span class="ornament-dot" style="background:#0F766E"></span>Janji Alumni &amp; Apresiasi</div>
+    <div class="ornament-line"></div>
+  </div>
+  <div class="items">
+    <div class="item c-teal">
+      <div class="item-num">13</div>
+      <div class="item-body">
+        <div class="item-title">Pembacaan Janji Alumni</div>
+        <div class="item-sub">Ikrar alumni Universitas Sangga Buana YPKP</div>
+      </div>
+    </div>
+    <div class="item c-teal">
+      <div class="item-num">14</div>
+      <div class="item-body">
+        <div class="item-title">Penyerahan Bunga</div>
+        <div class="item-sub">Momen apresiasi wisudawan</div>
+      </div>
+    </div>
+    <div class="item c-blue">
+      <div class="item-num">15</div>
+      <div class="item-body">
+        <div class="item-title">Sambutan Wisudawan</div>
+        <div class="item-sub">Perwakilan wisudawan menyampaikan kesan dan pesan</div>
+      </div>
+    </div>
+    <div class="item c-blue">
+      <div class="item-num">16</div>
+      <div class="item-body">
+        <div class="item-title">Sambutan Orang Tua Wisudawan</div>
+        <div class="item-sub">Perwakilan orang tua menyampaikan sambutan</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="ornament">
+    <div class="ornament-line"></div>
+    <div class="ornament-badge"><span class="ornament-dot" style="background:#374151"></span>Penutupan</div>
+    <div class="ornament-line"></div>
+  </div>
+  <div class="items">
+    <div class="item c-close">
+      <div class="item-num">17</div>
+      <div class="item-body">
+        <div class="item-title">Pembacaan Doa</div>
+        <div class="item-sub">Penutupan secara spiritual</div>
+      </div>
+    </div>
+    <div class="item c-close">
+      <div class="item-num">18</div>
+      <div class="item-body">
+        <div class="item-title">Senat Meninggalkan Ruangan</div>
+        <div class="item-sub">Prosesi keluar senat akademik</div>
+      </div>
+    </div>
+    <div class="item c-close">
+      <div class="item-num">19</div>
+      <div class="item-body">
+        <div class="item-title">Penutupan MC</div>
+        <div class="item-sub">Rangkaian acara wisuda resmi selesai</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER BANNER -->
+  <div class="footer-banner">
+    <div class="footer-icon">🎓</div>
+    <div class="footer-text">
+      <h3>Selamat kepada seluruh Wisudawan/Wisudawati!</h3>
+      <p>Wisuda XXIII · Universitas Sangga Buana YPKP<br>Gelombang I · Tahun Akademik 2025/2026 · Bandung</p>
+      <div class="footer-dots">
+        <div class="fdot active"></div>
+        <div class="fdot active"></div>
+        <div class="fdot active"></div>
+        <div class="fdot"></div>
+        <div class="fdot"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="watermark">E-Wisuda · Universitas Sangga Buana YPKP · ewisuda.usbypkp.ac.id</div>
+
+</div>
+</body>
+</html>
