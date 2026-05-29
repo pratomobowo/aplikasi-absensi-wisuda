@@ -1,6 +1,6 @@
-<div class="min-h-screen bg-gray-100">
-    <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-50">
+<div class="min-h-screen bg-gray-100 flex flex-col">
+    <!-- Header - sticky at top, above everything -->
+    <header class="bg-white shadow-sm sticky top-0 z-50 flex-shrink-0">
         <div class="flex items-center justify-between px-4 py-3">
             <div class="flex items-center space-x-4">
                 <button wire:click="toggleSidebar" class="p-2 hover:bg-gray-100 rounded-lg lg:hidden">
@@ -40,9 +40,11 @@
         </div>
     </header>
 
-    <div class="flex">
-        <!-- Sidebar -->
-        <aside class="{{ $sidebarOpen ? 'block' : 'hidden' }} lg:block w-64 bg-white border-r border-gray-200 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:overflow-y-auto fixed inset-y-0 left-0 z-40 pt-16 lg:pt-0">
+    <!-- Body - sidebar + content side by side -->
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar - below header, full height -->
+        <aside class="{{ $sidebarOpen ? 'block' : 'hidden' }} lg:block w-64 bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0"
+               style="height: calc(100vh - 4rem);">
             <div class="p-4">
                 <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Daftar Program Studi</h2>
                 <nav class="space-y-1">
@@ -71,19 +73,18 @@
             <div class="fixed inset-0 bg-black/50 z-30 lg:hidden" wire:click="toggleSidebar"></div>
         @endif
 
-        <!-- Main Content -->
-        <main class="flex-1 p-4 lg:p-8" id="main-content">
-            <div class="max-w-5xl mx-auto space-y-8">
+        <!-- Main Content - horizontal scroll like flipbook -->
+        <main class="flex-1 overflow-x-auto overflow-y-hidden" id="main-content">
+            <div class="flex h-full" style="width: max-content;">
                 
-                <!-- Initial Pages (Images) -->
+                <!-- Initial Pages (Images) - each page is full viewport height -->
                 @foreach($initialPages as $index => $page)
-                    <div class="page-section bg-white rounded-xl shadow-sm overflow-hidden" id="page-{{ $index }}">
+                    <div class="page-section flex-shrink-0 h-full flex items-center justify-center bg-white mx-2 rounded-lg shadow-sm"
+                         id="page-{{ $index }}"
+                         style="height: calc(100vh - 8rem); width: auto; max-width: calc((100vh - 8rem) * 0.75);">
                         <img src="{{ asset('storage/buku-wisuda/' . $page) }}" 
                              alt="Halaman {{ $index + 1 }}"
-                             class="w-full h-auto">
-                        <div class="p-2 bg-gray-50 text-center text-xs text-gray-500">
-                            Halaman {{ $index + 1 }}
-                        </div>
+                             class="max-h-full max-w-full object-contain">
                     </div>
                 @endforeach
 
@@ -92,38 +93,40 @@
                     @php
                         $pageIndex = count($initialPages) + array_search($prodi, array_keys($groupedMahasiswas));
                     @endphp
-                    <div class="page-section bg-white rounded-xl shadow-sm overflow-hidden" id="page-{{ $pageIndex }}">
+                    <div class="page-section flex-shrink-0 h-full flex flex-col bg-white mx-2 rounded-lg shadow-sm overflow-hidden"
+                         id="page-{{ $pageIndex }}"
+                         style="height: calc(100vh - 8rem); width: auto; max-width: calc((100vh - 8rem) * 0.75);">
                         <!-- Header -->
-                        <div class="bg-primary-600 text-white px-6 py-4">
-                            <h2 class="text-xl font-bold">{{ $prodi }}</h2>
-                            <p class="text-primary-100 text-sm">{{ count($students) }} Wisudawan</p>
+                        <div class="bg-primary-600 text-white px-4 py-3 flex-shrink-0">
+                            <h2 class="text-lg font-bold">{{ $prodi }}</h2>
+                            <p class="text-primary-100 text-xs">{{ count($students) }} Wisudawan</p>
                         </div>
                         
-                        <!-- Student Grid -->
-                        <div class="p-4 lg:p-6">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Student Grid - scrollable -->
+                        <div class="p-3 overflow-y-auto flex-1">
+                            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3">
                                 @foreach($students as $student)
-                                    <div class="student-card border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow {{ $highlightedNpm === $student->npm ? 'ring-2 ring-primary-500 bg-primary-50' : '' }}"
+                                    <div class="student-card border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow {{ $highlightedNpm === $student->npm ? 'ring-2 ring-primary-500 bg-primary-50' : '' }}"
                                          data-npm="{{ $student->npm }}"
                                          data-prodi="{{ $prodi }}">
                                         @if($student->foto_wisuda && Storage::disk('public')->exists('graduation-photos/' . $student->foto_wisuda))
                                             <img src="{{ asset('storage/graduation-photos/' . $student->foto_wisuda) }}" 
                                                  alt="{{ $student->nama }}"
-                                                 class="w-full aspect-[3/4] object-cover rounded-lg mb-3 bg-gray-100">
+                                                 class="w-full aspect-[3/4] object-cover rounded-lg mb-2 bg-gray-100">
                                         @else
-                                            <div class="w-full aspect-[3/4] bg-gray-200 rounded-lg mb-3 flex items-center justify-center">
-                                                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <div class="w-full aspect-[3/4] bg-gray-200 rounded-lg mb-2 flex items-center justify-center">
+                                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                                 </svg>
                                             </div>
                                         @endif
-                                        <h3 class="font-semibold text-gray-900 text-sm">{{ $student->nama }}</h3>
+                                        <h3 class="font-semibold text-gray-900 text-xs">{{ $student->nama }}</h3>
                                         <p class="text-xs text-gray-600 mb-1">NPM: {{ $student->npm }}</p>
                                         @if($student->yudisium)
-                                            <p class="text-xs text-primary-600 font-medium mb-1">{{ $student->yudisium }}</p>
+                                            <p class="text-xs text-primary-600 font-medium">{{ $student->yudisium }}</p>
                                         @endif
                                         @if($student->judul_skripsi)
-                                            <p class="text-xs text-gray-500 mt-2 line-clamp-2">{{ strip_tags($student->judul_skripsi) }}</p>
+                                            <p class="text-xs text-gray-500 mt-1 line-clamp-2">{{ strip_tags($student->judul_skripsi) }}</p>
                                         @endif
                                     </div>
                                 @endforeach
@@ -143,8 +146,9 @@
         Livewire.on('scrollToPage', (event) => {
             const pageIndex = event.pageIndex;
             const element = document.getElementById('page-' + pageIndex);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const mainContent = document.getElementById('main-content');
+            if (element && mainContent) {
+                element.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
             }
         });
 
@@ -153,6 +157,10 @@
             const element = document.querySelector('[data-npm="' + npm + '"]');
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element.classList.add('ring-4', 'ring-yellow-400');
+                setTimeout(() => {
+                    element.classList.remove('ring-4', 'ring-yellow-400');
+                }, 2000);
             }
         });
     });
