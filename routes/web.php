@@ -82,6 +82,11 @@ Route::prefix('student')->name('student.')->group(function () {
 
 // Admin routes
 Route::prefix('admin')->name('admin.')->group(function () {
+    // Redirect /admin to /admin/login
+    Route::get('/', function () {
+        return redirect()->route('admin.login');
+    })->name('index');
+
     // Auth routes
     Route::middleware('guest')->group(function () {
         Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
