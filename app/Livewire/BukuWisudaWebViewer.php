@@ -141,6 +141,6 @@ class BukuWisudaWebViewer extends Component
             'groupedMahasiswas' => $this->groupedMahasiswas,
             'prodiList' => $this->prodiList,
             'totalPages' => $this->totalPages,
-        ])->layout('layouts.public')->title('Buku Wisuda - ' . ($this->event->name ?? 'Digital'));
+        ])->layout('layouts.buku-wisuda')->title('Buku Wisuda - ' . ($this->event->name ?? 'Digital'));
     }
 }
