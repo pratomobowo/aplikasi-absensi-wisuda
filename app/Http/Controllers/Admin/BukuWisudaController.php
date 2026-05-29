@@ -151,9 +151,12 @@ class BukuWisudaController extends Controller
         $disk = Storage::disk('public');
         $uploadedFiles = [];
 
+        $existingCount = count($bukuWisuda->initial_pages ?? []);
+
         foreach ($request->file('initial_pages') as $index => $file) {
             $extension = $file->getClientOriginalExtension();
-            $filename = 'initial_page_' . ($index + 1) . '_' . time() . '.' . $extension;
+            $pageNumber = $existingCount + $index + 1;
+            $filename = 'initial_page_' . $pageNumber . '_' . time() . '_' . uniqid() . '.' . $extension;
             $path = $file->storeAs('buku-wisuda', $filename, 'public');
             $uploadedFiles[] = basename($path);
         }
