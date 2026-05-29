@@ -3,7 +3,7 @@
     <header class="bg-white shadow-sm sticky top-0 z-50 flex-shrink-0">
         <div class="flex items-center justify-between px-4 py-2">
             <div class="flex items-center space-x-3">
-                <button wire:click="toggleSidebar" class="p-2 hover:bg-gray-100 rounded-lg lg:hidden">
+                <button @click="sidebarOpen = !sidebarOpen" class="p-2 hover:bg-gray-100 rounded-lg lg:hidden">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
@@ -29,9 +29,16 @@
     </header>
 
     <!-- Body - sidebar + content side by side -->
-    <div class="flex flex-1 overflow-hidden">
-        <!-- Sidebar - below header on mobile, full height on desktop -->
-        <aside class="{{ $sidebarOpen ? 'block' : 'hidden' }} lg:block w-64 bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0 fixed lg:static inset-0 z-40 lg:z-auto pt-16 lg:pt-0"
+    <div class="flex flex-1 overflow-hidden" x-data="{ sidebarOpen: false }">
+        <!-- Sidebar - smooth slide animation -->
+        <aside x-show="sidebarOpen"
+               x-transition:enter="transition transform ease-out duration-300"
+               x-transition:enter-start="-translate-x-full"
+               x-transition:enter-end="translate-x-0"
+               x-transition:leave="transition transform ease-in duration-200"
+               x-transition:leave-start="translate-x-0"
+               x-transition:leave-end="-translate-x-full"
+               class="lg:block w-64 bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0 fixed lg:static inset-y-0 z-40 lg:z-auto pt-16 lg:pt-0"
                style="top: 4rem; height: calc(100vh - 4rem);">
             <div class="p-4">
                 <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Daftar Program Studi</h2>
@@ -42,7 +49,7 @@
                             $studentCount = count($groupedMahasiswas[$prodi] ?? []);
                         @endphp
                         <button 
-                            wire:click="scrollToPage({{ $pageNum }})"
+                            wire:click="sidebarOpen = false; scrollToPage({{ $pageNum }})"
                             class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors group text-gray-700"
                         >
                             <div class="flex items-center justify-between">
@@ -56,10 +63,17 @@
             </div>
         </aside>
 
-        <!-- Mobile overlay - behind sidebar, above content -->
-        @if($sidebarOpen)
-            <div class="fixed inset-0 bg-black/50 z-30 lg:hidden" style="top: 4rem;" wire:click="toggleSidebar"></div>
-        @endif
+        <!-- Mobile overlay -->
+        <div x-show="sidebarOpen"
+             x-transition:enter="transition opacity ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition opacity ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-black/50 z-30 lg:hidden"
+             style="top: 4rem;"
+             @click="sidebarOpen = false"></div>
 
         <!-- Main Content - horizontal scroll like flipbook -->
         <main class="flex-1 overflow-x-auto overflow-y-auto p-4 lg:p-6" id="main-content">
