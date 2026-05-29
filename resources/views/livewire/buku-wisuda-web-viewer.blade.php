@@ -65,7 +65,7 @@
                x-transition:leave="transition transform ease-in duration-200"
                x-transition:leave-start="translate-x-0"
                x-transition:leave-end="-translate-x-full"
-               class="lg:hidden w-64 bg-white border-r border-gray-200 overflow-y-auto fixed inset-y-0 z-40 pt-16"
+               class="lg:hidden w-64 bg-white border-r border-gray-200 overflow-y-auto fixed inset-y-0 z-40"
                style="top: 4rem; height: calc(100vh - 4rem);">
             <div class="p-4">
                 <div class="mb-4 pb-3 border-b border-gray-200">
