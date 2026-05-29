@@ -68,6 +68,10 @@
                class="lg:hidden w-64 bg-white border-r border-gray-200 overflow-y-auto fixed inset-y-0 z-40 pt-16"
                style="top: 4rem; height: calc(100vh - 4rem);">
             <div class="p-4">
+                <div class="mb-4 pb-3 border-b border-gray-200">
+                    <p class="text-xs text-gray-500 uppercase tracking-wider">Buku Wisuda</p>
+                    <p class="text-sm font-semibold text-gray-900 leading-tight">{{ $event->name ?? '' }}</p>
+                </div>
                 <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Daftar Program Studi</h2>
                 <nav class="space-y-1">
                     @foreach($prodiList as $prodi)
