@@ -151,6 +151,12 @@
                                         @endif
                                         <h3 class="font-semibold text-gray-900 text-xs truncate">{{ $student->nama }}</h3>
                                         <p class="text-xs text-gray-500 truncate">{{ $student->npm }}</p>
+                                        @if($student->ipk)
+                                            <p class="text-xs text-gray-400">IPK: {{ number_format($student->ipk, 2) }}</p>
+                                        @endif
+                                        @if($student->yudisium)
+                                            <p class="text-xs font-medium text-primary-600">{{ $student->yudisium }}</p>
+                                        @endif
                                     </div>
                                 @endforeach
                             </div>
