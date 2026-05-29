@@ -142,26 +142,36 @@
 
 @push('scripts')
 <script>
+    function scrollToPage(pageIndex) {
+        const mainContent = document.getElementById('main-content');
+        const element = document.getElementById('page-' + pageIndex);
+        if (element && mainContent) {
+            const elementLeft = element.offsetLeft;
+            mainContent.scrollTo({
+                left: elementLeft - 50,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    function scrollToStudent(npm) {
+        const element = document.querySelector('[data-npm="' + npm + '"]');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            element.classList.add('ring-4', 'ring-yellow-400');
+            setTimeout(() => {
+                element.classList.remove('ring-4', 'ring-yellow-400');
+            }, 2000);
+        }
+    }
+
     document.addEventListener('livewire:init', () => {
         Livewire.on('scrollToPage', (event) => {
-            const pageIndex = event.pageIndex;
-            const element = document.getElementById('page-' + pageIndex);
-            const mainContent = document.getElementById('main-content');
-            if (element && mainContent) {
-                element.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-            }
+            scrollToPage(event.pageIndex);
         });
 
         Livewire.on('scrollToStudent', (event) => {
-            const npm = event.npm;
-            const element = document.querySelector('[data-npm="' + npm + '"]');
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                element.classList.add('ring-4', 'ring-yellow-400');
-                setTimeout(() => {
-                    element.classList.remove('ring-4', 'ring-yellow-400');
-                }, 2000);
-            }
+            scrollToStudent(event.npm);
         });
     });
 </script>
