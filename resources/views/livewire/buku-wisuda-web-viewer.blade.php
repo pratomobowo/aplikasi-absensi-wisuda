@@ -146,50 +146,52 @@
                 @endforeach
 
                 <!-- Student Pages by Prodi - full screen on mobile -->
-                @foreach($groupedMahasiswas as $prodi => $students)
-                    @php
-                        $pageIndex = count($initialPages) + array_search($prodi, array_keys($groupedMahasiswas));
-                    @endphp
-                    <div class="page-section flex-shrink-0 flex flex-col bg-white rounded-lg shadow-sm overflow-hidden p-2"
-                         id="page-{{ $pageIndex }}"
-                         style="height: calc(100vh - 4rem); width: calc(100vw - 1rem);">
-                        <!-- Header -->
-                        <div class="bg-primary-600 text-white px-4 py-2 flex-shrink-0">
-                            <h2 class="text-lg font-bold">{{ $prodi }}</h2>
-                            <p class="text-primary-100 text-xs">{{ count($students) }} Wisudawan</p>
-                        </div>
-                        
-                        <!-- Student Grid - scrollable -->
-                        <div class="p-2 overflow-y-auto flex-1">
-                            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-                                @foreach($students as $student)
-                                    <div class="student-card border border-gray-200 rounded-lg p-2 hover:shadow-md transition-shadow {{ $highlightedNpm === $student->npm ? 'ring-2 ring-primary-500 bg-primary-50' : '' }}"
-                                         data-npm="{{ $student->npm }}"
-                                         data-prodi="{{ $prodi }}">
-                                        @if($student->foto_wisuda && Storage::disk('public')->exists('graduation-photos/' . $student->foto_wisuda))
-                                            <img src="{{ asset('storage/graduation-photos/' . $student->foto_wisuda) }}" 
-                                                 alt="{{ $student->nama }}"
-                                                 class="w-full aspect-[3/4] object-cover rounded-lg mb-1 bg-gray-100">
-                                        @else
-                                            <div class="w-full aspect-[3/4] bg-gray-200 rounded-lg mb-1 flex items-center justify-center">
-                                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                                </svg>
-                                            </div>
-                                        @endif
-                                        <h3 class="font-semibold text-gray-900 text-xs truncate">{{ $student->nama }}</h3>
-                                        <p class="text-xs text-gray-500 truncate">{{ $student->npm }}</p>
-                                        @if($student->ipk)
-                                            <p class="text-xs text-gray-400">IPK: {{ number_format($student->ipk, 2) }}</p>
-                                        @endif
-                                        @if($student->yudisium)
-                                            <p class="text-xs font-medium text-primary-600">{{ $student->yudisium }}</p>
-                                        @endif
-                                    </div>
-                                @endforeach
+                @php $pageIndex = count($initialPages); @endphp
+                @foreach($groupedMahasiswas as $jenjang => $prodis)
+                    @foreach($prodis as $prodi => $students)
+                        <div class="page-section flex-shrink-0 flex flex-col bg-white rounded-lg shadow-sm overflow-hidden p-2"
+                             id="page-{{ $pageIndex }}"
+                             style="height: calc(100vh - 4rem); width: calc(100vw - 1rem);">
+                            <!-- Header -->
+                            <div class="bg-primary-600 text-white px-4 py-2 flex-shrink-0">
+                                <h2 class="text-lg font-bold">{{ $jenjang }} - {{ $prodi }}</h2>
+                                <p class="text-primary-100 text-xs">{{ count($students) }} Wisudawan</p>
+                            </div>
+                            
+                            <!-- Student Grid - scrollable -->
+                            <div class="p-2 overflow-y-auto flex-1">
+                                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                                    @foreach($students as $student)
+                                        <div class="student-card border border-gray-200 rounded-lg p-2 hover:shadow-md transition-shadow {{ $highlightedNpm === $student->npm ? 'ring-2 ring-primary-500 bg-primary-50' : '' }}"
+                                             data-npm="{{ $student->npm }}"
+                                             data-jenjang="{{ $jenjang }}"
+                                             data-prodi="{{ $prodi }}">
+                                            @if($student->foto_wisuda && Storage::disk('public')->exists('graduation-photos/' . $student->foto_wisuda))
+                                                <img src="{{ asset('storage/graduation-photos/' . $student->foto_wisuda) }}" 
+                                                     alt="{{ $student->nama }}"
+                                                     class="w-full aspect-[3/4] object-cover rounded-lg mb-1 bg-gray-100">
+                                            @else
+                                                <div class="w-full aspect-[3/4] bg-gray-200 rounded-lg mb-1 flex items-center justify-center">
+                                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                                    </svg>
+                                                </div>
+                                            @endif
+                                            <h3 class="font-semibold text-gray-900 text-xs truncate">{{ $student->nama }}</h3>
+                                            <p class="text-xs text-gray-500 truncate">{{ $student->npm }}</p>
+                                            @if($student->ipk)
+                                                <p class="text-xs text-gray-400">IPK: {{ number_format($student->ipk, 2) }}</p>
+                                            @endif
+                                            @if($student->yudisium)
+                                                <p class="text-xs font-medium text-primary-600">{{ $student->yudisium }}</p>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        @php $pageIndex++; @endphp
+                    @endforeach
                 @endforeach
 
             </div>
