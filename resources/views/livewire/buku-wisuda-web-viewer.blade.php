@@ -43,7 +43,7 @@
                             $studentCount = count($groupedMahasiswas[$prodi] ?? []);
                         @endphp
                         <button 
-                            wire:click="scrollToPage({{ $pageNum }})"
+                            onclick="window.scrollToPage({{ $pageNum }})"
                             class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors group text-gray-700"
                         >
                             <div class="flex items-center justify-between">
