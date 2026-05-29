@@ -1,30 +1,28 @@
 <div class="min-h-screen bg-gray-100 flex flex-col" x-data="{ sidebarOpen: false }">
     <!-- Header - sticky at top, above everything -->
     <header class="bg-white shadow-sm sticky top-0 z-50 flex-shrink-0">
-        <div class="flex items-center justify-between px-4 py-2">
-            <div class="flex items-center space-x-3">
-                <button @click="sidebarOpen = !sidebarOpen" class="p-2 hover:bg-gray-100 rounded-lg lg:hidden">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-                <div>
-                    <h1 class="text-base font-bold text-gray-900">Buku Wisuda</h1>
-                    <p class="text-xs text-gray-500 hidden sm:block">{{ $event->name ?? '' }}</p>
-                </div>
-            </div>
+        <div class="flex items-center px-4 py-2">
+            <button @click="sidebarOpen = !sidebarOpen" class="p-2 hover:bg-gray-100 rounded-lg lg:hidden mr-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
             
-            <!-- Search - simplified on mobile -->
-            <div class="flex-1 max-w-xs mx-2">
+            <!-- Search - full width on mobile -->
+            <div class="flex-1">
                 <input type="text" 
                        wire:model.live.debounce.300ms="search"
                        placeholder="Cari nama/NPM..."
                        class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
             </div>
 
-            <div class="text-xs text-gray-500">
+            <div class="hidden lg:flex text-xs text-gray-500 ml-4">
                 {{ $totalPages }} hal
             </div>
+        </div>
+        <!-- Event name below header on desktop -->
+        <div class="hidden lg:block px-4 pb-2 -mt-1">
+            <p class="text-xs text-gray-500">{{ $event->name ?? '' }}</p>
         </div>
     </header>
 
