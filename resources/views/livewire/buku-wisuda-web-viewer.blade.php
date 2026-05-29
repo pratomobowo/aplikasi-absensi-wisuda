@@ -50,7 +50,7 @@
                             $studentCount = count($groupedMahasiswas[$prodi] ?? []);
                         @endphp
                         <button 
-                            wire:click="sidebarOpen = false; scrollToPage({{ $pageNum }})"
+                            @click="sidebarOpen = false; window.scrollToPage({{ $pageNum }})"
                             class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors group text-gray-700"
                         >
                             <div class="flex items-center justify-between">
@@ -145,14 +145,14 @@
 
 @push('scripts')
 <script>
-    function scrollToPage(pageIndex) {
+    window.scrollToPage = function(pageIndex) {
         const element = document.getElementById('page-' + pageIndex);
         if (element) {
             element.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
         }
-    }
+    };
 
-    function scrollToStudent(npm) {
+    window.scrollToStudent = function(npm) {
         const element = document.querySelector('[data-npm="' + npm + '"]');
         if (element) {
             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -161,17 +161,17 @@
                 element.classList.remove('ring-4', 'ring-yellow-400');
             }, 2000);
         }
-    }
+    };
 
     document.addEventListener('livewire:init', () => {
         Livewire.on('scrollToPage', (eventData) => {
             const data = Array.isArray(eventData) ? eventData[0] : eventData;
-            scrollToPage(data?.pageIndex ?? data);
+            window.scrollToPage(data?.pageIndex ?? data);
         });
 
         Livewire.on('scrollToStudent', (eventData) => {
             const data = Array.isArray(eventData) ? eventData[0] : eventData;
-            scrollToStudent(data?.npm ?? data);
+            window.scrollToStudent(data?.npm ?? data);
         });
     });
 </script>
