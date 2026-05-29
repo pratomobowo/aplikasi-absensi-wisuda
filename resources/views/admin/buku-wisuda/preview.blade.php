@@ -127,21 +127,24 @@
                 @if($bukuWisuda && $bukuWisuda->initial_pages && count($bukuWisuda->initial_pages) > 0)
                     <div class="mb-4">
                         <h4 class="text-sm font-medium text-gray-700 mb-2">{{ count($bukuWisuda->initial_pages) }} Halaman</h4>
-                        <div class="flex flex-wrap gap-1">
+                        <div class="flex flex-wrap gap-2">
                             @foreach($bukuWisuda->initial_pages as $index => $page)
-                                <div class="relative group w-12 h-16 border border-gray-200 rounded bg-gray-50 overflow-hidden">
-                                    <img src="{{ asset('storage/buku-wisuda/' . $page) }}"
-                                         alt="Hal. {{ $index + 1 }}"
-                                         class="w-full h-full object-cover">
-                                    <form action="{{ route('admin.buku-wisuda.delete-initial-page', $bukuWisuda->id) }}" method="POST" class="absolute top-0 right-0">
-                                        @csrf
-                                        @method('DELETE')
-                                        <input type="hidden" name="filename" value="{{ $page }}">
-                                        <button type="submit" class="w-3 h-3 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs leading-none"
-                                                onclick="return confirm('Hapus?')">
-                                            ×
-                                        </button>
-                                    </form>
+                                <div class="relative group flex flex-col items-center">
+                                    <div class="relative w-16 h-20 border border-gray-200 rounded bg-gray-50 overflow-hidden hover:border-red-400 transition-colors">
+                                        <img src="{{ asset('storage/buku-wisuda/' . $page) }}"
+                                             alt="Hal. {{ $index + 1 }}"
+                                             class="w-full h-full object-cover">
+                                        <form action="{{ route('admin.buku-wisuda.delete-initial-page', $bukuWisuda->id) }}" method="POST" class="absolute top-0 right-0 m-0.5">
+                                            @csrf
+                                            @method('DELETE')
+                                            <input type="hidden" name="filename" value="{{ $page }}">
+                                            <button type="submit" class="w-4 h-4 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs leading-none"
+                                                    onclick="return confirm('Hapus?')">
+                                                ×
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <span class="text-xs text-gray-500 mt-0.5 truncate max-w-16">{{ $loop->iteration }}</span>
                                 </div>
                             @endforeach
                         </div>
