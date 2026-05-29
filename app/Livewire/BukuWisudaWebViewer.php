@@ -131,7 +131,7 @@ class BukuWisudaWebViewer extends Component
 
     public function scrollToPage($pageIndex)
     {
-        $this->dispatch('scrollToPage', ['pageIndex' => $pageIndex]);
+        $this->dispatch('scrollToPage', ['pageIndex' => (int)$pageIndex]);
     }
 
     public function render()

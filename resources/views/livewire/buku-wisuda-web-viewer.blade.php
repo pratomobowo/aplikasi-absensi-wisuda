@@ -31,7 +31,33 @@
     <!-- Body - sidebar + content side by side -->
     <div class="flex flex-1 overflow-hidden"></parameter>
 
-        <!-- Sidebar - smooth slide animation -->
+        <!-- Sidebar Desktop - always visible -->
+        <aside class="hidden lg:block w-64 bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0"
+               style="height: calc(100vh - 4rem);">
+            <div class="p-4">
+                <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Daftar Program Studi</h2>
+                <nav class="space-y-1">
+                    @foreach($prodiList as $prodi)
+                        @php
+                            $pageNum = $this->getPageNumber($prodi);
+                            $studentCount = count($groupedMahasiswas[$prodi] ?? []);
+                        @endphp
+                        <button 
+                            wire:click="scrollToPage({{ $pageNum }})"
+                            class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors group text-gray-700"
+                        >
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium truncate">{{ $prodi }}</span>
+                                <span class="text-xs text-gray-500 group-hover:text-gray-700">{{ $studentCount }}</span>
+                            </div>
+                            <div class="text-xs text-gray-400 mt-0.5">Hal. {{ $pageNum + 1 }}</div>
+                        </button>
+                    @endforeach
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Sidebar Mobile - slide in/out -->
         <aside x-show="sidebarOpen"
                x-transition:enter="transition transform ease-out duration-300"
                x-transition:enter-start="-translate-x-full"
@@ -39,7 +65,7 @@
                x-transition:leave="transition transform ease-in duration-200"
                x-transition:leave-start="translate-x-0"
                x-transition:leave-end="-translate-x-full"
-               class="lg:block w-64 bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0 fixed lg:static inset-y-0 z-40 lg:z-auto pt-16 lg:pt-0"
+               class="lg:hidden w-64 bg-white border-r border-gray-200 overflow-y-auto fixed inset-y-0 z-40 pt-16"
                style="top: 4rem; height: calc(100vh - 4rem);">
             <div class="p-4">
                 <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Daftar Program Studi</h2>
@@ -72,7 +98,7 @@
              x-transition:leave="transition opacity ease-in duration-200"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-black/50 z-30 lg:hidden"
+             class="lg:hidden fixed inset-0 bg-black/50 z-30"
              style="top: 4rem;"
              @click="sidebarOpen = false"></div>
 
