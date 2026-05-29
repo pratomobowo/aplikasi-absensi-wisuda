@@ -175,6 +175,73 @@
                     </div>
                 </form>
             </div>
+
+            <!-- Upload Halaman Awal Buku -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Halaman Awal Buku</h3>
+                        <p class="text-sm text-gray-600 mt-1">Upload file PDF untuk halaman awal buku wisuda (bisa upload banyak sekaligus)</p>
+                    </div>
+                    @if($bukuWisuda && $bukuWisuda->initial_pages)
+                        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                            {{ count($bukuWisuda->initial_pages) }} halaman
+                        </span>
+                    @endif
+                </div>
+
+                <!-- Current Pages -->
+                @if($bukuWisuda && $bukuWisuda->initial_pages && count($bukuWisuda->initial_pages) > 0)
+                    <div class="mb-6">
+                        <h4 class="text-sm font-medium text-gray-700 mb-3">Halaman yang sudah diupload:</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                            @foreach($bukuWisuda->initial_pages as $index => $page)
+                                <div class="relative group border border-gray-200 rounded-lg overflow-hidden">
+                                    <div class="aspect-[3/4] bg-gray-100 flex items-center justify-center">
+                                        <div class="text-center p-2">
+                                            <svg class="w-8 h-8 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                            <p class="text-xs text-gray-500 mt-1">Hal. {{ $index + 1 }}</p>
+                                        </div>
+                                    </div>
+                                    <form action="{{ route('admin.buku-wisuda.delete-initial-page', $bukuWisuda) }}" method="POST" class="absolute top-1 right-1">
+                                        @csrf
+                                        @method('DELETE')
+                                        <input type="hidden" name="filename" value="{{ $page }}">
+                                        <button type="submit" class="w-6 h-6 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs"
+                                                onclick="return confirm('Hapus halaman ini?')">
+                                            ×
+                                        </button>
+                                    </form>
+                                </div>
+                            @endforeach
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Klik × untuk menghapus halaman. Urutan sesuai dengan nomor.</p>
+                    </div>
+                @endif
+
+                <!-- Upload Form -->
+                <form action="{{ route('admin.buku-wisuda.upload-initial-pages', $bukuWisuda) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors">
+                        <input type="file"
+                               name="initial_pages[]"
+                               id="initial_pages"
+                               accept="application/pdf"
+                               multiple
+                               class="block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
+                        <p class="text-sm text-gray-500 mt-3">Format: PDF. Maks 500MB per file. Pilih banyak file sekaligus.</p>
+                        <p class="text-xs text-gray-400 mt-1">Contoh: Pilih file 1.pdf, 2.pdf, 3.pdf dst sekaligus untuk upload berurut.</p>
+                    </div>
+
+                    <div class="flex justify-end pt-4 border-t border-gray-200 mt-4">
+                        <button type="submit" class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+                            Upload Halaman
+                        </button>
+                    </div>
+                </form>
+            </div>
         @endif
 
         <!-- Preview List Grouped by Jurusan -->

@@ -140,6 +140,74 @@ class BukuWisudaController extends Controller
             ->with('success', 'Cover dan sambutan berhasil diupload.');
     }
 
+    public function uploadInitialPages(Request $request, BukuWisuda $bukuWisuda)
+    {
+        $request->validate([
+            'initial_pages' => ['required', 'array', 'min:1'],
+            'initial_pages.*' => ['required', 'file', 'mimes:pdf', 'max:512000'],
+        ]);
+
+        $disk = Storage::disk('public');
+        $uploadedFiles = [];
+
+        foreach ($request->file('initial_pages') as $index => $file) {
+            $filename = 'initial_page_' . ($index + 1) . '_' . time() . '.pdf';
+            $path = $file->storeAs('buku-wisuda', $filename, 'public');
+            $uploadedFiles[] = basename($path);
+        }
+
+        $existingPages = $bukuWisuda->initial_pages ?? [];
+        $allPages = array_merge($existingPages, $uploadedFiles);
+
+        $bukuWisuda->update(['initial_pages' => array_values($allPages)]);
+
+        return redirect()
+            ->route('admin.buku-wisuda.preview', $bukuWisuda->graduation_event_id)
+            ->with('success', count($uploadedFiles) . ' halaman awal berhasil diupload. Total: ' . count($allPages) . ' halaman.');
+    }
+
+    public function deleteInitialPage(Request $request, BukuWisuda $bukuWisuda)
+    {
+        $filename = $request->input('filename');
+
+        if (!$filename) {
+            return redirect()->back()->with('error', 'Nama file tidak valid.');
+        }
+
+        $disk = Storage::disk('public');
+        if ($disk->exists('buku-wisuda/' . $filename)) {
+            $disk->delete('buku-wisuda/' . $filename);
+        }
+
+        $pages = $bukuWisuda->initial_pages ?? [];
+        $pages = array_values(array_filter($pages, fn($p) => $p !== $filename));
+        $bukuWisuda->update(['initial_pages' => $pages ?: null]);
+
+        return redirect()
+            ->route('admin.buku-wisuda.preview', $bukuWisuda->graduation_event_id)
+            ->with('success', 'Halaman berhasil dihapus. Total: ' . count($pages) . ' halaman.');
+    }
+
+    public function reorderInitialPages(Request $request, BukuWisuda $bukuWisuda)
+    {
+        $order = $request->input('order', []);
+
+        $pages = $bukuWisuda->initial_pages ?? [];
+        $reordered = [];
+
+        foreach ($order as $filename) {
+            if (in_array($filename, $pages)) {
+                $reordered[] = $filename;
+            }
+        }
+
+        $bukuWisuda->update(['initial_pages' => $reordered ?: null]);
+
+        return redirect()
+            ->route('admin.buku-wisuda.preview', $bukuWisuda->graduation_event_id)
+            ->with('success', 'Urutan halaman berhasil diperbarui.');
+    }
+
     public function deleteCoverOrSpeech(Request $request, BukuWisuda $bukuWisuda)
     {
         $field = $request->input('field');
