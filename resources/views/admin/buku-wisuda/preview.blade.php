@@ -129,8 +129,8 @@
                         <h4 class="text-sm font-medium text-gray-700 mb-2">{{ count($bukuWisuda->initial_pages) }} Halaman</h4>
                         <div class="flex flex-wrap gap-2">
                             @foreach($bukuWisuda->initial_pages as $index => $page)
-                                <div class="relative group flex flex-col items-center">
-                                    <div class="relative w-16 h-20 border border-gray-200 rounded bg-gray-50 overflow-hidden hover:border-red-400 transition-colors">
+                                <div class="relative flex flex-col items-center">
+                                    <div class="relative w-16 h-20 border border-gray-200 rounded bg-gray-50 overflow-hidden">
                                         <img src="{{ asset('storage/buku-wisuda/' . $page) }}"
                                              alt="Hal. {{ $index + 1 }}"
                                              class="w-full h-full object-cover">
@@ -138,7 +138,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <input type="hidden" name="filename" value="{{ $page }}">
-                                            <button type="submit" class="w-4 h-4 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs leading-none"
+                                            <button type="submit" class="w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center text-xs leading-none hover:bg-red-700"
                                                     onclick="return confirm('Hapus?')">
                                                 ×
                                             </button>
