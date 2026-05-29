@@ -145,9 +145,18 @@
     function scrollToPage(pageIndex) {
         console.log('scrollToPage called with:', pageIndex);
         const mainContent = document.getElementById('main-content');
-        const element = document.getElementById('page-' + pageIndex);
+        
+        // Try both 0-indexed and 1-indexed
+        let element = document.getElementById('page-' + pageIndex);
+        if (!element) {
+            element = document.getElementById('page-' + (pageIndex - 1));
+            console.log('Trying with pageIndex-1:', pageIndex - 1);
+        }
+        
         console.log('mainContent:', mainContent);
         console.log('element:', element);
+        console.log('All page elements:', document.querySelectorAll('[id^="page-"]').length);
+        
         if (element && mainContent) {
             const elementLeft = element.offsetLeft;
             console.log('elementLeft:', elementLeft);
@@ -156,7 +165,7 @@
                 behavior: 'smooth'
             });
         } else {
-            console.log('ERROR: element or mainContent not found!');
+            console.log('ERROR: element not found!');
         }
     }
 
