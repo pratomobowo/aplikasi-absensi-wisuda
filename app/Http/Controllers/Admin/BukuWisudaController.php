@@ -140,13 +140,14 @@ class BukuWisudaController extends Controller
             ->with('success', 'Cover dan sambutan berhasil diupload.');
     }
 
-    public function uploadInitialPages(Request $request, BukuWisuda $bukuWisuda)
+    public function uploadInitialPages(Request $request, int $id)
     {
         $request->validate([
             'initial_pages' => ['required', 'array', 'min:1'],
             'initial_pages.*' => ['required', 'file', 'mimes:png,webp,jpeg,jpg', 'max:512000'],
         ]);
 
+        $bukuWisuda = BukuWisuda::findOrFail($id);
         $disk = Storage::disk('public');
         $uploadedFiles = [];
 
@@ -167,8 +168,9 @@ class BukuWisudaController extends Controller
             ->with('success', count($uploadedFiles) . ' halaman awal berhasil diupload. Total: ' . count($allPages) . ' halaman.');
     }
 
-    public function deleteInitialPage(Request $request, BukuWisuda $bukuWisuda)
+    public function deleteInitialPage(Request $request, int $id)
     {
+        $bukuWisuda = BukuWisuda::findOrFail($id);
         $filename = $request->input('filename');
 
         if (!$filename) {
@@ -189,8 +191,9 @@ class BukuWisudaController extends Controller
             ->with('success', 'Halaman berhasil dihapus. Total: ' . count($pages) . ' halaman.');
     }
 
-    public function reorderInitialPages(Request $request, BukuWisuda $bukuWisuda)
+    public function reorderInitialPages(Request $request, int $id)
     {
+        $bukuWisuda = BukuWisuda::findOrFail($id);
         $order = $request->input('order', []);
 
         $pages = $bukuWisuda->initial_pages ?? [];
@@ -209,7 +212,7 @@ class BukuWisudaController extends Controller
             ->with('success', 'Urutan halaman berhasil diperbarui.');
     }
 
-    public function deleteCoverOrSpeech(Request $request, BukuWisuda $bukuWisuda)
+    public function deleteCoverOrSpeech(Request $request, int $id)
     {
         $field = $request->input('field');
         $allowedFields = [
