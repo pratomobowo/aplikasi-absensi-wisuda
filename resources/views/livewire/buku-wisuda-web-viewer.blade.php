@@ -77,14 +77,14 @@
         <main class="flex-1 overflow-x-auto overflow-y-auto p-4 lg:p-6" id="main-content">
             <div class="flex h-full gap-4" style="width: max-content;">
                 
-                <!-- Initial Pages (Images) - each page is full viewport height -->
+                <!-- Initial Pages (Images) - same height for all -->
                 @foreach($initialPages as $index => $page)
-                    <div class="page-section flex-shrink-0 h-full flex items-center justify-center bg-white rounded-lg shadow-sm p-2"
+                    <div class="page-section flex-shrink-0 bg-white rounded-lg shadow-sm p-3"
                          id="page-{{ $index }}"
-                         style="height: calc(100vh - 8rem); width: auto; max-width: calc((100vh - 8rem) * 0.75);">
+                         style="height: calc(100vh - 8rem); width: auto;">
                         <img src="{{ asset('storage/buku-wisuda/' . $page) }}" 
                              alt="Halaman {{ $index + 1 }}"
-                             class="max-h-full max-w-full object-contain">
+                             class="h-full w-auto">
                     </div>
                 @endforeach
 
