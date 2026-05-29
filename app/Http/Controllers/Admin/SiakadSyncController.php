@@ -171,6 +171,7 @@ class SiakadSyncController extends Controller
             $updateData = [
                 'nama' => $attr['nama'] ?? '-',
                 'program_studi' => $attr['program_studi'] ?? '-',
+                'jenjang' => $attr['id_jenjang'] ?? null,
                 'ipk' => $attr['ipk_lulusan'] ?? 0,
                 'yudisium' => ($attr['nama_predikat'] ?? '') !== '' ? $attr['nama_predikat'] : null,
                 'judul_skripsi' => !empty($attr['judul_skripsi']) ? strip_tags($attr['judul_skripsi']) : null,

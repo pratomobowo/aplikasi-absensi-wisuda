@@ -70,6 +70,7 @@ class SyncSiakadJob implements ShouldQueue
                 $updateData = [
                     'nama' => $attr['nama'] ?? '-',
                     'program_studi' => $attr['program_studi'] ?? '-',
+                    'jenjang' => $attr['id_jenjang'] ?? null,
                     'ipk' => $attr['ipk_lulusan'] ?? 0,
                     'yudisium' => ($attr['nama_predikat'] ?? '') !== '' ? $attr['nama_predikat'] : null,
                 ];

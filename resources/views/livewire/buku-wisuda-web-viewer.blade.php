@@ -50,22 +50,27 @@
                style="height: calc(100vh - 4rem);">
             <div class="p-4">
                 <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Daftar Program Studi</h2>
-                <nav class="space-y-1">
-                    @foreach($prodiList as $prodi)
-                        @php
-                            $pageNum = $this->getPageNumber($prodi);
-                            $studentCount = count($groupedMahasiswas[$prodi] ?? []);
-                        @endphp
-                        <button 
-                            onclick="window.scrollToPage({{ $pageNum }})"
-                            class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors group text-gray-700"
-                        >
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium truncate">{{ $prodi }}</span>
-                                <span class="text-xs text-gray-500 group-hover:text-gray-700">{{ $studentCount }}</span>
-                            </div>
-                            <div class="text-xs text-gray-400 mt-0.5">Hal. {{ $pageNum + 1 }}</div>
-                        </button>
+                <nav class="space-y-2">
+                    @foreach($jenjangList as $jenjang)
+                        <div class="mb-3">
+                            <div class="text-xs font-bold text-primary-600 uppercase tracking-wider mb-1 px-3">{{ $jenjang }}</div>
+                            @foreach($groupedMahasiswas[$jenjang] ?? [] as $prodi => $students)
+                                @php
+                                    $pageNum = $this->getPageNumber($jenjang, $prodi);
+                                    $studentCount = count($students);
+                                @endphp
+                                <button 
+                                    onclick="window.scrollToPage({{ $pageNum }})"
+                                    class="w-full text-left px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors group text-gray-600 text-sm"
+                                >
+                                    <div class="flex items-center justify-between">
+                                        <span class="truncate">{{ $prodi }}</span>
+                                        <span class="text-xs text-gray-400 group-hover:text-gray-600">{{ $studentCount }}</span>
+                                    </div>
+                                    <div class="text-xs text-gray-400 mt-0.5">Hal. {{ $pageNum + 1 }}</div>
+                                </button>
+                            @endforeach
+                        </div>
                     @endforeach
                 </nav>
             </div>
@@ -87,22 +92,27 @@
                     <p class="text-sm font-semibold text-gray-900 leading-tight">{{ $event->name ?? '' }}</p>
                 </div>
                 <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Daftar Program Studi</h2>
-                <nav class="space-y-1">
-                    @foreach($prodiList as $prodi)
-                        @php
-                            $pageNum = $this->getPageNumber($prodi);
-                            $studentCount = count($groupedMahasiswas[$prodi] ?? []);
-                        @endphp
-                        <button 
-                            @click="sidebarOpen = false; window.scrollToPage({{ $pageNum }})"
-                            class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors group text-gray-700"
-                        >
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium truncate">{{ $prodi }}</span>
-                                <span class="text-xs text-gray-500 group-hover:text-gray-700">{{ $studentCount }}</span>
-                            </div>
-                            <div class="text-xs text-gray-400 mt-0.5">Hal. {{ $pageNum + 1 }}</div>
-                        </button>
+                <nav class="space-y-2">
+                    @foreach($jenjangList as $jenjang)
+                        <div class="mb-3">
+                            <div class="text-xs font-bold text-primary-600 uppercase tracking-wider mb-1 px-3">{{ $jenjang }}</div>
+                            @foreach($groupedMahasiswas[$jenjang] ?? [] as $prodi => $students)
+                                @php
+                                    $pageNum = $this->getPageNumber($jenjang, $prodi);
+                                    $studentCount = count($students);
+                                @endphp
+                                <button 
+                                    @click="sidebarOpen = false; window.scrollToPage({{ $pageNum }})"
+                                    class="w-full text-left px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors group text-gray-600 text-sm"
+                                >
+                                    <div class="flex items-center justify-between">
+                                        <span class="truncate">{{ $prodi }}</span>
+                                        <span class="text-xs text-gray-400 group-hover:text-gray-600">{{ $studentCount }}</span>
+                                    </div>
+                                    <div class="text-xs text-gray-400 mt-0.5">Hal. {{ $pageNum + 1 }}</div>
+                                </button>
+                            @endforeach
+                        </div>
                     @endforeach
                 </nav>
             </div>

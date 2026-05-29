@@ -57,16 +57,42 @@ class BukuWisudaWebViewer extends Component
     {
         $grouped = [];
         foreach ($this->mahasiswas as $mhs) {
+            $jenjang = $mhs->jenjang ?? 'S1'; // default to S1 if null
             $prodi = $mhs->program_studi ?? 'Lainnya';
-            if (!isset($grouped[$prodi])) {
-                $grouped[$prodi] = [];
+            
+            if (!isset($grouped[$jenjang])) {
+                $grouped[$jenjang] = [];
             }
-            $grouped[$prodi][] = $mhs;
+            if (!isset($grouped[$jenjang][$prodi])) {
+                $grouped[$jenjang][$prodi] = [];
+            }
+            $grouped[$jenjang][$prodi][] = $mhs;
         }
+        
+        // Sort by jenjang order: S1, S2, D3, etc.
+        ksort($grouped);
+        
+        // Sort prodi within each jenjang
+        foreach ($grouped as $jenjang => $prodis) {
+            ksort($grouped[$jenjang]);
+        }
+        
         return $grouped;
     }
 
     public function getProdiListProperty()
+    {
+        // Returns array of ['jenjang' => 'S1', 'prodi' => 'Teknik Informatika']
+        $list = [];
+        foreach ($this->groupedMahasiswas as $jenjang => $prodis) {
+            foreach (array_keys($prodis) as $prodi) {
+                $list[] = ['jenjang' => $jenjang, 'prodi' => $prodi];
+            }
+        }
+        return $list;
+    }
+    
+    public function getJenjangListProperty()
     {
         return array_keys($this->groupedMahasiswas);
     }
@@ -122,11 +148,27 @@ class BukuWisudaWebViewer extends Component
         $this->sidebarOpen = !$this->sidebarOpen;
     }
 
-    public function getPageNumber($prodi)
+    public function getPageNumber($jenjang, $prodi)
     {
-        $prodis = array_keys($this->groupedMahasiswas);
-        $index = array_search($prodi, $prodis);
-        return count($this->initialPages) + $index; // 0-indexed
+        $pageIndex = count($this->initialPages);
+        
+        foreach ($this->groupedMahasiswas as $j => $prodis) {
+            if ($j === $jenjang) {
+                // Found the jenjang, now find the prodi index
+                $prodiIndex = 0;
+                foreach (array_keys($prodis) as $p) {
+                    if ($p === $prodi) {
+                        break;
+                    }
+                    $prodiIndex++;
+                }
+                return $pageIndex + $prodiIndex;
+            }
+            // Add all prodis count for this jenjang
+            $pageIndex += count($prodis);
+        }
+        
+        return $pageIndex;
     }
 
     public function scrollToPage($pageIndex)
@@ -140,6 +182,7 @@ class BukuWisudaWebViewer extends Component
             'initialPages' => $this->initialPages,
             'groupedMahasiswas' => $this->groupedMahasiswas,
             'prodiList' => $this->prodiList,
+            'jenjangList' => $this->jenjangList,
             'totalPages' => $this->totalPages,
         ])->layout('layouts.buku-wisuda')->title('Buku Wisuda - ' . ($this->event->name ?? 'Digital'));
     }

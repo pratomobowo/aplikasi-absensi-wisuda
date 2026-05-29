@@ -22,6 +22,7 @@ class Mahasiswa extends Authenticatable
         'password_changed_at',
         'nama',
         'program_studi',
+        'jenjang',
         'ipk',
         'yudisium',
         'email',
