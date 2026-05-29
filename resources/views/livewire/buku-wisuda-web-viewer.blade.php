@@ -112,9 +112,9 @@
                                         @if($student->foto_wisuda && Storage::disk('public')->exists('graduation-photos/' . $student->foto_wisuda))
                                             <img src="{{ asset('storage/graduation-photos/' . $student->foto_wisuda) }}" 
                                                  alt="{{ $student->nama }}"
-                                                 class="w-full aspect-[3/4] object-cover rounded-lg mb-2 bg-gray-100">
+                                                 class="w-full h-32 object-cover rounded-lg mb-2 bg-gray-100">
                                         @else
-                                            <div class="w-full aspect-[3/4] bg-gray-200 rounded-lg mb-2 flex items-center justify-center">
+                                            <div class="w-full h-32 bg-gray-200 rounded-lg mb-2 flex items-center justify-center">
                                                 <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                                 </svg>
