@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gray-100 flex flex-col">
+<div class="min-h-screen bg-gray-100 flex flex-col" x-data="{ sidebarOpen: false }">
     <!-- Header - sticky at top, above everything -->
     <header class="bg-white shadow-sm sticky top-0 z-50 flex-shrink-0">
         <div class="flex items-center justify-between px-4 py-2">
@@ -29,7 +29,8 @@
     </header>
 
     <!-- Body - sidebar + content side by side -->
-    <div class="flex flex-1 overflow-hidden" x-data="{ sidebarOpen: false }">
+    <div class="flex flex-1 overflow-hidden"></parameter>
+
         <!-- Sidebar - smooth slide animation -->
         <aside x-show="sidebarOpen"
                x-transition:enter="transition transform ease-out duration-300"
