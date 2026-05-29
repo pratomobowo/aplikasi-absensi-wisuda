@@ -2,17 +2,28 @@
 
 namespace App\Livewire;
 
+use App\Models\LayoutWisuda;
 use Livewire\Component;
 
 class HelpDesk extends Component
 {
     public $pdfUrl;
     public $downloadUrl;
+    public $title;
 
     public function mount()
     {
-        $this->pdfUrl = asset('storage/LAYOUT WISUDA KE-23 USB YPKP 2025 GEL 1.pdf');
-        $this->downloadUrl = asset('storage/LAYOUT WISUDA KE-23 USB YPKP 2025 GEL 1.pdf');
+        $layout = LayoutWisuda::first();
+        
+        if ($layout) {
+            $this->pdfUrl = $layout->url;
+            $this->downloadUrl = $layout->url;
+            $this->title = $layout->title;
+        } else {
+            $this->pdfUrl = null;
+            $this->downloadUrl = null;
+            $this->title = 'Layout Wisuda';
+        }
     }
 
     public function render()

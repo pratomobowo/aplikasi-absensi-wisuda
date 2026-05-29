@@ -13,11 +13,12 @@
                 Panduan Resmi
             </div>
             <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 leading-tight">
-                Panduan Wisuda <span class="text-amber-300">XXIII</span>
+                {{ $title }}
             </h1>
             <p class="text-lg sm:text-xl text-blue-50 max-w-2xl mx-auto leading-relaxed">
-                Panduan lengkap pelaksanaan wisuda gelombang 1 tahun akademik 2025/2026
+                Panduan lengkap pelaksanaan wisuda
             </p>
+            @if($downloadUrl)
             <div class="mt-6 flex items-center justify-center gap-4">
                 <a href="{{ $downloadUrl }}" download
                    class="inline-flex items-center px-5 py-2.5 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium rounded-xl hover:bg-white/20 transition-all duration-200">
@@ -27,9 +28,11 @@
                     Download PDF
                 </a>
             </div>
+            @endif
         </div>
     </section>
 
+    @if($pdfUrl)
     <!-- Flipbook Section -->
     <section class="bg-gray-100 py-8">
         <div class="max-w-6xl mx-auto px-4">
@@ -53,6 +56,20 @@
             </div>
         </div>
     </section>
+    @else
+    <!-- No Layout Uploaded -->
+    <section class="bg-gray-100 py-16">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <div class="bg-white rounded-xl shadow-sm p-12">
+                <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Layout Wisuda Belum Tersedia</h3>
+                <p class="text-gray-600">Layout panduan wisuda akan segera tersedia.</p>
+            </div>
+        </div>
+    </section>
+    @endif
 
     <!-- Footer Banner -->
     <section class="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 py-8">

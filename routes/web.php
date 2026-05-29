@@ -128,6 +128,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/buku-wisuda/{id}/reorder-initial-pages', [BukuWisudaController::class, 'reorderInitialPages'])->name('buku-wisuda.reorder-initial-pages');
         Route::resource('buku-wisuda', BukuWisudaController::class);
 
+        // Layout Wisuda
+        Route::get('/layout-wisuda', [App\Http\Controllers\Admin\LayoutWisudaController::class, 'index'])->name('layout-wisuda.index');
+        Route::post('/layout-wisuda', [App\Http\Controllers\Admin\LayoutWisudaController::class, 'store'])->name('layout-wisuda.store');
+        Route::delete('/layout-wisuda/{layout}', [App\Http\Controllers\Admin\LayoutWisudaController::class, 'destroy'])->name('layout-wisuda.destroy');
+
         // Attendance
         Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
         Route::post('/attendance/manual', [AttendanceController::class, 'manual'])->name('attendance.manual');
