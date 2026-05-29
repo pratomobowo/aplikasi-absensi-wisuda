@@ -143,35 +143,55 @@
 @push('scripts')
 <script>
     function scrollToPage(pageIndex) {
+        console.log('scrollToPage called with:', pageIndex);
         const mainContent = document.getElementById('main-content');
         const element = document.getElementById('page-' + pageIndex);
+        console.log('mainContent:', mainContent);
+        console.log('element:', element);
         if (element && mainContent) {
             const elementLeft = element.offsetLeft;
+            console.log('elementLeft:', elementLeft);
             mainContent.scrollTo({
                 left: elementLeft - 50,
                 behavior: 'smooth'
             });
+        } else {
+            console.log('ERROR: element or mainContent not found!');
         }
     }
 
     function scrollToStudent(npm) {
+        console.log('scrollToStudent called with:', npm);
         const element = document.querySelector('[data-npm="' + npm + '"]');
+        console.log('element:', element);
         if (element) {
             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
             element.classList.add('ring-4', 'ring-yellow-400');
             setTimeout(() => {
                 element.classList.remove('ring-4', 'ring-yellow-400');
             }, 2000);
+        } else {
+            console.log('ERROR: student element not found!');
         }
     }
 
     document.addEventListener('livewire:init', () => {
+        console.log('Livewire initialized');
         Livewire.on('scrollToPage', (event) => {
+            console.log('Livewire event scrollToPage:', event);
             scrollToPage(event.pageIndex);
         });
 
         Livewire.on('scrollToStudent', (event) => {
+            console.log('Livewire event scrollToStudent:', event);
             scrollToStudent(event.npm);
+        });
+    });
+
+    // Debug on click directly
+    document.querySelectorAll('[wire\\:click*="scrollToPage"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            console.log('Button clicked! wire:click action:', btn.getAttribute('wire:click'));
         });
     });
 </script>
