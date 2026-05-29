@@ -136,7 +136,7 @@
                                     <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
                                         <p class="text-xs text-white font-medium">Hal. {{ $index + 1 }}</p>
                                     </div>
-                                    <form action="{{ route('admin.buku-wisuda.delete-initial-page', $bukuWisuda) }}" method="POST" class="absolute top-1 right-1">
+                                    <form action="{{ route('admin.buku-wisuda.delete-initial-page', $bukuWisuda->id) }}" method="POST" class="absolute top-1 right-1">
                                         @csrf
                                         @method('DELETE')
                                         <input type="hidden" name="filename" value="{{ $page }}">
@@ -153,7 +153,7 @@
                 @endif
 
                 <!-- Upload Form -->
-                <form action="{{ route('admin.buku-wisuda.upload-initial-pages', $bukuWisuda) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.buku-wisuda.upload-initial-pages', $bukuWisuda->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors">
                         <input type="file"

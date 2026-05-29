@@ -282,13 +282,17 @@
 </head>
 <body>
     <!-- ===== COVER PAGE ===== -->
-    @if(isset($bukuWisuda) && $bukuWisuda->cover_image)
-        <div style="page-break-after: always;">
-            <img src="{{ public_path('storage/buku-wisuda/' . $bukuWisuda->cover_image) }}" 
-                 style="width: 100%; height: 100vh; object-fit: contain;"
-                 alt="Cover">
-        </div>
+    @if(isset($bukuWisuda) && $bukuWisuda->initial_pages && count($bukuWisuda->initial_pages) > 0)
+        {{-- Initial pages uploaded by admin come first --}}
+        @foreach($bukuWisuda->initial_pages as $page)
+            <div style="page-break-after: always; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center;">
+                <img src="{{ public_path('storage/buku-wisuda/' . $page) }}"
+                     style="width: 100%; height: 100%; object-fit: contain;"
+                     alt="Halaman Awal">
+            </div>
+        @endforeach
     @else
+        {{-- Default cover if no initial pages uploaded --}}
         <div class="cover">
             <div class="cover-border">
                 <div class="cover-icon">&#127891;</div>
