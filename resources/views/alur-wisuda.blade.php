@@ -3,201 +3,171 @@
 @section('title', 'Alur Wisuda - ' . config('app.name', 'Sistem Absensi Wisuda'))
 
 @push('styles')
-    <style>
-        .timeline-line {
-            position: absolute;
-            left: 50%;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(to bottom, #3b82f6, #1e40af);
-        }
-        
-        @media (max-width: 768px) {
-            .timeline-line {
-                left: 20px;
-            }
-        }
-    </style>
+<style>
+    .gradient-text {
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+</style>
 @endpush
 
 @section('content')
-    <!-- Main Content -->
-    <main>
-        <!-- Page Header -->
-        <section class="relative bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
-            <!-- Decorative elements -->
-            <div class="absolute inset-0 overflow-hidden">
-                <div class="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-30"></div>
-                <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-30"></div>
-                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
+<main>
+    <!-- Page Header -->
+    <section class="relative bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-30"></div>
+            <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-30"></div>
+        </div>
+        <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex items-center justify-center gap-2 mb-4">
+                <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+                <span class="text-xs font-bold tracking-widest uppercase text-blue-100">Universitas Sangga Buana YPKP</span>
+                <div class="w-2 h-2 rounded-full bg-amber-400"></div>
             </div>
+            <div class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-semibold mb-6 border border-white/20">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+                Alur Acara Resmi
+            </div>
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 leading-tight">
+                Wisuda <span class="text-amber-300">XXIII</span>
+            </h1>
+            <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
+                <span class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 text-white">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    30 Mei 2026 · Bandung
+                </span>
+                <span class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 text-white">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422A12.08 12.08 0 0118.5 19.5H5.5a12.08 12.08 0 01.34-8.922L12 14z"></path></svg>
+                    Magister · Sarjana · Ahli Madya
+                </span>
+                <span class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 text-white">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-4a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    Gelombang I TA 2025/2026
+                </span>
+            </div>
+        </div>
+    </section>
 
-            <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <div class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium mb-6 md:mb-8 border border-white/20">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                    </svg>
-                    Panduan Wisuda
-                </div>
-                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 md:mb-6 leading-tight">
-                    Alur Wisuda
-                </h1>
-                <p class="text-lg sm:text-xl md:text-2xl text-blue-50 max-w-3xl mx-auto leading-relaxed">
-                    Panduan lengkap prosedur pelaksanaan wisuda
-                </p>
+    <!-- Timeline Content -->
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Section 1: Persiapan & Pembukaan -->
+        <div class="flex items-center gap-3 mb-6">
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
+            <span class="flex items-center gap-2 bg-white border border-blue-100 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-blue-700 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                Persiapan & Pembukaan
+            </span>
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
+        </div>
+        <div class="space-y-3 mb-10">
+            @include('alur-wisuda.partials.item', ['num' => 1, 'title' => 'Persiapan', 'sub' => 'Wisudawan dan tamu memasuki area acara'])
+            @include('alur-wisuda.partials.item', ['num' => 2, 'title' => 'Pembukaan MC & Pembacaan Tata Tertib', 'sub' => 'MC membuka rangkaian upacara wisuda'])
+            @include('alur-wisuda.partials.item', ['num' => 3, 'title' => 'Senat Memasuki Ruang Upacara', 'sub' => 'Prosesi masuk senat akademik'])
+        </div>
+
+        <!-- Section 2: Upacara Nasional & Keagamaan -->
+        <div class="flex items-center gap-3 mb-6">
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-red-200 to-transparent"></div>
+            <span class="flex items-center gap-2 bg-white border border-red-100 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-red-700 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-red-600"></span>
+                Upacara Nasional & Keagamaan
+            </span>
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-red-200 to-transparent"></div>
+        </div>
+        <div class="space-y-3 mb-10">
+            @include('alur-wisuda.partials.item', ['num' => 4, 'title' => 'Menyanyikan Lagu Indonesia Raya & Mengheningkan Cipta', 'sub' => 'Penghormatan kepada negara'])
+            @include('alur-wisuda.partials.item', ['num' => 5, 'title' => 'Pembacaan Ayat Suci Al-Qur\'an', 'sub' => 'Pembukaan secara spiritual'])
+        </div>
+
+        <!-- Section 3: Sidang Wisuda & Sambutan -->
+        <div class="flex items-center gap-3 mb-6">
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-indigo-200 to-transparent"></div>
+            <span class="flex items-center gap-2 bg-white border border-indigo-100 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-700 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                Sidang Wisuda & Sambutan
+            </span>
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-indigo-200 to-transparent"></div>
+        </div>
+        <div class="space-y-3 mb-10">
+            @include('alur-wisuda.partials.item', ['num' => 6, 'title' => 'Pembukaan Sidang Wisuda', 'sub' => 'Resmi dimulainya sidang wisuda'])
+            @include('alur-wisuda.partials.item', ['num' => 7, 'title' => 'Pidato Rektor', 'sub' => 'Sambutan dan pesan dari pimpinan universitas'])
+            @include('alur-wisuda.partials.item', ['num' => 8, 'title' => 'Sambutan Kepala LLDikti Wilayah IV', 'sub' => 'Pesan dari otoritas pendidikan tinggi'])
+            @include('alur-wisuda.partials.item', ['num' => 9, 'title' => 'Pembacaan SK Wisudawan', 'sub' => 'Surat keputusan wisudawan dibacakan'])
+        </div>
+
+        <!-- Section 4: Prosesi Pelantikan & Penganugerahan (Highlighted) -->
+        <div class="flex items-center gap-3 mb-6">
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-amber-200 to-transparent"></div>
+            <span class="flex items-center gap-2 bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-amber-700 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                Prosesi Pelantikan & Penganugerahan ★
+            </span>
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-amber-200 to-transparent"></div>
+        </div>
+        <div class="space-y-3 mb-10">
+            @include('alur-wisuda.partials.item', ['num' => 10, 'title' => 'Pelantikan Wisudawan Terbaik', 'sub' => 'Penghargaan bagi wisudawan dengan prestasi terbaik', 'highlight' => true, 'star' => true])
+            @include('alur-wisuda.partials.item', ['num' => 11, 'title' => 'Prosesi Pelantikan Wisudawan Serentak', 'sub' => 'Seluruh wisudawan dilantik bersama-sama', 'highlight' => true])
+            @include('alur-wisuda.partials.item', ['num' => 12, 'title' => 'Prosesi Penganugerahan Gelar', 'sub' => 'Penyerahan ijazah dan pemindahan tali toga', 'highlight' => true])
+        </div>
+
+        <!-- Section 5: Janji Alumni & Apresiasi -->
+        <div class="flex items-center gap-3 mb-6">
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-teal-200 to-transparent"></div>
+            <span class="flex items-center gap-2 bg-white border border-teal-100 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-teal-700 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-teal-600"></span>
+                Janji Alumni & Apresiasi
+            </span>
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-teal-200 to-transparent"></div>
+        </div>
+        <div class="space-y-3 mb-10">
+            @include('alur-wisuda.partials.item', ['num' => 13, 'title' => 'Pembacaan Janji Alumni', 'sub' => 'Ikrar alumni Universitas Sangga Buana YPKP'])
+            @include('alur-wisuda.partials.item', ['num' => 14, 'title' => 'Penyerahan Bunga', 'sub' => 'Momen apresiasi wisudawan'])
+            @include('alur-wisuda.partials.item', ['num' => 15, 'title' => 'Sambutan Wisudawan', 'sub' => 'Perwakilan wisudawan menyampaikan kesan dan pesan'])
+            @include('alur-wisuda.partials.item', ['num' => 16, 'title' => 'Sambutan Orang Tua Wisudawan', 'sub' => 'Perwakilan orang tua menyampaikan sambutan'])
+        </div>
+
+        <!-- Section 6: Penutupan -->
+        <div class="flex items-center gap-3 mb-6">
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+            <span class="flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-gray-600 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-gray-500"></span>
+                Penutupan
+            </span>
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+        </div>
+        <div class="space-y-3 mb-10">
+            @include('alur-wisuda.partials.item', ['num' => 17, 'title' => 'Pembacaan Doa', 'sub' => 'Penutupan secara spiritual'])
+            @include('alur-wisuda.partials.item', ['num' => 18, 'title' => 'Senat Meninggalkan Ruangan', 'sub' => 'Prosesi keluar senat akademik'])
+            @include('alur-wisuda.partials.item', ['num' => 19, 'title' => 'Penutupan MC', 'sub' => 'Rangkaian acara wisuda resmi selesai'])
+        </div>
+
+        <!-- Footer Banner -->
+        <div class="mt-12 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-2xl p-6 flex items-center gap-5 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-white/5"></div>
+            <div class="absolute -bottom-12 -left-8 w-40 h-40 rounded-full bg-white/5"></div>
+            <div class="w-14 h-14 bg-white/15 rounded-xl flex items-center justify-center text-2xl relative z-10 flex-shrink-0">
+                🎓
             </div>
-        </section>
-        
-        <!-- Timeline Section -->
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div class="relative">
-                <!-- Timeline Line -->
-                <div class="timeline-line hidden md:block"></div>
-                
-                <!-- Timeline Items -->
-                <div class="space-y-12">
-                    <!-- Step 1 -->
-                    <div class="relative flex items-center md:justify-start">
-                        <div class="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg z-10">
-                            1
-                        </div>
-                        <div class="ml-16 md:ml-0 md:w-1/2 md:pr-12 md:text-right">
-                            <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
-                                <div class="flex items-center mb-3 md:justify-end">
-                                    <svg class="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>
-                                    <h3 class="text-xl font-bold text-gray-900">Pendaftaran Wisuda</h3>
-                                </div>
-                                <p class="text-gray-600 leading-relaxed">
-                                    Mahasiswa melakukan pendaftaran wisuda melalui sistem akademik dengan melengkapi persyaratan administrasi dan akademik yang telah ditentukan.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Step 2 -->
-                    <div class="relative flex items-center md:justify-end">
-                        <div class="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg z-10">
-                            2
-                        </div>
-                        <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
-                            <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
-                                <div class="flex items-center mb-3">
-                                    <svg class="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <h3 class="text-xl font-bold text-gray-900">Verifikasi Berkas</h3>
-                                </div>
-                                <p class="text-gray-600 leading-relaxed">
-                                    Tim akademik melakukan verifikasi kelengkapan berkas dan persyaratan wisuda. Mahasiswa akan diberitahu jika ada kekurangan dokumen.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Step 3 -->
-                    <div class="relative flex items-center md:justify-start">
-                        <div class="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg z-10">
-                            3
-                        </div>
-                        <div class="ml-16 md:ml-0 md:w-1/2 md:pr-12 md:text-right">
-                            <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
-                                <div class="flex items-center mb-3 md:justify-end">
-                                    <svg class="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                    </svg>
-                                    <h3 class="text-xl font-bold text-gray-900">Pembayaran</h3>
-                                </div>
-                                <p class="text-gray-600 leading-relaxed">
-                                    Mahasiswa melakukan pembayaran biaya wisuda sesuai dengan ketentuan yang berlaku melalui sistem pembayaran universitas.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Step 4 -->
-                    <div class="relative flex items-center md:justify-end">
-                        <div class="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg z-10">
-                            4
-                        </div>
-                        <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
-                            <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
-                                <div class="flex items-center mb-3">
-                                    <svg class="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>
-                                    </svg>
-                                    <h3 class="text-xl font-bold text-gray-900">Penerimaan Undangan</h3>
-                                </div>
-                                <p class="text-gray-600 leading-relaxed">
-                                    Mahasiswa menerima undangan digital wisuda dengan QR Code yang dapat dibagikan kepada keluarga dan tamu undangan.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Step 5 -->
-                    <div class="relative flex items-center md:justify-start">
-                        <div class="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg z-10">
-                            5
-                        </div>
-                        <div class="ml-16 md:ml-0 md:w-1/2 md:pr-12 md:text-right">
-                            <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
-                                <div class="flex items-center mb-3 md:justify-end">
-                                    <svg class="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
-                                    </svg>
-                                    <h3 class="text-xl font-bold text-gray-900">Gladi Bersih</h3>
-                                </div>
-                                <p class="text-gray-600 leading-relaxed">
-                                    Mahasiswa mengikuti gladi bersih untuk mempersiapkan prosesi wisuda. Kehadiran wajib untuk memastikan kelancaran acara.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Step 6 -->
-                    <div class="relative flex items-center md:justify-end">
-                        <div class="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg z-10">
-                            6
-                        </div>
-                        <div class="ml-16 md:ml-0 md:w-1/2 md:pl-12">
-                            <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
-                                <div class="flex items-center mb-3">
-                                    <svg class="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <h3 class="text-xl font-bold text-gray-900">Hari H Wisuda</h3>
-                                </div>
-                                <p class="text-gray-600 leading-relaxed">
-                                    Wisudawan hadir pada hari pelaksanaan wisuda. Absensi dilakukan dengan scan QR Code di pintu masuk untuk pencatatan kehadiran.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Step 7 -->
-                    <div class="relative flex items-center md:justify-start">
-                        <div class="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg z-10">
-                            7
-                        </div>
-                        <div class="ml-16 md:ml-0 md:w-1/2 md:pr-12 md:text-right">
-                            <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
-                                <div class="flex items-center mb-3 md:justify-end">
-                                    <svg class="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                    </svg>
-                                    <h3 class="text-xl font-bold text-gray-900">Penyerahan Ijazah</h3>
-                                </div>
-                                <p class="text-gray-600 leading-relaxed">
-                                    Setelah prosesi wisuda selesai, wisudawan menerima ijazah dan transkrip nilai sebagai bukti kelulusan resmi dari universitas.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+            <div class="relative z-10">
+                <h3 class="text-white font-bold text-lg mb-1">Selamat kepada seluruh Wisudawan/Wisudawati!</h3>
+                <p class="text-blue-100 text-sm leading-relaxed">Wisuda XXIII · Universitas Sangga Buana YPKP<br>Gelombang I · Tahun Akademik 2025/2026 · Bandung</p>
+                <div class="flex gap-1.5 mt-3">
+                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                    <span class="w-2 h-2 rounded-full bg-white/30"></span>
+                    <span class="w-2 h-2 rounded-full bg-white/30"></span>
                 </div>
             </div>
         </div>
-    </main>
+
+        <p class="text-center text-xs text-gray-400 mt-8">E-Wisuda · Universitas Sangga Buana YPKP · ewisuda.usbypkp.ac.id</p>
+    </div>
+</main>
 @endsection
