@@ -126,20 +126,18 @@
                 <!-- Current Pages -->
                 @if($bukuWisuda && $bukuWisuda->initial_pages && count($bukuWisuda->initial_pages) > 0)
                     <div class="mb-4">
-                        <div class="flex items-center justify-between mb-2">
-                            <h4 class="text-sm font-medium text-gray-700">{{ count($bukuWisuda->initial_pages) }} Halaman</h4>
-                        </div>
-                        <div class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-10 gap-2">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">{{ count($bukuWisuda->initial_pages) }} Halaman</h4>
+                        <div class="flex flex-wrap gap-1">
                             @foreach($bukuWisuda->initial_pages as $index => $page)
-                                <div class="relative group border border-gray-200 rounded overflow-hidden bg-gray-50">
+                                <div class="relative group w-12 h-16 border border-gray-200 rounded bg-gray-50 overflow-hidden">
                                     <img src="{{ asset('storage/buku-wisuda/' . $page) }}"
                                          alt="Hal. {{ $index + 1 }}"
-                                         class="w-full aspect-[3/4] object-contain">
-                                    <form action="{{ route('admin.buku-wisuda.delete-initial-page', $bukuWisuda->id) }}" method="POST" class="absolute top-0 right-0 m-0.5">
+                                         class="w-full h-full object-cover">
+                                    <form action="{{ route('admin.buku-wisuda.delete-initial-page', $bukuWisuda->id) }}" method="POST" class="absolute top-0 right-0">
                                         @csrf
                                         @method('DELETE')
                                         <input type="hidden" name="filename" value="{{ $page }}">
-                                        <button type="submit" class="w-4 h-4 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs leading-none"
+                                        <button type="submit" class="w-3 h-3 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs leading-none"
                                                 onclick="return confirm('Hapus?')">
                                             ×
                                         </button>
