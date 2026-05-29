@@ -23,7 +23,7 @@ Route::get('/', [PageController::class, 'welcome'])->name('welcome');
 // Public pages
 Route::get('/data-wisudawan', App\Livewire\DataWisudawan::class)->name('data-wisudawan');
 Route::get('/alur-wisuda', [PageController::class, 'alurWisuda'])->name('alur-wisuda');
-Route::get('/help-desk', [PageController::class, 'helpDesk'])->name('help-desk');
+Route::get('/help-desk', App\Livewire\HelpDesk::class)->name('help-desk');
 
 // Invitation routes with rate limiting (10 requests per minute per IP)
 Route::middleware(['throttle:invitation'])->group(function () {
