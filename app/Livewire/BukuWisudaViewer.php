@@ -16,7 +16,9 @@ class BukuWisudaViewer extends Component
     {
         // If slug is provided (from route parameter), use it
         if ($slug) {
-            $this->bukuWisuda = BukuWisuda::where('slug', $slug)->firstOrFail();
+            $this->bukuWisuda = BukuWisuda::where('slug', $slug)
+                ->where('status', 'published')
+                ->firstOrFail();
         } else {
             // Otherwise get from active graduation event (for dashboard)
             $event = \App\Models\GraduationEvent::where('status', 'active')->first();

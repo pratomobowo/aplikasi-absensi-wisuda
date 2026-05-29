@@ -15,8 +15,8 @@ class BukuWisudaController extends Controller
      */
     public function getPdf($slug)
     {
-        // Get buku wisuda by slug
-        $buku = BukuWisuda::where('slug', $slug)->firstOrFail();
+        // Get buku wisuda by slug - only published for public
+        $buku = BukuWisuda::where('slug', $slug)->where('status', 'published')->firstOrFail();
 
         // Check if file exists
         if (!Storage::disk('buku_wisuda')->exists($buku->file_path)) {
@@ -41,7 +41,7 @@ class BukuWisudaController extends Controller
      */
     public function download($slug)
     {
-        $buku = BukuWisuda::where('slug', $slug)->firstOrFail();
+        $buku = BukuWisuda::where('slug', $slug)->where('status', 'published')->firstOrFail();
 
         if (!Storage::disk('buku_wisuda')->exists($buku->file_path)) {
             abort(404, 'File not found');

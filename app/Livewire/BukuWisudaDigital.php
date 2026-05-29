@@ -28,7 +28,7 @@ class BukuWisudaDigital extends Component
     {
         $this->slug = $slug;
         $this->bukuWisuda = BukuWisuda::where('slug', $slug)
-            ->whereIn('status', ['generated', 'published'])
+            ->where('status', 'published')
             ->firstOrFail();
         $this->event = $this->bukuWisuda->graduationEvent;
     }

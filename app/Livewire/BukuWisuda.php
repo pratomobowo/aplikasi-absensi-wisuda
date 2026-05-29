@@ -38,7 +38,7 @@ class BukuWisuda extends Component
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $query = BukuWisudaModel::query();
+        $query = BukuWisudaModel::query()->where('status', 'published');
 
         // Filter by selected event
         if ($this->selectedEvent) {
