@@ -93,6 +93,8 @@ class BukuWisudaService
             ->waitUntilNetworkIdle()
             ->setDelay(2000) // Wait for fonts and images to load
             ->ignoreHttpsErrors()
+            ->timeout(300) // 5 minutes timeout for large PDFs
+            ->setOption('protocolTimeout', 300000) // 5 min for protocol operations
             ->save($fullPath);
         
         // Create or update BukuWisuda record
