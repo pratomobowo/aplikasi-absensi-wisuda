@@ -74,12 +74,12 @@
         @endif
 
         <!-- Main Content - horizontal scroll like flipbook -->
-        <main class="flex-1 overflow-x-auto overflow-y-hidden" id="main-content">
-            <div class="flex h-full" style="width: max-content;">
+        <main class="flex-1 overflow-x-auto overflow-y-auto p-4 lg:p-6" id="main-content">
+            <div class="flex h-full gap-4" style="width: max-content;">
                 
                 <!-- Initial Pages (Images) - each page is full viewport height -->
                 @foreach($initialPages as $index => $page)
-                    <div class="page-section flex-shrink-0 h-full flex items-center justify-center bg-white mx-2 rounded-lg shadow-sm"
+                    <div class="page-section flex-shrink-0 h-full flex items-center justify-center bg-white rounded-lg shadow-sm p-2"
                          id="page-{{ $index }}"
                          style="height: calc(100vh - 8rem); width: auto; max-width: calc((100vh - 8rem) * 0.75);">
                         <img src="{{ asset('storage/buku-wisuda/' . $page) }}" 
@@ -93,7 +93,7 @@
                     @php
                         $pageIndex = count($initialPages) + array_search($prodi, array_keys($groupedMahasiswas));
                     @endphp
-                    <div class="page-section flex-shrink-0 h-full flex flex-col bg-white mx-2 rounded-lg shadow-sm overflow-hidden"
+                    <div class="page-section flex-shrink-0 h-full flex flex-col bg-white rounded-lg shadow-sm overflow-hidden"
                          id="page-{{ $pageIndex }}"
                          style="height: calc(100vh - 8rem); width: auto; max-width: calc((100vh - 8rem) * 0.75);">
                         <!-- Header -->
