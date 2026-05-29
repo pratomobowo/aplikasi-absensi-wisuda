@@ -103,14 +103,14 @@
              @click="sidebarOpen = false"></div>
 
         <!-- Main Content - horizontal scroll like flipbook -->
-        <main class="flex-1 overflow-x-auto overflow-y-auto lg:p-6" id="main-content">
+        <main class="flex-1 overflow-x-auto overflow-y-auto p-1 lg:p-6" id="main-content">
             <div class="flex h-full gap-2 lg:gap-4" style="width: max-content;">
                 
                 <!-- Initial Pages (Images) - full screen on mobile, proper size on desktop -->
                 @foreach($initialPages as $index => $page)
-                    <div class="page-section flex-shrink-0 bg-white rounded-lg shadow-sm flex items-center justify-center lg:p-2"
+                    <div class="page-section flex-shrink-0 bg-white rounded-lg shadow-sm flex items-center justify-center p-2"
                          id="page-{{ $index }}"
-                         style="height: calc(100vh - 4rem); width: calc(100vw - 0.5rem);">
+                         style="height: calc(100vh - 4rem); width: calc(100vw - 1rem);">
                         <img src="{{ asset('storage/buku-wisuda/' . $page) }}" 
                              alt="Halaman {{ $index + 1 }}"
                              class="max-h-full max-w-full object-contain">
@@ -122,9 +122,9 @@
                     @php
                         $pageIndex = count($initialPages) + array_search($prodi, array_keys($groupedMahasiswas));
                     @endphp
-                    <div class="page-section flex-shrink-0 flex flex-col bg-white rounded-lg shadow-sm overflow-hidden"
+                    <div class="page-section flex-shrink-0 flex flex-col bg-white rounded-lg shadow-sm overflow-hidden p-2"
                          id="page-{{ $pageIndex }}"
-                         style="height: calc(100vh - 4rem); width: calc(100vw - 0.5rem);">
+                         style="height: calc(100vh - 4rem); width: calc(100vw - 1rem);">
                         <!-- Header -->
                         <div class="bg-primary-600 text-white px-4 py-2 flex-shrink-0">
                             <h2 class="text-lg font-bold">{{ $prodi }}</h2>
