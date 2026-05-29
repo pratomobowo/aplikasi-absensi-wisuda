@@ -144,14 +144,15 @@ class BukuWisudaController extends Controller
     {
         $request->validate([
             'initial_pages' => ['required', 'array', 'min:1'],
-            'initial_pages.*' => ['required', 'file', 'mimes:pdf', 'max:512000'],
+            'initial_pages.*' => ['required', 'file', 'mimes:png,webp,jpeg,jpg', 'max:512000'],
         ]);
 
         $disk = Storage::disk('public');
         $uploadedFiles = [];
 
         foreach ($request->file('initial_pages') as $index => $file) {
-            $filename = 'initial_page_' . ($index + 1) . '_' . time() . '.pdf';
+            $extension = $file->getClientOriginalExtension();
+            $filename = 'initial_page_' . ($index + 1) . '_' . time() . '.' . $extension;
             $path = $file->storeAs('buku-wisuda', $filename, 'public');
             $uploadedFiles[] = basename($path);
         }

@@ -196,14 +196,12 @@
                         <h4 class="text-sm font-medium text-gray-700 mb-3">Halaman yang sudah diupload:</h4>
                         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
                             @foreach($bukuWisuda->initial_pages as $index => $page)
-                                <div class="relative group border border-gray-200 rounded-lg overflow-hidden">
-                                    <div class="aspect-[3/4] bg-gray-100 flex items-center justify-center">
-                                        <div class="text-center p-2">
-                                            <svg class="w-8 h-8 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                            </svg>
-                                            <p class="text-xs text-gray-500 mt-1">Hal. {{ $index + 1 }}</p>
-                                        </div>
+                                <div class="relative group border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
+                                    <img src="{{ asset('storage/buku-wisuda/' . $page) }}"
+                                         alt="Halaman {{ $index + 1 }}"
+                                         class="w-full aspect-[3/4] object-contain">
+                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                                        <p class="text-xs text-white font-medium">Hal. {{ $index + 1 }}</p>
                                     </div>
                                     <form action="{{ route('admin.buku-wisuda.delete-initial-page', $bukuWisuda) }}" method="POST" class="absolute top-1 right-1">
                                         @csrf
@@ -228,11 +226,11 @@
                         <input type="file"
                                name="initial_pages[]"
                                id="initial_pages"
-                               accept="application/pdf"
+                               accept="image/png,image/webp,image/jpeg"
                                multiple
                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
-                        <p class="text-sm text-gray-500 mt-3">Format: PDF. Maks 500MB per file. Pilih banyak file sekaligus.</p>
-                        <p class="text-xs text-gray-400 mt-1">Contoh: Pilih file 1.pdf, 2.pdf, 3.pdf dst sekaligus untuk upload berurut.</p>
+                        <p class="text-sm text-gray-500 mt-3">Format: PNG, WEBP, JPG. Maks 500MB per file. Pilih banyak file sekaligus.</p>
+                        <p class="text-xs text-gray-400 mt-1">Contoh: Pilih file 1.png, 2.webp, 3.png dst sekaligus untuk upload berurut.</p>
                     </div>
 
                     <div class="flex justify-end pt-4 border-t border-gray-200 mt-4">
