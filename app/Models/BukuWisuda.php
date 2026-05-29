@@ -22,11 +22,7 @@ class BukuWisuda extends Model
         'filename',
         'slug',
         'file_path',
-        'cover_image',
-        'sambutan_rektor',
-        'sambutan_wakil_rektor_1',
-        'sambutan_wakil_rektor_2',
-        'sambutan_wakil_rektor_3',
+        'initial_pages',
         'file_size',
         'mime_type',
         'download_count',
@@ -45,6 +41,7 @@ class BukuWisuda extends Model
         return [
             'uploaded_at' => 'datetime',
             'generated_at' => 'datetime',
+            'initial_pages' => 'array',
         ];
     }
 
