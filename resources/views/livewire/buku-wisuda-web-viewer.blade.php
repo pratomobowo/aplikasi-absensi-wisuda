@@ -103,60 +103,54 @@
              @click="sidebarOpen = false"></div>
 
         <!-- Main Content - horizontal scroll like flipbook -->
-        <main class="flex-1 overflow-x-auto overflow-y-auto p-4 lg:p-6" id="main-content">
-            <div class="flex h-full gap-4" style="width: max-content;">
+        <main class="flex-1 overflow-x-auto overflow-y-auto lg:p-6" id="main-content">
+            <div class="flex h-full gap-2 lg:gap-4" style="width: max-content;">
                 
-                <!-- Initial Pages (Images) - same height for all -->
+                <!-- Initial Pages (Images) - full screen on mobile, proper size on desktop -->
                 @foreach($initialPages as $index => $page)
-                    <div class="page-section flex-shrink-0 bg-white rounded-lg shadow-sm p-3"
+                    <div class="page-section flex-shrink-0 bg-white rounded-lg shadow-sm flex items-center justify-center lg:p-2"
                          id="page-{{ $index }}"
-                         style="height: calc(100vh - 8rem); width: auto;">
+                         style="height: calc(100vh - 4rem); width: calc(100vw - 0.5rem);">
                         <img src="{{ asset('storage/buku-wisuda/' . $page) }}" 
                              alt="Halaman {{ $index + 1 }}"
-                             class="h-full w-auto">
+                             class="max-h-full max-w-full object-contain">
                     </div>
                 @endforeach
 
-                <!-- Student Pages by Prodi -->
+                <!-- Student Pages by Prodi - full screen on mobile -->
                 @foreach($groupedMahasiswas as $prodi => $students)
                     @php
                         $pageIndex = count($initialPages) + array_search($prodi, array_keys($groupedMahasiswas));
                     @endphp
-                    <div class="page-section flex-shrink-0 h-full flex flex-col bg-white rounded-lg shadow-sm overflow-hidden"
+                    <div class="page-section flex-shrink-0 flex flex-col bg-white rounded-lg shadow-sm overflow-hidden"
                          id="page-{{ $pageIndex }}"
-                         style="height: calc(100vh - 8rem); width: auto; max-width: calc((100vh - 8rem) * 0.75);">
+                         style="height: calc(100vh - 4rem); width: calc(100vw - 0.5rem);">
                         <!-- Header -->
-                        <div class="bg-primary-600 text-white px-4 py-3 flex-shrink-0">
+                        <div class="bg-primary-600 text-white px-4 py-2 flex-shrink-0">
                             <h2 class="text-lg font-bold">{{ $prodi }}</h2>
                             <p class="text-primary-100 text-xs">{{ count($students) }} Wisudawan</p>
                         </div>
                         
                         <!-- Student Grid - scrollable -->
-                        <div class="p-3 overflow-y-auto flex-1">
-                            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div class="p-2 overflow-y-auto flex-1">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
                                 @foreach($students as $student)
-                                    <div class="student-card border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow {{ $highlightedNpm === $student->npm ? 'ring-2 ring-primary-500 bg-primary-50' : '' }}"
+                                    <div class="student-card border border-gray-200 rounded-lg p-2 hover:shadow-md transition-shadow {{ $highlightedNpm === $student->npm ? 'ring-2 ring-primary-500 bg-primary-50' : '' }}"
                                          data-npm="{{ $student->npm }}"
                                          data-prodi="{{ $prodi }}">
                                         @if($student->foto_wisuda && Storage::disk('public')->exists('graduation-photos/' . $student->foto_wisuda))
                                             <img src="{{ asset('storage/graduation-photos/' . $student->foto_wisuda) }}" 
                                                  alt="{{ $student->nama }}"
-                                                 class="w-full aspect-[3/4] object-cover rounded-lg mb-2 bg-gray-100">
+                                                 class="w-full aspect-[3/4] object-cover rounded-lg mb-1 bg-gray-100">
                                         @else
-                                            <div class="w-full aspect-[3/4] bg-gray-200 rounded-lg mb-2 flex items-center justify-center">
-                                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <div class="w-full aspect-[3/4] bg-gray-200 rounded-lg mb-1 flex items-center justify-center">
+                                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                                 </svg>
                                             </div>
                                         @endif
-                                        <h3 class="font-semibold text-gray-900 text-xs">{{ $student->nama }}</h3>
-                                        <p class="text-xs text-gray-600 mb-1">NPM: {{ $student->npm }}</p>
-                                        @if($student->yudisium)
-                                            <p class="text-xs text-primary-600 font-medium">{{ $student->yudisium }}</p>
-                                        @endif
-                                        @if($student->judul_skripsi)
-                                            <p class="text-xs text-gray-500 mt-1 line-clamp-2">{{ strip_tags($student->judul_skripsi) }}</p>
-                                        @endif
+                                        <h3 class="font-semibold text-gray-900 text-xs truncate">{{ $student->nama }}</h3>
+                                        <p class="text-xs text-gray-500 truncate">{{ $student->npm }}</p>
                                     </div>
                                 @endforeach
                             </div>
@@ -209,5 +203,14 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+/* Desktop: larger page sizes */
+@media (min-width: 1024px) {
+    .page-section {
+        height: calc(100vh - 8rem) !important;
+        width: auto !important;
+        max-width: calc((100vh - 8rem) * 0.75) !important;
+    }
 }
 </style>
