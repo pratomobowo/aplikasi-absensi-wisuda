@@ -177,14 +177,16 @@
 
     document.addEventListener('livewire:init', () => {
         console.log('Livewire initialized');
-        Livewire.on('scrollToPage', (event) => {
-            console.log('Livewire event scrollToPage:', event);
-            scrollToPage(event.pageIndex);
+        Livewire.on('scrollToPage', (data) => {
+            console.log('Livewire event scrollToPage:', data);
+            const pageIndex = typeof data === 'object' ? data.pageIndex : data;
+            scrollToPage(pageIndex);
         });
 
-        Livewire.on('scrollToStudent', (event) => {
-            console.log('Livewire event scrollToStudent:', event);
-            scrollToStudent(event.npm);
+        Livewire.on('scrollToStudent', (data) => {
+            console.log('Livewire event scrollToStudent:', data);
+            const npm = typeof data === 'object' ? data.npm : data;
+            scrollToStudent(npm);
         });
     });
 
