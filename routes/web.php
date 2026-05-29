@@ -46,7 +46,7 @@ Route::get('/buku-wisuda/pdf/{slug}', [PublicBukuWisudaController::class, 'getPd
 Route::get('/buku-wisuda/download/{slug}', [PublicBukuWisudaController::class, 'download'])
     ->name('buku-wisuda.download');
 // Generic content route must be LAST
-Route::get('/buku-wisuda/{slug}', App\Livewire\BukuWisudaDigital::class)->name('buku-wisuda.content');
+Route::get('/buku-wisuda/{slug}', App\Livewire\BukuWisudaWebViewer::class)->name('buku-wisuda.content');
 
 // Buku Wisuda admin routes - protected with admin authentication
 Route::middleware(['auth', 'admin.only'])->group(function () {
