@@ -61,7 +61,7 @@
                                 <span class="text-sm font-medium truncate">{{ $prodi }}</span>
                                 <span class="text-xs text-gray-500 group-hover:text-gray-700">{{ $studentCount }}</span>
                             </div>
-                            <div class="text-xs text-gray-400 mt-0.5">Hal. {{ $pageNum }}</div>
+                            <div class="text-xs text-gray-400 mt-0.5">Hal. {{ $pageNum + 1 }}</div>
                         </button>
                     @endforeach
                 </nav>

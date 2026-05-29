@@ -126,7 +126,7 @@ class BukuWisudaWebViewer extends Component
     {
         $prodis = array_keys($this->groupedMahasiswas);
         $index = array_search($prodi, $prodis);
-        return count($this->initialPages) + $index + 1;
+        return count($this->initialPages) + $index; // 0-indexed
     }
 
     public function scrollToPage($pageIndex)
