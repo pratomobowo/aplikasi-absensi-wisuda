@@ -192,6 +192,26 @@ class BukuWisudaController extends Controller
             ->with('success', 'Halaman berhasil dihapus. Total: ' . count($pages) . ' halaman.');
     }
 
+    public function deleteAllInitialPages(Request $request, int $id)
+    {
+        $bukuWisuda = BukuWisuda::findOrFail($id);
+
+        $disk = Storage::disk('public');
+        $pages = $bukuWisuda->initial_pages ?? [];
+
+        foreach ($pages as $filename) {
+            if ($disk->exists('buku-wisuda/' . $filename)) {
+                $disk->delete('buku-wisuda/' . $filename);
+            }
+        }
+
+        $bukuWisuda->update(['initial_pages' => null]);
+
+        return redirect()
+            ->route('admin.buku-wisuda.preview', $bukuWisuda->graduation_event_id)
+            ->with('success', 'Semua halaman awal berhasil dihapus.');
+    }
+
     public function reorderInitialPages(Request $request, int $id)
     {
         $bukuWisuda = BukuWisuda::findOrFail($id);

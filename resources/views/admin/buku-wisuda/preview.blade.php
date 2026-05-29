@@ -126,7 +126,17 @@
                 <!-- Current Pages -->
                 @if($bukuWisuda && $bukuWisuda->initial_pages && count($bukuWisuda->initial_pages) > 0)
                     <div class="mb-4">
-                        <h4 class="text-sm font-medium text-gray-700 mb-2">{{ count($bukuWisuda->initial_pages) }} Halaman</h4>
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="text-sm font-medium text-gray-700">{{ count($bukuWisuda->initial_pages) }} Halaman</h4>
+                            <form action="{{ route('admin.buku-wisuda.delete-all-initial-pages', $bukuWisuda->id) }}" method="POST" class="inline"
+                                  onsubmit="return confirm('Hapus semua {{ count($bukuWisuda->initial_pages) }} halaman awal?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="px-3 py-1 bg-red-100 text-red-700 rounded-lg text-xs font-medium hover:bg-red-200 transition-colors">
+                                    Hapus Semua
+                                </button>
+                            </form>
+                        </div>
                         <div class="flex flex-wrap gap-2">
                             @foreach($bukuWisuda->initial_pages as $index => $page)
                                 <div class="relative flex flex-col items-center">

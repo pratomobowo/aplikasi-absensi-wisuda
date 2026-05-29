@@ -124,6 +124,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('/buku-wisuda/{bukuWisuda}/publish', [BukuWisudaController::class, 'publish'])->name('buku-wisuda.publish');
         Route::post('/buku-wisuda/{id}/upload-initial-pages', [BukuWisudaController::class, 'uploadInitialPages'])->name('buku-wisuda.upload-initial-pages');
         Route::delete('/buku-wisuda/{id}/delete-initial-page', [BukuWisudaController::class, 'deleteInitialPage'])->name('buku-wisuda.delete-initial-page');
+        Route::delete('/buku-wisuda/{id}/delete-all-initial-pages', [BukuWisudaController::class, 'deleteAllInitialPages'])->name('buku-wisuda.delete-all-initial-pages');
         Route::post('/buku-wisuda/{id}/reorder-initial-pages', [BukuWisudaController::class, 'reorderInitialPages'])->name('buku-wisuda.reorder-initial-pages');
         Route::resource('buku-wisuda', BukuWisudaController::class);
 
