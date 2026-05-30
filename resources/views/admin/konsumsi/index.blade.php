@@ -102,7 +102,7 @@
                                               onsubmit="return confirm('Reset konsumsi siang untuk mahasiswa ini?')">
                                             @csrf
                                             <button type="submit" class="text-red-500 hover:text-red-700 text-xs border border-red-300 rounded px-2 py-0.5">
-                                                ↩ Reset Siang
+                                                Reset Siang
                                             </button>
                                         </form>
                                     @elseif($ticket->konsumsi_pagi_at)
@@ -110,7 +110,7 @@
                                               onsubmit="return confirm('Reset konsumsi pagi untuk mahasiswa ini?')">
                                             @csrf
                                             <button type="submit" class="text-red-500 hover:text-red-700 text-xs border border-red-300 rounded px-2 py-0.5">
-                                                ↩ Reset Pagi
+                                                Reset Pagi
                                             </button>
                                         </form>
                                     @endif

@@ -245,12 +245,12 @@
                             <div class="text-right">
                                 @if($ticket->konsumsi_siang_at)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        🍱 Pagi & Siang
+                                        Pagi &amp; Siang
                                     </span>
                                     <p class="text-xs text-gray-500 mt-1">{{ $ticket->konsumsi_siang_at->diffForHumans() }}</p>
                                 @elseif($ticket->konsumsi_pagi_at)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
-                                        🌅 Pagi
+                                        Pagi
                                     </span>
                                     <p class="text-xs text-gray-500 mt-1">{{ $ticket->konsumsi_pagi_at->diffForHumans() }}</p>
                                 @endif
