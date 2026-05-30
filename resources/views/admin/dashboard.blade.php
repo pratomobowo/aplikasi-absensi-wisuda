@@ -30,7 +30,7 @@
         <!-- Overall Stats -->
         <div>
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Statistik Keseluruhan</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <div class="flex items-center justify-between">
                         <div>
@@ -76,8 +76,22 @@
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-600">Konsumsi Diterima</p>
-                            <p class="text-2xl font-bold text-gray-900 mt-1">{{ number_format($stats['konsumsi_received']) }}</p>
+                            <p class="text-sm font-medium text-gray-600">Konsumsi Pagi</p>
+                            <p class="text-2xl font-bold text-gray-900 mt-1">{{ number_format($stats['konsumsi_pagi']) }}</p>
+                        </div>
+                        <div class="p-3 bg-amber-50 rounded-lg">
+                            <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m8.66-13l-.87.5M4.21 15.5l-.87.5M19.66 15.5l-.87-.5M4.21 8.5l-.87-.5M21 12h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Konsumsi Siang</p>
+                            <p class="text-2xl font-bold text-gray-900 mt-1">{{ number_format($stats['konsumsi_siang']) }}</p>
                         </div>
                         <div class="p-3 bg-green-50 rounded-lg">
                             <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,7 +119,7 @@
                         <span class="text-sm text-gray-500">{{ $event->date->format('d M Y') }}</span>
                     </div>
                     
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-6">
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 p-6">
                         <div>
                             <p class="text-sm text-gray-600">Tiket</p>
                             <p class="text-xl font-bold text-gray-900">{{ $event->tickets_count }}</p>
@@ -119,8 +133,12 @@
                             <p class="text-xl font-bold text-gray-900">{{ $event->attendance_count }}</p>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">Konsumsi</p>
-                            <p class="text-xl font-bold text-gray-900">{{ $event->konsumsi_count }}</p>
+                            <p class="text-sm text-gray-600">Konsumsi Pagi</p>
+                            <p class="text-xl font-bold text-amber-500">{{ $event->konsumsi_pagi_count }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Konsumsi Siang</p>
+                            <p class="text-xl font-bold text-green-600">{{ $event->konsumsi_siang_count }}</p>
                         </div>
                     </div>
                     
@@ -141,7 +159,7 @@
         </div>
 
         <!-- Secondary Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <p class="text-sm font-medium text-gray-600 mb-2">Distribusi Tiket</p>
                 <div class="flex items-end space-x-2">
@@ -154,12 +172,27 @@
             </div>
 
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <p class="text-sm font-medium text-gray-600 mb-2">Konsumsi</p>
+                <p class="text-sm font-medium text-gray-600 mb-2">Konsumsi Pagi</p>
                 <div class="flex items-end space-x-2">
-                    <span class="text-3xl font-bold text-green-600">{{ $stats['konsumsi_received'] }}</span>
-                    <span class="text-sm text-gray-500 mb-1">diterima</span>
+                    <span class="text-3xl font-bold text-amber-500">{{ $stats['konsumsi_pagi'] }}</span>
+                    <span class="text-sm text-gray-500 mb-1">/ {{ $stats['total_tickets'] }}</span>
                 </div>
-                <p class="text-sm text-gray-500 mt-1">{{ $stats['konsumsi_pending'] }} belum diterima</p>
+                <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-amber-400 h-2 rounded-full" style="width: {{ $stats['total_tickets'] > 0 ? ($stats['konsumsi_pagi'] / $stats['total_tickets'] * 100) : 0 }}%"></div>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">{{ $stats['total_tickets'] > 0 ? round($stats['konsumsi_pagi'] / $stats['total_tickets'] * 100, 1) : 0 }}% sudah makan pagi</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <p class="text-sm font-medium text-gray-600 mb-2">Konsumsi Siang</p>
+                <div class="flex items-end space-x-2">
+                    <span class="text-3xl font-bold text-green-600">{{ $stats['konsumsi_siang'] }}</span>
+                    <span class="text-sm text-gray-500 mb-1">/ {{ $stats['total_tickets'] }}</span>
+                </div>
+                <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-green-500 h-2 rounded-full" style="width: {{ $stats['total_tickets'] > 0 ? ($stats['konsumsi_siang'] / $stats['total_tickets'] * 100) : 0 }}%"></div>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">{{ $stats['total_tickets'] > 0 ? round($stats['konsumsi_siang'] / $stats['total_tickets'] * 100, 1) : 0 }}% sudah makan siang</p>
             </div>
 
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
@@ -210,10 +243,17 @@
                                 <p class="text-xs text-blue-600 mt-0.5">{{ $ticket->graduationEvent->name ?? 'Unknown Event' }}</p>
                             </div>
                             <div class="text-right">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    Diterima
-                                </span>
-                                <p class="text-xs text-gray-500 mt-1">{{ $ticket->konsumsi_at->diffForHumans() }}</p>
+                                @if($ticket->konsumsi_siang_at)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        🍱 Pagi & Siang
+                                    </span>
+                                    <p class="text-xs text-gray-500 mt-1">{{ $ticket->konsumsi_siang_at->diffForHumans() }}</p>
+                                @elseif($ticket->konsumsi_pagi_at)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                                        🌅 Pagi
+                                    </span>
+                                    <p class="text-xs text-gray-500 mt-1">{{ $ticket->konsumsi_pagi_at->diffForHumans() }}</p>
+                                @endif
                             </div>
                         </div>
                     @empty

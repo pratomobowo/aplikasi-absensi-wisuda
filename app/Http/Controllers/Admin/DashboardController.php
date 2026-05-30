@@ -24,8 +24,11 @@ class DashboardController extends Controller
                 'graduationTickets as distributed_count' => function ($q) {
                     $q->whereNull('archived_at')->where('is_distributed', true);
                 },
-                'graduationTickets as konsumsi_count' => function ($q) {
-                    $q->whereNull('archived_at')->where('konsumsi_diterima', true);
+                'graduationTickets as konsumsi_pagi_count' => function ($q) {
+                    $q->whereNull('archived_at')->whereNotNull('konsumsi_pagi_at');
+                },
+                'graduationTickets as konsumsi_siang_count' => function ($q) {
+                    $q->whereNull('archived_at')->whereNotNull('konsumsi_siang_at');
                 }
             ])
             ->orderBy('date', 'desc')
@@ -57,10 +60,8 @@ class DashboardController extends Controller
             'distributed_tickets' => GraduationTicket::notArchived()->where('is_distributed', true)->count(),
             'total_attendance' => Attendance::notArchived()->count(),
             'today_attendance' => Attendance::notArchived()->today()->count(),
-            'konsumsi_received' => GraduationTicket::notArchived()->where('konsumsi_diterima', true)->count(),
-            'konsumsi_pending' => GraduationTicket::notArchived()->where(function ($q) {
-                $q->where('konsumsi_diterima', false)->orWhereNull('konsumsi_diterima');
-            })->count(),
+            'konsumsi_pagi' => GraduationTicket::notArchived()->whereNotNull('konsumsi_pagi_at')->count(),
+            'konsumsi_siang' => GraduationTicket::notArchived()->whereNotNull('konsumsi_siang_at')->count(),
             'wisudawan_with_photos' => Mahasiswa::whereHas('graduationTickets.graduationEvent', function ($q) {
                 $q->where('status', '!=', 'completed');
             })->whereNotNull('foto_wisuda')->count(),
@@ -78,8 +79,11 @@ class DashboardController extends Controller
 
         $recentKonsumsi = GraduationTicket::notArchived()
             ->with(['mahasiswa', 'graduationEvent'])
-            ->where('konsumsi_diterima', true)
-            ->latest('konsumsi_at')
+            ->where(function ($q) {
+                $q->whereNotNull('konsumsi_pagi_at')->orWhereNotNull('konsumsi_siang_at');
+            })
+            ->orderByDesc('konsumsi_siang_at')
+            ->orderByDesc('konsumsi_pagi_at')
             ->take(10)
             ->get();
 
