@@ -31,103 +31,88 @@ class KonsumsiController extends Controller
 
     public function toggle(GraduationTicket $ticket)
     {
-        $oldStatus = $ticket->konsumsi_diterima;
-        $newStatus = !$oldStatus;
-
-        if ($newStatus) {
+        if (is_null($ticket->konsumsi_pagi_at)) {
             $ticket->update([
-                'konsumsi_diterima' => true,
-                'konsumsi_at' => now(),
+                'konsumsi_pagi_at' => now(),
+                'konsumsi_pagi_by' => auth()->id(),
             ]);
-
-            if (!$ticket->konsumsiRecord()->exists()) {
-                KonsumsiRecord::create([
-                    'graduation_ticket_id' => $ticket->id,
-                    'scanned_by' => auth()->id(),
-                    'scanned_at' => now(),
-                ]);
-            }
-
-            Log::info('KonsumsiRecord: Manual toggle to received', [
-                'ticket_id' => $ticket->id,
-                'mahasiswa_id' => $ticket->mahasiswa_id,
-                'admin_id' => auth()->id(),
-                'previous_status' => $oldStatus,
+            $message = 'Konsumsi pagi ditandai.';
+        } elseif (is_null($ticket->konsumsi_siang_at)) {
+            $ticket->update([
+                'konsumsi_siang_at' => now(),
+                'konsumsi_siang_by' => auth()->id(),
             ]);
+            $message = 'Konsumsi siang ditandai.';
         } else {
             $ticket->update([
-                'konsumsi_diterima' => false,
-                'konsumsi_at' => null,
+                'konsumsi_pagi_at' => null,
+                'konsumsi_pagi_by' => null,
+                'konsumsi_siang_at' => null,
+                'konsumsi_siang_by' => null,
             ]);
-
-            $ticket->konsumsiRecord()->delete();
-
-            Log::info('KonsumsiRecord: Manual toggle to not received', [
-                'ticket_id' => $ticket->id,
-                'mahasiswa_id' => $ticket->mahasiswa_id,
-                'admin_id' => auth()->id(),
-                'previous_status' => $oldStatus,
-            ]);
+            $message = 'Konsumsi direset.';
         }
 
-        return redirect()->back()->with('success', $newStatus ? 'Konsumsi ditandai sebagai sudah diterima.' : 'Konsumsi ditandai sebagai belum diterima.');
+        Log::info('KonsumsiRecord: Manual toggle', [
+            'ticket_id' => $ticket->id,
+            'mahasiswa_id' => $ticket->mahasiswa_id,
+            'admin_id' => auth()->id(),
+        ]);
+
+        return redirect()->back()->with('success', $message);
     }
 
     public function bulkMarkReceived(Request $request)
     {
         $ids = $request->input('ids', []);
+        $count = 0;
 
-        DB::transaction(function () use ($ids) {
+        DB::transaction(function () use ($ids, &$count) {
             foreach ($ids as $id) {
                 $ticket = GraduationTicket::find($id);
-                if ($ticket && !$ticket->konsumsi_diterima) {
+                if ($ticket && is_null($ticket->konsumsi_pagi_at)) {
                     $ticket->update([
-                        'konsumsi_diterima' => true,
-                        'konsumsi_at' => now(),
+                        'konsumsi_pagi_at' => now(),
+                        'konsumsi_pagi_by' => auth()->id(),
                     ]);
-
-                    if (!$ticket->konsumsiRecord()->exists()) {
-                        KonsumsiRecord::create([
-                            'graduation_ticket_id' => $ticket->id,
-                            'scanned_by' => auth()->id(),
-                            'scanned_at' => now(),
-                        ]);
-                    }
+                    $count++;
                 }
             }
         });
 
-        Log::info('KonsumsiRecord: Bulk mark as received', [
-            'count' => count($ids),
+        Log::info('KonsumsiRecord: Bulk mark as pagi received', [
+            'count' => $count,
             'admin_id' => auth()->id(),
         ]);
 
-        return redirect()->back()->with('success', count($ids) . ' mahasiswa ditandai sudah menerima konsumsi.');
+        return redirect()->back()->with('success', $count . ' mahasiswa ditandai konsumsi pagi.');
     }
 
     public function bulkMarkNotReceived(Request $request)
     {
         $ids = $request->input('ids', []);
+        $count = 0;
 
-        DB::transaction(function () use ($ids) {
+        DB::transaction(function () use ($ids, &$count) {
             foreach ($ids as $id) {
                 $ticket = GraduationTicket::find($id);
-                if ($ticket && $ticket->konsumsi_diterima) {
+                if ($ticket) {
                     $ticket->update([
-                        'konsumsi_diterima' => false,
-                        'konsumsi_at' => null,
+                        'konsumsi_pagi_at' => null,
+                        'konsumsi_pagi_by' => null,
+                        'konsumsi_siang_at' => null,
+                        'konsumsi_siang_by' => null,
                     ]);
-
-                    $ticket->konsumsiRecord()->delete();
+                    $count++;
                 }
             }
         });
 
-        Log::info('KonsumsiRecord: Bulk mark as not received', [
-            'count' => count($ids),
+        Log::info('KonsumsiRecord: Bulk reset', [
+            'count' => $count,
             'admin_id' => auth()->id(),
         ]);
 
-        return redirect()->back()->with('success', count($ids) . ' mahasiswa ditandai belum menerima konsumsi.');
+        return redirect()->back()->with('success', $count . ' mahasiswa direset.');
     }
 }

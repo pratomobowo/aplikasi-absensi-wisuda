@@ -25,7 +25,9 @@ class KonsumsiService
         'invalid_role' => 'ERROR_INVALID_ROLE',
         'ticket_not_found' => 'ERROR_TICKET_NOT_FOUND',
         'ticket_expired' => 'ERROR_TICKET_EXPIRED',
-        'duplicate' => 'ERROR_KONSUMSI_DUPLICATE',
+        'konsumsi_pagi_duplicate' => 'ERROR_KONSUMSI_PAGI_DUPLICATE',
+        'konsumsi_siang_duplicate' => 'ERROR_KONSUMSI_SIANG_DUPLICATE',
+        'konsumsi_all_done' => 'ERROR_KONSUMSI_ALL_DONE',
         'database' => 'ERROR_DATABASE',
         'event_not_active' => 'ERROR_EVENT_NOT_ACTIVE',
         'invalid_event' => 'ERROR_INVALID_EVENT',
@@ -44,6 +46,7 @@ class KonsumsiService
 
     /**
      * Record konsumsi for a mahasiswa from QR code
+     * First scan = pagi, second scan = siang
      *
      * @param string $qrData Encrypted QR code data
      * @param User|null $scanner User who performed the scan
@@ -67,7 +70,7 @@ class KonsumsiService
             $ticket = $validation['ticket'];
 
             // Begin database transaction
-            return DB::transaction(function () use ($ticketId, $scanner) {
+            return DB::transaction(function () use ($ticketId, $scanner, $ticket) {
                 $ticket = GraduationTicket::with(['mahasiswa', 'graduationEvent'])
                     ->whereKey($ticketId)
                     ->lockForUpdate()
@@ -82,64 +85,79 @@ class KonsumsiService
                     ];
                 }
 
-                if ($ticket->konsumsi_diterima || $ticket->konsumsiRecord()->exists()) {
-                    return [
-                        'success' => false,
-                        'message' => $this->getErrorMessage(self::ERROR_CODES['duplicate']),
-                        'data' => null,
-                        'reason' => self::ERROR_CODES['duplicate'],
-                    ];
-                }
+                // Determine which scan this is (pagi or siang)
+                $isPagiScan = is_null($ticket->konsumsi_pagi_at);
+                $isSiangScan = !is_null($ticket->konsumsi_pagi_at) && is_null($ticket->konsumsi_siang_at);
 
-                // Create konsumsi record
-                $konsumsi = KonsumsiRecord::create([
-                    'graduation_ticket_id' => $ticketId,
-                    'scanned_by' => $scanner?->id,
-                    'scanned_at' => now(),
-                ]);
+                if ($isPagiScan) {
+                    // First scan = pagi
+                    $ticket->update([
+                        'konsumsi_pagi_at' => now(),
+                        'konsumsi_pagi_by' => $scanner?->id,
+                    ]);
 
-                // Update graduation ticket
-                $ticket->update([
-                    'konsumsi_diterima' => true,
-                    'konsumsi_at' => now(),
-                ]);
-
-                Log::info('Konsumsi recorded', [
-                    'ticket_id' => $ticketId,
-                    'mahasiswa_id' => $ticket->mahasiswa_id,
-                    'scanner_id' => $scanner?->id,
-                    'konsumsi_record_id' => $konsumsi->id,
-                ]);
-
-                return [
-                    'success' => true,
-                    'message' => '✓ ' . ($ticket->mahasiswa->nama ?? 'Mahasiswa') . ' sudah menerima konsumsi',
-                    'data' => [
-                        'konsumsi_id' => $konsumsi->id,
+                    Log::info('Konsumsi pagi recorded', [
                         'ticket_id' => $ticketId,
                         'mahasiswa_id' => $ticket->mahasiswa_id,
-                        'mahasiswa_nama' => $ticket->mahasiswa->nama,
-                        'mahasiswa_npm' => $ticket->mahasiswa->npm,
-                        'scanned_at' => $konsumsi->scanned_at?->format('Y-m-d H:i:s'),
-                        'scanned_by' => $scanner?->name,
-                    ],
-                    'reason' => 'success',
-                ];
+                        'scanner_id' => $scanner?->id,
+                    ]);
+
+                    return [
+                        'success' => true,
+                        'message' => '✓ ' . ($ticket->mahasiswa->nama ?? 'Mahasiswa') . ' - Konsumsi Pagi',
+                        'data' => [
+                            'ticket_id' => $ticketId,
+                            'mahasiswa_id' => $ticket->mahasiswa_id,
+                            'mahasiswa_nama' => $ticket->mahasiswa->nama,
+                            'mahasiswa_npm' => $ticket->mahasiswa->npm,
+                            'scanned_at' => now()->format('Y-m-d H:i:s'),
+                            'scanned_by' => $scanner?->name,
+                            'type' => 'pagi',
+                        ],
+                        'reason' => 'success',
+                    ];
+                } elseif ($isSiangScan) {
+                    // Second scan = siang
+                    $ticket->update([
+                        'konsumsi_siang_at' => now(),
+                        'konsumsi_siang_by' => $scanner?->id,
+                    ]);
+
+                    Log::info('Konsumsi siang recorded', [
+                        'ticket_id' => $ticketId,
+                        'mahasiswa_id' => $ticket->mahasiswa_id,
+                        'scanner_id' => $scanner?->id,
+                    ]);
+
+                    return [
+                        'success' => true,
+                        'message' => '✓ ' . ($ticket->mahasiswa->nama ?? 'Mahasiswa') . ' - Konsumsi Siang',
+                        'data' => [
+                            'ticket_id' => $ticketId,
+                            'mahasiswa_id' => $ticket->mahasiswa_id,
+                            'mahasiswa_nama' => $ticket->mahasiswa->nama,
+                            'mahasiswa_npm' => $ticket->mahasiswa->npm,
+                            'scanned_at' => now()->format('Y-m-d H:i:s'),
+                            'scanned_by' => $scanner?->name,
+                            'type' => 'siang',
+                        ],
+                        'reason' => 'success',
+                    ];
+                } else {
+                    // Already did both scans
+                    return [
+                        'success' => false,
+                        'message' => $this->getErrorMessage(self::ERROR_CODES['konsumsi_all_done']),
+                        'data' => null,
+                        'reason' => self::ERROR_CODES['konsumsi_all_done'],
+                    ];
+                }
             });
         } catch (QueryException $e) {
             Log::error('Database error recording konsumsi', [
                 'error' => $e->getMessage(),
                 'error_code' => $e->getCode(),
             ]);
-
-            if ($this->isDuplicateKeyException($e)) {
-                return [
-                    'success' => false,
-                    'message' => $this->getErrorMessage(self::ERROR_CODES['duplicate']),
-                    'data' => null,
-                    'reason' => self::ERROR_CODES['duplicate'],
-                ];
-            }
 
             return [
                 'success' => false,
@@ -276,13 +294,13 @@ class KonsumsiService
             ];
         }
 
-        // Step 7: Check duplicate konsumsi
-        if ($ticket->konsumsi_diterima) {
+        // Step 7: Check if both konsumsi scans are done
+        if (!is_null($ticket->konsumsi_pagi_at) && !is_null($ticket->konsumsi_siang_at)) {
             return [
                 'valid' => false,
                 'ticket_id' => $ticketId,
                 'ticket' => $ticket,
-                'reason' => self::ERROR_CODES['duplicate'],
+                'reason' => self::ERROR_CODES['konsumsi_all_done'],
             ];
         }
 
@@ -311,7 +329,9 @@ class KonsumsiService
             'ERROR_INVALID_ROLE' => 'QR Code konsumsi harus milik mahasiswa',
             'ERROR_TICKET_NOT_FOUND' => 'Tiket tidak ditemukan',
             'ERROR_TICKET_EXPIRED' => 'Tiket sudah kadaluarsa',
-            'ERROR_KONSUMSI_DUPLICATE' => 'Mahasiswa ini sudah menerima konsumsi',
+            'ERROR_KONSUMSI_PAGI_DUPLICATE' => 'Mahasiswa ini sudah scan konsumsi pagi',
+            'ERROR_KONSUMSI_SIANG_DUPLICATE' => 'Mahasiswa ini sudah scan konsumsi siang',
+            'ERROR_KONSUMSI_ALL_DONE' => 'Konsumsi pagi & siang sudah selesai',
             'ERROR_DATABASE' => 'Kesalahan database',
             'ERROR_EVENT_NOT_ACTIVE' => 'Event wisuda tidak aktif',
             'ERROR_INVALID_EVENT' => 'Event tidak sesuai',

@@ -29,11 +29,11 @@
                 @csrf
                 <button type="button" onclick="bulkAction('{{ route('admin.konsumsi.bulk-mark-received') }}')"
                         class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                    Tandai Sudah Diterima
+                    Tandai Pagi
                 </button>
                 <button type="button" onclick="bulkAction('{{ route('admin.konsumsi.bulk-mark-not-received') }}')"
                         class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                    Tandai Belum Diterima
+                    Reset Semua
                 </button>
             </form>
         </div>
@@ -48,8 +48,8 @@
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mahasiswa</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">NPM</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Waktu Scan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pagi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Siang</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                     </tr>
                 </thead>
@@ -62,20 +62,30 @@
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $ticket->mahasiswa->nama ?? 'Unknown' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $ticket->mahasiswa->npm ?? '-' }}</td>
                             <td class="px-6 py-4">
-                                @if($ticket->konsumsi_diterima)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Sudah Diterima</span>
+                                @if($ticket->konsumsi_pagi_at)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">✓ {{ $ticket->konsumsi_pagi_at->format('H:i') }}</span>
                                 @else
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Belum Diterima</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">-</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $ticket->konsumsi_at ? $ticket->konsumsi_at->format('d M Y H:i:s') : '-' }}</td>
+                            <td class="px-6 py-4">
+                                @if($ticket->konsumsi_siang_at)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">✓ {{ $ticket->konsumsi_siang_at->format('H:i') }}</span>
+                                @elseif($ticket->konsumsi_pagi_at)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-600">Menunggu</span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">-</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 text-sm">
-                                <form action="{{ route('admin.konsumsi.toggle', $ticket) }}" method="POST" class="inline">
-                                    @csrf
-                                    <button type="submit" class="text-primary-600 hover:text-primary-800">
-                                        {{ $ticket->konsumsi_diterima ? 'Tandai Belum' : 'Tandai Sudah' }}
-                                    </button>
-                                </form>
+                                @if(!$ticket->konsumsi_siang_at)
+                                    <form action="{{ route('admin.konsumsi.toggle', $ticket) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="text-primary-600 hover:text-primary-800">
+                                            {{ $ticket->konsumsi_pagi_at ? 'Tandai Siang' : 'Tandai Pagi' }}
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty
