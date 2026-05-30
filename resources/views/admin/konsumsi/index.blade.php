@@ -8,43 +8,18 @@
             <h1 class="text-2xl font-bold text-gray-900">Data Konsumsi</h1>
         </div>
 
-        <!-- Filters -->
+        <!-- Search Only -->
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <form method="GET" class="flex items-end space-x-4">
+            <form method="GET" class="flex items-end gap-4">
                 <div class="flex-1">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Cari</label>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama mahasiswa, NPM"
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
                 </div>
-                <div class="w-40">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select name="konsumsi_diterima" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
-                        <option value="">Semua</option>
-                        <option value="1" {{ request('konsumsi_diterima') === '1' ? 'selected' : '' }}>Sudah Diterima</option>
-                        <option value="0" {{ request('konsumsi_diterima') === '0' ? 'selected' : '' }}>Belum Diterima</option>
-                    </select>
-                </div>
-                <div class="w-48">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Acara</label>
-                    <select name="graduation_event_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
-                        <option value="">Semua Acara</option>
-                        @foreach($events as $id => $name)
-                            <option value="{{ $id }}" {{ request('graduation_event_id') == $id ? 'selected' : '' }}>{{ $name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="w-40">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Dari Tanggal</label>
-                    <input type="date" name="scanned_from" value="{{ request('scanned_from') }}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
-                </div>
-                <div class="w-40">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Sampai Tanggal</label>
-                    <input type="date" name="scanned_until" value="{{ request('scanned_until') }}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
-                </div>
-                <button type="submit" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">Filter</button>
-                <a href="{{ route('admin.konsumsi.index') }}" class="px-4 py-2 text-gray-600 hover:text-gray-800">Reset</a>
+                <button type="submit" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">Cari</button>
+                @if(request('search'))
+                    <a href="{{ route('admin.konsumsi.index') }}" class="px-4 py-2 text-gray-600 hover:text-gray-800">Reset</a>
+                @endif
             </form>
         </div>
 
@@ -52,11 +27,11 @@
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <form id="bulk-form" method="POST" class="flex items-center space-x-3">
                 @csrf
-                <button type="button" onclick="bulkAction('{{ route('admin.konsumsi.bulk-mark-received') }}')" 
+                <button type="button" onclick="bulkAction('{{ route('admin.konsumsi.bulk-mark-received') }}')"
                         class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                     Tandai Sudah Diterima
                 </button>
-                <button type="button" onclick="bulkAction('{{ route('admin.konsumsi.bulk-mark-not-received') }}')" 
+                <button type="button" onclick="bulkAction('{{ route('admin.konsumsi.bulk-mark-not-received') }}')"
                         class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
                     Tandai Belum Diterima
                 </button>
@@ -75,7 +50,6 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">NPM</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Waktu Scan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Scan Oleh</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                     </tr>
                 </thead>
@@ -95,7 +69,6 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $ticket->konsumsi_at ? $ticket->konsumsi_at->format('d M Y H:i:s') : '-' }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $ticket->konsumsiRecord->first()?->scannedBy->name ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm">
                                 <form action="{{ route('admin.konsumsi.toggle', $ticket) }}" method="POST" class="inline">
                                     @csrf
@@ -107,7 +80,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-sm text-gray-500">Tidak ada data konsumsi</td>
+                            <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">Tidak ada data konsumsi</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -115,7 +88,7 @@
         </div>
 
         <div class="mt-4">
-            {{ $tickets->links() }}
+            {{ $tickets->withQueryString()->links() }}
         </div>
     </div>
 
@@ -130,7 +103,7 @@
         function bulkAction(url) {
             const form = document.getElementById('bulk-form');
             const checked = document.querySelectorAll('.row-checkbox:checked');
-            
+
             if (checked.length === 0) {
                 alert('Pilih minimal satu data.');
                 return;
@@ -140,7 +113,6 @@
                 return;
             }
 
-            // Remove existing hidden inputs
             form.querySelectorAll('input[type="hidden"]').forEach(el => el.remove());
 
             checked.forEach(cb => {

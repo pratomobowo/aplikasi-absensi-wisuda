@@ -24,26 +24,9 @@ class KonsumsiController extends Controller
             });
         }
 
-        if ($request->has('konsumsi_diterima') && $request->input('konsumsi_diterima') !== '') {
-            $query->where('konsumsi_diterima', $request->boolean('konsumsi_diterima'));
-        }
-
-        if ($request->filled('graduation_event_id')) {
-            $query->where('graduation_event_id', $request->input('graduation_event_id'));
-        }
-
-        if ($request->filled('scanned_from')) {
-            $query->whereDate('konsumsi_at', '>=', $request->input('scanned_from'));
-        }
-
-        if ($request->filled('scanned_until')) {
-            $query->whereDate('konsumsi_at', '<=', $request->input('scanned_until'));
-        }
-
         $tickets = $query->latest('konsumsi_at')->paginate(50)->withQueryString();
-        $events = GraduationEvent::where('status', '!=', 'completed')->pluck('name', 'id');
 
-        return view('admin.konsumsi.index', compact('tickets', 'events'));
+        return view('admin.konsumsi.index', compact('tickets'));
     }
 
     public function toggle(GraduationTicket $ticket)
