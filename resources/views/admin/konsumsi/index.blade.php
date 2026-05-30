@@ -78,14 +78,43 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-sm">
-                                @if(!$ticket->konsumsi_siang_at)
-                                    <form action="{{ route('admin.konsumsi.toggle', $ticket) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="text-primary-600 hover:text-primary-800">
-                                            {{ $ticket->konsumsi_pagi_at ? 'Tandai Siang' : 'Tandai Pagi' }}
-                                        </button>
-                                    </form>
-                                @endif
+                                <div class="flex items-center gap-2">
+                                    {{-- Tombol Tandai --}}
+                                    @if(!$ticket->konsumsi_pagi_at)
+                                        <form action="{{ route('admin.konsumsi.toggle', $ticket) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="text-primary-600 hover:text-primary-800 font-medium">
+                                                Tandai Pagi
+                                            </button>
+                                        </form>
+                                    @elseif(!$ticket->konsumsi_siang_at)
+                                        <form action="{{ route('admin.konsumsi.toggle', $ticket) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="text-primary-600 hover:text-primary-800 font-medium">
+                                                Tandai Siang
+                                            </button>
+                                        </form>
+                                    @endif
+
+                                    {{-- Tombol Reset --}}
+                                    @if($ticket->konsumsi_siang_at)
+                                        <form action="{{ route('admin.konsumsi.reset', [$ticket, 'siang']) }}" method="POST" class="inline"
+                                              onsubmit="return confirm('Reset konsumsi siang untuk mahasiswa ini?')">
+                                            @csrf
+                                            <button type="submit" class="text-red-500 hover:text-red-700 text-xs border border-red-300 rounded px-2 py-0.5">
+                                                ↩ Reset Siang
+                                            </button>
+                                        </form>
+                                    @elseif($ticket->konsumsi_pagi_at)
+                                        <form action="{{ route('admin.konsumsi.reset', [$ticket, 'pagi']) }}" method="POST" class="inline"
+                                              onsubmit="return confirm('Reset konsumsi pagi untuk mahasiswa ini?')">
+                                            @csrf
+                                            <button type="submit" class="text-red-500 hover:text-red-700 text-xs border border-red-300 rounded px-2 py-0.5">
+                                                ↩ Reset Pagi
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty

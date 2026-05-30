@@ -140,6 +140,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Konsumsi
         Route::post('/konsumsi/{ticket}/toggle', [KonsumsiController::class, 'toggle'])->name('konsumsi.toggle');
+        Route::post('/konsumsi/{ticket}/reset/{type}', [KonsumsiController::class, 'reset'])->name('konsumsi.reset');
         Route::post('/konsumsi/bulk-mark-received', [KonsumsiController::class, 'bulkMarkReceived'])->name('konsumsi.bulk-mark-received');
         Route::post('/konsumsi/bulk-mark-not-received', [KonsumsiController::class, 'bulkMarkNotReceived'])->name('konsumsi.bulk-mark-not-received');
         Route::get('/konsumsi', [KonsumsiController::class, 'index'])->name('konsumsi.index');

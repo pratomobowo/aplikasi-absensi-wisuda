@@ -62,6 +62,33 @@ class KonsumsiController extends Controller
         return redirect()->back()->with('success', $message);
     }
 
+    public function reset(GraduationTicket $ticket, string $type)
+    {
+        if ($type === 'siang' && $ticket->konsumsi_siang_at) {
+            $ticket->update([
+                'konsumsi_siang_at' => null,
+                'konsumsi_siang_by' => null,
+            ]);
+            $message = 'Konsumsi siang berhasil direset.';
+        } elseif ($type === 'pagi' && $ticket->konsumsi_pagi_at && !$ticket->konsumsi_siang_at) {
+            $ticket->update([
+                'konsumsi_pagi_at' => null,
+                'konsumsi_pagi_by' => null,
+            ]);
+            $message = 'Konsumsi pagi berhasil direset.';
+        } else {
+            return redirect()->back()->with('error', 'Aksi reset tidak valid.');
+        }
+
+        Log::info('KonsumsiRecord: Manual reset', [
+            'ticket_id' => $ticket->id,
+            'type' => $type,
+            'admin_id' => auth()->id(),
+        ]);
+
+        return redirect()->back()->with('success', $message);
+    }
+
     public function bulkMarkReceived(Request $request)
     {
         $ids = $request->input('ids', []);
