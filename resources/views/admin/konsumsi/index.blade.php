@@ -62,16 +62,16 @@
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $ticket->mahasiswa->nama ?? 'Unknown' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $ticket->mahasiswa->npm ?? '-' }}</td>
                             <td class="px-6 py-4">
-                                @if($ticket->konsumsi_pagi_at)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">✓ {{ $ticket->konsumsi_pagi_at->format('H:i') }}</span>
+                                @if($ticket->konsumsi_pagi_at && strlen($ticket->konsumsi_pagi_at) > 0)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">✓ {{ \Carbon\Carbon::parse($ticket->konsumsi_pagi_at)->format('H:i') }}</span>
                                 @else
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">-</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                @if($ticket->konsumsi_siang_at)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">✓ {{ $ticket->konsumsi_siang_at->format('H:i') }}</span>
-                                @elseif($ticket->konsumsi_pagi_at)
+                                @if($ticket->konsumsi_siang_at && strlen($ticket->konsumsi_siang_at) > 0)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">✓ {{ \Carbon\Carbon::parse($ticket->konsumsi_siang_at)->format('H:i') }}</span>
+                                @elseif($ticket->konsumsi_pagi_at && strlen($ticket->konsumsi_pagi_at) > 0)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-600">Menunggu</span>
                                 @else
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">-</span>
