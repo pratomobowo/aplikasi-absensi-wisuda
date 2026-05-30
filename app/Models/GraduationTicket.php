@@ -49,6 +49,10 @@ class GraduationTicket extends Model
         'expires_at',
         'konsumsi_diterima',
         'konsumsi_at',
+        'konsumsi_pagi_at',
+        'konsumsi_pagi_by',
+        'konsumsi_siang_at',
+        'konsumsi_siang_by',
         'archived_at',
     ];
 
@@ -65,6 +69,8 @@ class GraduationTicket extends Model
             'expires_at' => 'datetime',
             'konsumsi_diterima' => 'boolean',
             'konsumsi_at' => 'datetime',
+            'konsumsi_pagi_at' => 'datetime',
+            'konsumsi_siang_at' => 'datetime',
             'archived_at' => 'datetime',
         ];
     }
